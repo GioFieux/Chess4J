@@ -1,4 +1,4 @@
-public STATIC testAdd(Position pos,coordinate case, coordinate casetest,boolean take) byte:
+public testAdd(coordinate case, coordinate casetest,boolean take) byte:
 	positionTMP = clone(position)
 	positionTMP.pseudoPlaymove(case,casetest)
 	if(positionTMP.isCheck() ):
