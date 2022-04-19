@@ -1,0 +1,159 @@
+public STATIC testAdd(Position pos,coordinate case, coordinate casetest,boolean take) byte:
+	positionTMP = clone(position)
+	positionTMP.pseudoPlaymove(case,casetest)
+	if(positionTMP.isCheck() ):
+		return 0; 					//le coup pseudo légal était en fait illégal car il nous laisse en échec
+	else:							//le coup pseudo légal était donc un coup légal:
+		if(take):
+			return = 2;
+		else:
+			return = 1;
+	//et on n'a plus besion de positionTMP, on s'en est servit pour savoir si on se retrouvai dans une position d'échec
+	
+__________________________________________________________________________________________________________________________________________________________________
+caseAccess(coordinate case):
+	Coordinate caseTest;
+	Byte[8][8] matriceResultat = [[0]*8]*8
+	Int compteur =0
+	
+	switch(position[case]):													// en fonction de la pièce présente sur la case "case"
+		case 0:																// si la case est vide alors on renvoie une matrice de 0
+		case <sur un pièce du joueur qui n'a pas le trait>:
+			return [[0]*8]*8;
+			break;
+			
+		case Rook:															//Pour Tour, cavalier, fou, dame, roi, on fait la même chose
+		case Knight:
+		case Bishop:
+		case Queen:
+		case King:
+			for(i : position[case].DIRECTION)
+				caseTest = case;
+				boolean keepgoing = true
+				compteur = 0
+				while(keepgoing AND compteur < position[case].LIMIT):
+					caseTest += i;
+					compteur +=1;
+					switch(position[caseTest]):
+						case <casevide> :
+							matriceResultat[casetest] = testAdd(this,case,castest,false);				//si la case est vide ce n'est pas uen prise
+							break;
+						case <piece ennemie> :
+							matriceResultat[casetest] = testAdd(this,case,castest,true);					//si la case est vide alors elle est accessible
+							break;
+						case <piece allié>:
+						case <out of bound>:
+							keepgoing = false;								//si la case n'est pas accessible car  elle est en dehors de l'échiquier ou occupé par une pièce allié, pas besion de modifier la valeur car la matrice est initialisé avec que des 0
+		
+		
+		
+		
+		
+		case Pawn:														//LES PIONS QUI AVANCE NORMALEMENT
+			i = [0,1] ou [0,-1] en fonction du turn
+			switch (position[case+i)									// [0,1] ou [0,-1] en fonction de turn
+				case <case vide>
+					matriceResultat[case+i] = testAdd(this,case,castest,false)
+					break;
+				case <pièce allié>:
+				case <piece ennemie>:
+					break;
+					
+			if(7ème ou 2ème rangé):										//LES PION QUI AVANCE DE 2
+				i = [0,2] ou [0,-2] en fonction du turn
+			switch (position[case+i)									// [0,1] ou [0,-1] en fonction de turn
+				case <case vide>:
+					matriceResultat[case+i]=testAdd(this,case,castest,false) 
+				case <pièce allié>:
+				case <piece ennemie>:
+					break;
+			
+			i1=[-1,1],[1,1] ou [-1,-1],[1,-1]	 en fonction du turn 		//LA PRISE DES PION
+			i2=[1,1] ou [1,-1]
+			if(position[case+i1] = piece ennemie)
+				matriceResultat[casetest] = testAdd(this,case,castest,true)
+			if(position[case+i2] = piece ennemie)
+				matriceResultat[casetest] =testAdd(this,case,castest,true)
+			
+			if(enPassant and le pion est sur une case qui peut y accéder):	//LA PRISE EN PASSANT
+				matriceResultat[enPassant] = testAdd(this,case,castest,true)
+					
+					
+					
+					
+		if (position(case) = King):						//LE CAS DU ROQUE test pour les roques : pas besion d'autres vérification, le roque sera forcément un coup réèlement légal si booléen roque sur vrai (ie le roi et la tour sont en position), et que les case sont vide et non controllé alros c'est bon
+			if(turn):
+				if(petit roque):											
+					if(les case sont vide AND les case de sont pas controllé via isControlled):
+						matriceResultat(g1) = 1							
+				if(grand roque):											
+					if(les case sont vide AND les case ne sont pas controllé via isControlled
+						matriceResultat(c1 = 1									
+			else 	
+				if(petit roque):											
+					if(les case sont vide AND les case de sont pas controllé via isControlled):
+						matriceResultat(g8) = 1							
+				if(grand roque):											
+					if(les case sont vide AND les case ne sont pas controllé via isControlled
+						matriceResultat(c8) = 1	
+			
+		return matriceResultat;
+			
+			
+__________________________________________________________________________________________________________________________________________________________________
+	
+	
+ACCESS : queqlue part dans l'énumération PIECE : nombre à itéré / liste des DIRECTIONS
+ROOK : 7 [[-1,0],[1,0],[0,1],[0,-1]]
+KNIGHT : 1 [[2,1],[2,-1],[-2,1],[-2,-1],[1,2],[1,-2],[-1,2],[-1,-2]
+BISHOP : 7, [[-1,-1],[1,1],[-1,1],[1,-1]]
+QUEEN : 7, [[-1,0],[1,0],[0,1],[0,-1],[-1,-1],[1,1],[-1,1],[1,-1]]
+KING : 1, [[-1,0],[1,0],[0,1],[0,-1],[-1,-1],[1,1],[-1,1],[1,-1]]
+
+
+
+__________________________________________________________________________________________________________________________________________________________________
+
+
+
++playMove(Coordinate case1, Coordinate case2,Game game) void:
+	if(c2 not in caseAccess(c1))										// si le coup pas réellement légal
+		RuntimeException
+	pseudoplaymove()
+	turn = not(turn)
+	update time
+	update pgn
+	
+
+__________________________________________________________________________________________________________________________________________________________________
+
+-pseudoplaymove(Coordinate case1, Coordinate case2) void:
+	switch(position[case1]):
+		case Rook:
+			update Castle Boolean
+		case knight:
+		case Bishop:
+		case queen:
+			update enPassant
+			movePiece(c1,c2);
+			break;
+		case king:
+			updateCastleBoolean
+			if(cest un roque)
+				movePiece(le roi)
+				movePiece(la tour)
+			else
+				movePiece(c1,c2)
+		case pawn:
+			if(c'est une prise en passant):
+				ct = 													//la case à côté à gauche ou à droite de la prise en passant
+				movepeice(c1,ct)
+				movePiece(ct,c2)
+				update enPassant
+			elif(c'est une promotion):
+				movePiece
+				...demander à l'utilisateur
+				update enPassant
+			else:
+				movePiece(c1,c2)
+				update enPassant
