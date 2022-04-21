@@ -123,8 +123,10 @@ ________________________________________________________________________________
 	turn = not(turn)
 	update time
 	update pgn
-	
-
+__________________________________________________________________________________________________________________________________________________________________
++playMove(Coordinate case1, Coordinate case2,Game game, Piece piece) void:
+	playMove(case1, case2,Game game)
+	pos[case2] = piece
 __________________________________________________________________________________________________________________________________________________________________
 
 -pseudoplaymove(Coordinate case1, Coordinate case2) void:
@@ -150,10 +152,8 @@ ________________________________________________________________________________
 				movepeice(c1,ct)
 				movePiece(ct,c2)
 				update enPassant
-			elif(c'est une promotion):
+			else(c'est un déplacement normal, ou une prise, ou une promotion):
 				movePiece
 				...demander à l'utilisateur
 				update enPassant
-			else:
-				movePiece(c1,c2)
-				update enPassant
+	
