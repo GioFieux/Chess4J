@@ -1,0 +1,61 @@
+Conception UML
+
+Diagramme de cas d'utilisation Elias
+
+Diagramme de classe tout le monde
+
+Diagramme de séquence Alexis/Giovanni
+
+Diagramme d'activité Flo/Elias
+
+=> done
+
+Programmation Java 
+
+FAIRE LES METHODES -> NE PAS OUBLIER LA JAVADOC POUR CHAQUE METHODE !!!
+
+faire les getter/setter des classes Flo/Elias done
+
+Commencer par la Classe Position : 21 avril
+faire les méthodes : 
+	enumeration Flo/Elias done
+	-pseudoPlayMove (pseudo code) Alexis
+	+playMove (pseudo code) Flo
+	+caseAccess (pseudo code) coups spéciaux : roque (grand/peti et), en passant, promotion en même temps ou plus tard ? Elias
+	+movePiece Flo/Elias done
+	+isControled ? Giovanni
+	-testAdd -> qui utilise pseudoPlayMove Alexis
+
+Essayer d'avoir un code permettant de déplacer des pièces (avec leurs propriétés) en rentrant des FEN
+sans prendre en compte les conditions d'échecs et les coups spéciaux pour le moment 			-> après les vacances de paques
+
+S'occuper des cas particuliers : 
+	-promotion Elias
+	-isChecked (pseudo code ?) Giovanni
+	-isCheckedMate (pseudo code ?) Flo
+	-isStaleMate (pseudo code ?) Alexis
+
+Avoir un code qui marche avec les coups spéciaux et les conditions d'échecs
+
+Condition de fin de partie -> méthode +isGameFinished
+Système de joueur, proposition de nul et acceptation de nul
+	+drawProp Giovanni
+	+drawAccept Giovanni
+	+timedOut Elias
+	-updateTimesPGN Alexis
+	+importFen Flo
+	+exportFen Flo
+
+Partie IHM en dernier (après avoir eu cours)
+	-canMove 
+
+Rédaction rapport : 
+	- présentation/structure du document
+	- conception UML
+	- justification des méthodes choisies et problèmes rencontrés (détailler) -> historique des solutions et dernière retenue
+	- petite partie -> retour d'expérience
+
+Préparation soutenance :
+	- vidéo démo comment ça marche (pas pendant la soutenance)
+	- google slide : grandes étapes du rapport
+	- présentation/structure du document
