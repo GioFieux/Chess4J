@@ -156,4 +156,111 @@ ________________________________________________________________________________
 				movePiece
 				...demander à l'utilisateur
 				update enPassant
+
+
+
+
+isControlled(coordinate case):
+	//Note : en pratique c'est surement mieux mieux d'utiliser une structure de if à la place d'un switch case. Ca permet notament d'utilise break et continu sans passer par le booleen "keepgoing...
 	
+	//Test s'il y a une pièce ennemie verticalement ou horizontalement
+	for(i : ROOK.DIRECTION):
+		casetest = case;
+		boolean keepgoing = true
+		while(keepgoing):
+			caseTest += i;
+			switch getpositioncase(casetest):
+				case <case vide>;
+					break;
+				case <piece allié ou out of bound>:			
+					keepgoing = false
+					break;
+				case <dame ou tour ennemie>
+					return true;
+	
+	//Test s'il y a une pièce ennemie diagonalement
+	for(i : BISHOP.DIRECTION)
+		casetest = case;
+		boolean keepgoing = true
+		while(keepgoing):
+			caseTest += i;
+			switch getpositioncase(casetest):
+				case <case vide>;
+					break;
+				case <piece allié ou out of bound>:			
+					keepgoing = false
+					break;
+				case <fou ou dame ennemie>
+					return true;
+
+	//test s'il y a un cavalier ennmeie
+	for(i:KNIGHT.DIRECTION)
+		casetest= case + i;
+		switch getpositioncase(casetest):
+			case <case vide ou piece allié ou out of bound>;
+				break;
+			case <cavalier ennemie>
+				return true;
+				
+	//test s'il y a un pion ennemie
+	a,b = <case+[1,1], case+[1-,1] ou case +[-1,1], case +[-1;-1			// en fonction de la couleur que l'on obtien en fctn de l'attribut turn de pos ...
+	if getpositioncase(a)=<pionennemie> or getpositioncase(b) = <pionennmi> :
+		return true;
+		
+	//test s'il y  un roi sur les 8 case autours ...
+	for(i:KING.DIRECTION):
+		casetest = case+i;
+			switch getpositioncase(casetest):
+			case <case vide ou piece allié ou out of bound>;
+				break;
+			case <Roi ennemie>
+				return true;
+	
+	Return False				//si on est arrivé içi, c'est qu'il n'y a pas de tour ou de dame sur la ligne/colonne, qu'il n'y a pas de fou ou de dame sur les diagonal, qu'il n'y pas de pion, et qu'il n'y pas de roi sur les 8 case autours
+	
+
+
+________________________________
+
+isChecked():
+	//on parcours l'échiquier ligne par ligne et colonne par colonne, à la recherche du Roi du joueur Actif, et on appel isControlled dessus
+	for l in range 8:
+		for c in range 8:
+			if getpositioncase(l,c)==<Roi allié>:
+				return isControlled(l,c)
+________________________________
+
+canMove():
+	//en fonction de turn
+	r=[[false]*8]*8;
+	for l in range 8:
+		for c in range 8:
+			if getpositioncase(l,c)==<pieceAllié>:
+				if caseAccess(l,c)!=0;
+					r[l,c] = true;
+	return r;
+________________________________
+isCheckmate():
+	//si il y a échec, on parcours l'échiquer pour voir si une pièce allié à un coup légal
+	//rmq : on pourrai utilisé can move, mais ça parcours intégralement l'échiquier alors quon peut s'arrêter dès qu'on trouve un coup légal, c'est vraiment à chier niveau opti
+	if isChecked():
+		for l in range 8:
+			for c in range 8:
+				if getpositioncase(l,c) == <piece allié>:
+					if caseAccess(l,c)!= []						//si caseAcess renvoie une matrice 8 8 de 0 alros la pièce n'a aucun coup légal, sinon elle en possède 1, donc il n'y a pas mat
+						return False;
+	return True;												//si on est arrivé içi alors par définition il n'y a pas mat
+
+________________________________
+isStalemat():
+	//exactement le même code que isCheckmate() sauf qu'il n'y a pas échec
+	//même remarque sur canMove que pour isCheckmate()
+	if not(isChecked()):
+		for l in range 8:
+			for c in range 8:
+				if getpositioncase(l,c) == <piece allié>:
+					if caseAccess(l,c)!= []						//si caseAcess renvoie une matrice 8 8 de 0 alros la pièce n'a aucun coup légal, sinon elle en possède 1, donc il n'y a pas mat
+						return False;
+	return True;												//si on est arrivé içi alors par définition il y a pat
+
+			
