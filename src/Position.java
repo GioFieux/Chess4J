@@ -510,6 +510,34 @@ public class Position {
 		return onChessboard;
 	}
 
+	public boolean isChecked() {
+		Coordinate c= new Coordinate((byte) 0, (byte) 0);
+		boolean test=true;
+		if(this.getTurn()==true) { // Player with White Pieces
+			for(byte l=0; l<8; l++) {
+				for(byte col=0; col<8; col++) {
+					c.setCol(col);
+					c.setRow(l);
+					if (this.getPosCase(c)==Piece.WHITEKING.getId()) {
+						 test=isControlled(c);
+					}
+				}
+			}
+		}
+		else{ //Player with Black Pieces
+			for(byte l=0; l<8; l++) {
+				for(byte col=0; col<8; col++) {
+					c.setCol(col);
+					c.setRow(l);
+					if (this.getPosCase(c)==Piece.BLACKKING.getId()) {
+						test=isControlled(c);
+					}
+				}
+			}
+		}
+		return test;
+	}
+
 	public void movePiece(Coordinate c1, Coordinate c2) {
 		byte piece = this.getPosCase(c1);
 		this.setPosCase(c1,(byte)0);
