@@ -509,7 +509,185 @@ public class Position {
 		
 		return onChessboard;
 	}
-
+	
+	public boolean isControlled(Coordinate c) {
+		byte l=c.getRow();
+		byte c1=c.getCol();
+		Coordinate casetest;
+		byte [][] directions;
+		if (this.getTurn()==true){// Player with White Pieces
+			directions=Piece.WHITEROOK.getDirection();
+			for(byte [] direction : directions) {// rook direction
+				byte dx= direction[0];
+				byte dy= direction[1]; 
+				casetest.setCol(c1);
+				casetest.setRow(l);
+				boolean keepgoing=true;
+				while((keepgoing) && (isOnChessboard(casetest))) {
+					casetest.setCol((byte) (casetest.getCol()+dy));
+					casetest.setRow((byte) (casetest.getRow()+dx));
+						switch (this.getPosCase(casetest)) {
+							case 0 :
+								break;
+							case Piece.WHITEROOK.getId(),Piece.WHITEKNIGHT.getId(),Piece.WHITEBISHOP.getId(),Piece.WHITEQUEEN.getId(),Piece.WHITEKING.getId(),Piece.WHITEPAWN.getId(),Piece.BLACKPAWN.getId(),Piece.BLACKROOK.getId(),Piece.BLACKKNIGHT.getId(),Piece.BLACKBISHOP.getId(),Piece.BLACKKING.getId(): 
+								keepgoing=false;
+								break;
+							case Piece.BLACKROOK.getId(),Piece.BLACKQUEEN.getId():
+								return true;
+						}
+					}
+			}
+			
+			directions=Piece.WHITEBISHOP.getDirection();
+			for(byte [] direction : directions) {// Bishop direction
+				byte dx= direction[0];
+				byte dy= direction[1]; 
+				casetest.setCol(c1);
+				casetest.setRow(l);
+				if(isOnChessboard(casetest)) {
+					casetest.setCol((byte) (casetest.getCol()+dy));
+					casetest.setRow((byte) (casetest.getRow()+dx));
+						switch (this.getPosCase(casetest)) {
+							case ((byte) 0),Piece.WHITEROOK.getId(),Piece.WHITEKNIGHT.getId(),Piece.WHITEBISHOP.getId(),Piece.WHITEQUEEN.getId(),Piece.WHITEKING.getId(),Piece.WHITEPAWN.getId(),Piece.BLACKPAWN.getId(),Piece.BLACKROOK.getId(),Piece.BLACKKNIGHT.getId(),Piece.BLACKKING.getId() :
+								break;
+							case Piece.BLACKQUEEN.getId(),Piece.BLACKBISHOP.getId():
+								return true;
+						}
+					}
+			}
+			
+			directions=Piece.WHITEKNIGHT.getDirection();
+			for(byte [] direction : directions) {// Knight direction
+				byte dx= direction[0];
+				byte dy= direction[1]; 
+				casetest.setCol(c1);
+				casetest.setRow(l);
+				if(isOnChessboard(casetest)) {
+					casetest.setCol((byte) (casetest.getCol()+dy));
+					casetest.setRow((byte) (casetest.getRow()+dx));
+						switch (this.getPosCase(casetest)) {
+							case ((byte) 0),Piece.WHITEROOK.getId(),Piece.WHITEKNIGHT.getId(),Piece.WHITEBISHOP.getId(),Piece.WHITEQUEEN.getId(),Piece.WHITEKING.getId(),Piece.WHITEPAWN.getId(),Piece.BLACKPAWN.getId(),Piece.BLACKROOK.getId(),Piece.BLACKBISHOP.getId(),Piece.BLACKQUEEN.getId(),Piece.BLACKKING.getId() :
+								break;
+							case Piece.BLACKKNIGHT.getId():
+								return true;
+						}
+					}
+			}
+			
+			Coordinate casetest1=new Coordinate((byte) (c.getRow()-1),(byte) (c.getCol()-1));
+			Coordinate casetest2=new Coordinate((byte) (c.getRow()-1),(byte) (c.getCol()+1));
+			
+			if(this.getPosCase(casetest1)==Piece.BLACKPAWN.getId() || this.getPosCase(casetest2)==Piece.BLACKPAWN.getId()) {
+				return true;
+			}
+			
+			directions=Piece.WHITEKING.getDirection();
+			for(byte [] direction : directions) {// Knight direction
+				byte dx= direction[0];
+				byte dy= direction[1]; 
+				casetest.setCol(c1);
+				casetest.setRow(l);
+				if(isOnChessboard(casetest)) {
+					casetest.setCol((byte) (casetest.getCol()+dy));
+					casetest.setRow((byte) (casetest.getRow()+dx));
+						switch (this.getPosCase(casetest)) {
+							case ((byte) 0),Piece.WHITEROOK.getId(),Piece.WHITEKNIGHT.getId(),Piece.WHITEBISHOP.getId(),Piece.WHITEQUEEN.getId(),Piece.WHITEKING.getId(),Piece.WHITEPAWN.getId(),Piece.BLACKPAWN.getId(),Piece.BLACKROOK.getId(),Piece.BLACKKNIGHT.getId(),Piece.BLACKBISHOP.getId(),Piece.BLACKQUEEN.getId() :
+								break;
+							case Piece.BLACKKING.getId():
+								return true;
+						}
+					}
+			}
+			return false;
+		}
+		
+		else { // Player with Dark Pieces
+			directions=Piece.BLACKROOK.getDirection();
+			for(byte [] direction : directions) {// rook direction
+				byte dx= direction[0];
+				byte dy= direction[1]; 
+				casetest.setCol(c1);
+				casetest.setRow(l);
+				boolean keepgoing=true;
+				while((keepgoing) && (isOnChessboard(casetest))) {
+					casetest.setCol((byte) (casetest.getCol()+dy));
+					casetest.setRow((byte) (casetest.getRow()+dx));
+						switch (this.getPosCase(casetest)) {
+							case 0 :
+								break;
+							case Piece.WHITEKNIGHT.getId(),Piece.WHITEBISHOP.getId(),Piece.WHITEKING.getId(),Piece.WHITEPAWN.getId(),Piece.BLACKPAWN.getId(),Piece.BLACKROOK.getId(),Piece.BLACKKNIGHT.getId(),Piece.BLACKBISHOP.getId(),Piece.BLACKQUEEN.getId(),Piece.BLACKKING.getId(): 
+								keepgoing=false;
+								break;
+							case Piece.WHITEROOK.getId(),Piece.WHITEQUEEN.getId():
+								return true;
+						}
+					}
+			}
+			
+			directions=Piece.BLACKBISHOP.getDirection();
+			for(byte [] direction : directions) {// Bishop direction
+				byte dx= direction[0];
+				byte dy= direction[1]; 
+				casetest.setCol(c1);
+				casetest.setRow(l);
+				if(isOnChessboard(casetest)) {
+					casetest.setCol((byte) (casetest.getCol()+dy));
+					casetest.setRow((byte) (casetest.getRow()+dx));
+						switch (this.getPosCase(casetest)) {
+							case ((byte) 0),Piece.WHITEROOK.getId(),Piece.WHITEKNIGHT.getId(),Piece.BLACKBISHOP.getId(),Piece.BLACKQUEEN.getId(),Piece.WHITEKING.getId(),Piece.WHITEPAWN.getId(),Piece.BLACKPAWN.getId(),Piece.BLACKROOK.getId(),Piece.BLACKKNIGHT.getId(),Piece.BLACKKING.getId():
+								break;
+							case Piece.WHITEBISHOP.getId(),Piece.WHITEQUEEN.getId():
+								return true;
+						}
+					}
+			}
+			
+			directions=Piece.BLACKKNIGHT.getDirection();
+			for(byte [] direction : directions) {// Knight direction
+				byte dx= direction[0];
+				byte dy= direction[1]; 
+				casetest.setCol(c1);
+				casetest.setRow(l);
+				if(isOnChessboard(casetest)) {
+					casetest.setCol((byte) (casetest.getCol()+dy));
+					casetest.setRow((byte) (casetest.getRow()+dx));
+						switch (this.getPosCase(casetest)) {
+							case  ((byte) 0),Piece.WHITEROOK.getId(),Piece.WHITEBISHOP.getId(),Piece.WHITEQUEEN.getId(),Piece.WHITEKING.getId(),Piece.WHITEPAWN.getId(),Piece.BLACKPAWN.getId(),Piece.BLACKROOK.getId(),Piece.BLACKKNIGHT.getId(),Piece.BLACKBISHOP.getId(),Piece.BLACKQUEEN.getId(),Piece.BLACKKING.getId():
+								break;
+							case Piece.WHITEKNIGHT.getId():
+								return true;
+						}
+					}
+			}
+			
+			Coordinate casetest1=new Coordinate((byte) (c.getRow()+1),(byte) (c.getCol()-1));
+			Coordinate casetest2=new Coordinate((byte) (c.getRow()+1),(byte) (c.getCol()+1));
+			
+			if(this.getPosCase(casetest1)==Piece.WHITEPAWN.getId() || this.getPosCase(casetest2)==Piece.WHITEPAWN.getId()) {
+				return true;
+			}
+			
+			directions=Piece.BLACKKING.getDirection();
+			for(byte [] direction : directions) {// Knight direction
+				byte dx= direction[0];
+				byte dy= direction[1]; 
+				casetest.setCol(c1);
+				casetest.setRow(l);
+				if(isOnChessboard(casetest)) {
+					casetest.setCol((byte) (casetest.getCol()+dy));
+					casetest.setRow((byte) (casetest.getRow()+dx));
+						switch (this.getPosCase(casetest)) {
+							case  ((byte) 0),Piece.WHITEROOK.getId(),Piece.WHITEKNIGHT.getId(),Piece.WHITEBISHOP.getId(),Piece.WHITEQUEEN.getId(),Piece.BLACKKING.getId(),Piece.WHITEPAWN.getId(),Piece.BLACKPAWN.getId(),Piece.BLACKROOK.getId(),Piece.BLACKKNIGHT.getId(),Piece.BLACKBISHOP.getId(),Piece.BLACKQUEEN.getId():
+								break;
+							case Piece.WHITEKING.getId():
+								return true;
+						}
+					}
+			}
+			return false;
+		}
+	}
+	
 	public boolean isChecked() {
 		Coordinate c= new Coordinate((byte) 0, (byte) 0);
 		boolean test=true;
