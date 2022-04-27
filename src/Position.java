@@ -1,15 +1,14 @@
-
 public class Position {
 	
 	private byte[][] pos = {
-		{1,2,3,4,5,3,2,1},
-		{6,6,6,6,6,6,6,6},
+		{Piece.BLACKROOK.getId(),Piece.BLACKKNIGHT.getId(),Piece.BLACKBISHOP.getId(),Piece.BLACKQUEEN.getId(),Piece.BLACKKING.getId(),Piece.BLACKBISHOP.getId(),Piece.BLACKKNIGHT.getId(),Piece.BLACKROOK.getId()},
+		{Piece.BLACKPAWN.getId(),Piece.BLACKPAWN.getId(),Piece.BLACKPAWN.getId(),Piece.BLACKPAWN.getId(),Piece.BLACKPAWN.getId(),Piece.BLACKPAWN.getId(),Piece.BLACKPAWN.getId(),Piece.BLACKPAWN.getId()},
 		{0,0,0,0,0,0,0,0},
 		{0,0,0,0,0,0,0,0},
 		{0,0,0,0,0,0,0,0},
 		{0,0,0,0,0,0,0,0},
-		{7,7,7,7,7,7,7,7},
-		{8,9,10,11,12,10,9,8}
+		{Piece.WHITEPAWN.getId(),Piece.WHITEPAWN.getId(),Piece.WHITEPAWN.getId(),Piece.WHITEPAWN.getId(),Piece.WHITEPAWN.getId(),Piece.WHITEPAWN.getId(),Piece.WHITEPAWN.getId(),Piece.WHITEPAWN.getId()},
+		{Piece.WHITEROOK.getId(),Piece.WHITEKNIGHT.getId(),Piece.WHITEBISHOP.getId(),Piece.WHITEQUEEN.getId(),Piece.WHITEKING.getId(),Piece.WHITEBISHOP.getId(),Piece.WHITEKNIGHT.getId(),Piece.WHITEROOK.getId()}
 	};
 	
 	private boolean whiteCastle;
@@ -22,7 +21,7 @@ public class Position {
 	public Position() {
 		this.blackCastle = true;
 		this.blackCastleLong = true;
-		this.turn = true;
+		this.turn = true; //whitePlayer turn
 		this.whiteCastle = true;
 		this.whiteCastleLong = true;
 		this.enPassant = new Coordinate((byte)0,(byte)0);
@@ -93,7 +92,13 @@ public class Position {
 	}
 	
 	public void playMove(Coordinate c1, Coordinate c2, Game g) {
-		this.turn = !(this.turn);
+		this.setTurn(!(this.getTurn()));
+	}
+	
+	public void playMove(Coordinate c1, Coordinate c2, Game g, Piece p) {
+		this.playMove(c1,c2,g);
+		this.setPosCase(c2, p.getId());
+		g.setPGN(g.getPGN() + " Promotion en : " + p.name());
 	}
 	
 	private void pseudoPlayMove(Coordinate c1, Coordinate c2) {
@@ -101,17 +106,426 @@ public class Position {
 	}
 	
 	public byte[][] caseAccess(Coordinate c) {
-		return null;
+		
+		int limit; //corresponds to the maximum advance of a piece in one direction
+		int nbDirection; //corresponds to the numbers of the different possible directions per piece 
+		
+		byte[][] resultMatrix = new byte[8][8]; //corresponds to the matrix of accessible cases
+		for(int i=0; i<8; i++) {
+			for(int j=0;j<8;j++) {
+				resultMatrix[i][j]=0;
+			}
+		} //resultMatrix initialized with 0
+		
+		Coordinate cTest = new Coordinate((byte)0, (byte)0);
+		
+		switch(this.getPosCase(c)) {
+		
+		case 0: //case empty case
+			break;
+			
+		case 1: //case WHITEROOK
+			if (this.getTurn()) { 								
+				
+				limit = Piece.WHITEROOK.getLimit();
+				
+				byte[][] direction = Piece.WHITEROOK.getDirection();
+				nbDirection = Piece.WHITEROOK.getDirection().length;
+				boolean team = Piece.WHITEROOK.getTeam();
+				
+				resultMatrix=searchCaseAccess(c,cTest,resultMatrix,limit,direction,nbDirection,team);
+			}
+			break;
+			
+		case 2: //case WHITEKNIGHT
+			
+			if (this.getTurn()) { 								
+				
+				limit = Piece.WHITEKNIGHT.getLimit();
+				
+				byte[][] direction = Piece.WHITEKNIGHT.getDirection();
+				nbDirection = Piece.WHITEKNIGHT.getDirection().length;
+				boolean team = Piece.WHITEKNIGHT.getTeam();
+				
+				resultMatrix=searchCaseAccess(c,cTest,resultMatrix,limit,direction,nbDirection,team);
+			}
+			break;
+		
+		case 3: //case WHITEBISHOP
+			
+			if (this.getTurn()) { 								
+				
+				limit = Piece.WHITEBISHOP.getLimit();
+				
+				byte[][] direction = Piece.WHITEBISHOP.getDirection();
+				nbDirection = Piece.WHITEBISHOP.getDirection().length;
+				boolean team = Piece.WHITEBISHOP.getTeam();
+				
+				resultMatrix=searchCaseAccess(c,cTest,resultMatrix,limit,direction,nbDirection,team);
+			}
+			break;
+			
+		case 4: //case WHITEQUEEN
+			
+			if (this.getTurn()) { 								
+				
+				limit = Piece.WHITEQUEEN.getLimit();
+				
+				byte[][] direction = Piece.WHITEQUEEN.getDirection();
+				nbDirection = Piece.WHITEQUEEN.getDirection().length;
+				boolean team = Piece.WHITEQUEEN.getTeam();
+		
+				resultMatrix=searchCaseAccess(c,cTest,resultMatrix,limit,direction,nbDirection,team);
+			}
+			break;
+			
+		case 5: //case WHITEKING
+			
+			if (this.getTurn()) { 								
+				
+				limit = Piece.WHITEKING.getLimit();
+				
+				byte[][] direction = Piece.WHITEKING.getDirection();
+				nbDirection = Piece.WHITEKING.getDirection().length;
+				boolean team = Piece.WHITEKING.getTeam();
+				
+				resultMatrix=searchCaseAccess(c,cTest,resultMatrix,limit,direction,nbDirection,team);
+				
+				if(! (this.isChecked()) ) {
+					
+					if (this.getWhiteCastle()) {
+						if (this.isControlled()) {
+							//en l'attente des defs cases d'Alexis
+						}
+					} else if (this.getWhiteCastleLong()) {
+						if (this.isControlled()) {
+							//en l'attente des defs cases d'Alexis
+						}
+					}
+				}
+			}
+			break;
+			
+		case 6: //case WHITEPAWN
+			
+			if(this.getTurn()) {
+				
+				byte[] classicDirection = Piece.WHITEPAWN.getDirection()[0];
+				byte[] twoCasesDirection = Piece.WHITEPAWN.getDirection()[1];
+				byte[] iRight = Piece.WHITEPAWN.getDirection()[2];
+				byte[] iLeft = Piece.WHITEPAWN.getDirection()[3];
+				boolean team = Piece.WHITEPAWN.getTeam();
+				
+				resultMatrix=searchPawnCaseAccess(c, cTest, resultMatrix, classicDirection, twoCasesDirection, iRight, iLeft, team);
+			}
+			
+			break;
+			
+		case 7: //case BLACKPAWN
+			
+			if(!(this.getTurn())) {
+				
+				byte[] classicDirection = Piece.BLACKPAWN.getDirection()[0];
+				byte[] twoCasesDirection = Piece.BLACKPAWN.getDirection()[1];
+				byte[] iRight = Piece.BLACKPAWN.getDirection()[2];
+				byte[] iLeft = Piece.BLACKPAWN.getDirection()[3];
+				boolean team = Piece.BLACKPAWN.getTeam();
+				
+				resultMatrix=searchPawnCaseAccess(c, cTest, resultMatrix, classicDirection, twoCasesDirection, iRight, iLeft, team);
+			}
+			
+			break;
+			
+		case 8: //case BLACKROOK
+			
+			if (!(this.getTurn())) { 								
+				
+				limit = Piece.BLACKROOK.getLimit();
+				
+				byte[][] direction = Piece.BLACKROOK.getDirection();
+				nbDirection = Piece.BLACKROOK.getDirection().length;
+				boolean team = Piece.BLACKROOK.getTeam();
+				
+				resultMatrix=searchCaseAccess(c,cTest,resultMatrix,limit,direction,nbDirection,team);
+			}
+			break;
+			
+		case 9: //case BLACKKNIGHT
+			
+			if (!(this.getTurn())) { 								
+				
+				limit = Piece.BLACKKNIGHT.getLimit();
+				
+				byte[][] direction = Piece.BLACKKNIGHT.getDirection();
+				nbDirection = Piece.BLACKKNIGHT.getDirection().length;
+				boolean team = Piece.BLACKKNIGHT.getTeam();
+				
+				resultMatrix=searchCaseAccess(c,cTest,resultMatrix,limit,direction,nbDirection,team);
+			}
+			break;
+		
+		case 10: //case BLACKBISHOP
+			
+			if (!(this.getTurn())) { 								
+				
+				limit = Piece.BLACKBISHOP.getLimit();
+				
+				byte[][] direction = Piece.BLACKBISHOP.getDirection();
+				nbDirection = Piece.BLACKBISHOP.getDirection().length;
+				boolean team = Piece.BLACKBISHOP.getTeam();
+				
+				resultMatrix=searchCaseAccess(c,cTest,resultMatrix,limit,direction,nbDirection,team);
+			}
+			break;
+			
+		case 11: //case BLACKQUEEN
+			
+			if (!(this.getTurn())) { 								
+				
+				limit = Piece.BLACKQUEEN.getLimit();
+				
+				byte[][] direction = Piece.BLACKQUEEN.getDirection();
+				nbDirection = Piece.BLACKQUEEN.getDirection().length;
+				boolean team = Piece.BLACKQUEEN.getTeam();
+				
+				resultMatrix=searchCaseAccess(c,cTest,resultMatrix,limit,direction,nbDirection,team);
+			}
+			break;
+			
+		case 12: //case BLACKKING
+			
+			if (!(this.getTurn())) { 								
+				
+				limit = Piece.BLACKKING.getLimit();
+				
+				byte[][] direction = Piece.BLACKKING.getDirection();
+				nbDirection = Piece.BLACKKING.getDirection().length;
+				boolean team = Piece.BLACKKING.getTeam();
+				
+				resultMatrix=searchCaseAccess(c,cTest,resultMatrix,limit,direction,nbDirection,team);
+				
+				if(! (this.isChecked()) ) {
+					
+					if (this.getBlackCastle()) {
+						if (this.isControlled()) {
+							//en l'attente des defs cases d'Alexis
+						}
+					} else if (this.getBlackCastleLong()) {
+						if (this.isControlled()) {
+							//en l'attente des defs cases d'Alexis
+						}
+					}
+				}
+			}
+			break;
+		}
+		displayCaseAccess(resultMatrix);
+		return resultMatrix;
 	}
 	
+	private byte[][] searchCaseAccess(Coordinate c, Coordinate cTest, byte[][] resultMatrix, int limit, byte[][] direction, int nbDirection, boolean team) {
+		
+		for(int j=0;j<nbDirection;j++) {
+			int step=0; 			  //corresponds to the advance of a piece in one direction at a certain time
+			boolean keepgoing = true; //check if the next cases could be accessible
+			byte[] currentDirection = direction[j];
+			byte deltaX = currentDirection[0];
+			byte deltaY = currentDirection[1];
+			int y = c.getCol() + deltaY;
+			int x = c.getRow() + deltaX;
+			cTest.setCol((byte)y);
+			cTest.setRow((byte)x);
+			
+			while(step<limit && keepgoing && isOnChessboard(cTest)) {
+				
+				x = x + deltaX;
+				y = y + deltaY;
+				
+				cTest.setRow((byte)x);
+				cTest.setCol((byte)y);
+			
+				switch(this.getPosCase(cTest)) {
+				case 0:					 //empty case
+					resultMatrix[cTest.getRow()][cTest.getCol()]=testAdd(this, c, cTest, false);
+					break;
+				case 7,8,9,10,11,12:     
+					if (team) { //enemy piece for white player
+						resultMatrix[cTest.getRow()][cTest.getCol()]=testAdd(this, c, cTest, true);
+					} else { 	//allied piece for white player
+						resultMatrix[cTest.getRow()][cTest.getCol()]=testAdd(this, c, cTest, false);
+					}
+					keepgoing=false;
+					break;
+				case 1,2,3,4,5,6:		 
+					if (team) { //allied piece for white player
+						resultMatrix[cTest.getRow()][cTest.getCol()]=testAdd(this, c, cTest, false);
+					} else { 	//enemy piece for white player
+						resultMatrix[cTest.getRow()][cTest.getCol()]=testAdd(this, c, cTest, true);
+					}
+					keepgoing=false;
+					break;
+				}
+				step++;
+			}
+		}
+		return resultMatrix;
+	}
+	
+	private byte[][] searchPawnCaseAccess(Coordinate c, Coordinate cTest, byte[][] resultMatrix, byte[] classicDirection, byte[] twoCasesDirection, byte[] iRight, byte[] iLeft, boolean team) {
+	
+		byte twoCasesRow;
+		Coordinate cTest2;
+		byte enPassantRow;
+		
+		if (team) {
+			twoCasesRow=6;
+			enPassantRow=3;
+		} else {
+			twoCasesRow=1;
+			enPassantRow=4;
+		}
+		
+		if (c.getRow()!=1 && c.getRow()!=6) { //case classic move
+			
+			int a = c.getRow() + classicDirection[0];
+			int b = c.getCol() + classicDirection[1];
+			
+			cTest.setRow((byte)a);
+			cTest.setCol((byte)b);
+			
+			if(this.getPosCase(cTest)==0) {			 //empty case
+				resultMatrix[cTest.getRow()][cTest.getCol()]=1;//testAdd(this, c, cTest, false);
+			} //there is no else because whatever it's a allied or enemy piece, the pawn cannot move forward
+				// so resultMatrix in cTest stays to 0
+				
+		} else if (c.getRow()==twoCasesRow) {
+			
+			//case move 2 cases 
+			int a = c.getRow() + twoCasesDirection[0];
+			int b = c.getCol() + twoCasesDirection[1];
+			
+			if(team) {
+				cTest2 = new Coordinate((byte)(a+1),(byte)b);
+			} else {
+				cTest2 = new Coordinate((byte)(a-1),(byte)b);
+			}
+			
+			cTest.setCol((byte)b);
+			cTest.setRow((byte)a);
+			
+			if(this.getPosCase(cTest2)==0) {
+				resultMatrix[cTest2.getRow()][cTest2.getCol()]=testAdd(this, c, cTest2, false);
+				//if (true) {//if(testAdd(this, c, cTest2, false)==1) {
+					if(this.getPosCase(cTest)==0) {
+						resultMatrix[cTest.getRow()][cTest.getCol()]=testAdd(this, c, cTest2, false);
+					}
+				//}
+			} //there is no else because whatever it's a allied or enemy piece, the pawn cannot move forward
+			  // so resultMatrix in cTest stays to 0
+		}
+		
+		//case pawn take
+		
+		int a = c.getRow() + iRight[0];
+		int b = c.getCol() + iRight[1];
+		
+		cTest.setRow((byte)a);
+		cTest.setCol((byte)b);
+		
+		Coordinate accessEnPassant = this.getEnPassant();
+		
+		if(isOnChessboard(cTest)) {
+			switch(this.getPosCase(cTest)) {
+			case 7,8,9,10,11,12:     
+				if (team) { //enemy piece for white player
+					resultMatrix[cTest.getRow()][cTest.getCol()]=testAdd(this, c, cTest, true);
+				} else { 	//allied piece for white player
+					resultMatrix[cTest.getRow()][cTest.getCol()]=testAdd(this, c, cTest, false);
+				}
+				break;
+			case 1,2,3,4,5,6:		 
+				if (team) { //allied piece for white player
+					resultMatrix[cTest.getRow()][cTest.getCol()]=testAdd(this, c, cTest, false);
+				} else { 	//enemy piece for white player
+					resultMatrix[cTest.getRow()][cTest.getCol()]=testAdd(this, c, cTest, true);
+				}
+				break;
+			}
+			if(accessEnPassant.equals(cTest) && c.getRow()==enPassantRow) { //case prise en passant
+				resultMatrix[accessEnPassant.getRow()][accessEnPassant.getCol()]=testAdd(this,c,cTest,true);
+			}
+		}
+		
+		a = c.getRow() + iLeft[0];
+		b = c.getCol() + iLeft[1];
+		
+		cTest.setRow((byte)a);
+		cTest.setCol((byte)b);
+		
+		if(isOnChessboard(cTest)) {
+			switch(this.getPosCase(cTest)) {
+			case 7,8,9,10,11,12:     
+				if (team) { //enemy piece for white player
+					resultMatrix[cTest.getRow()][cTest.getCol()]=testAdd(this, c, cTest, true);
+				} else { 	//allied piece for white player
+					resultMatrix[cTest.getRow()][cTest.getCol()]=testAdd(this, c, cTest, false);
+				}
+				break;
+			case 1,2,3,4,5,6:		 
+				if (team) { //allied piece for white player
+					resultMatrix[cTest.getRow()][cTest.getCol()]=testAdd(this, c, cTest, false);
+				} else { 	//enemy piece for white player
+					resultMatrix[cTest.getRow()][cTest.getCol()]=testAdd(this, c, cTest, true);
+				}
+				break;
+			}
+			if(accessEnPassant.equals(cTest) && c.getRow()==enPassantRow) { //case prise en passant
+				resultMatrix[accessEnPassant.getRow()][accessEnPassant.getCol()]=testAdd(this,c,cTest,true);
+			}
+		}
+		return resultMatrix;
+	}
+	
+	private void displayCaseAccess(byte[][] resultMatrix) {
+		String test="";
+		for(int i=0; i<resultMatrix.length; i++) {
+			for(int j=0;j<resultMatrix[i].length;j++) {
+				test = test + resultMatrix[i][j] + " ";
+			}
+			test = test + "\n";
+		}
+		System.out.println(test);
+	}
+	
+	private boolean isOnChessboard(Coordinate c) { //check if the case is on chessboard
+		boolean onChessboard=true;
+		byte a=c.getRow();
+		byte b=c.getCol();
+		if(a<(byte)8 && a>(byte)-1) {
+			if(b<(byte)8 && b>(byte)-1) {
+				onChessboard = true;
+			} else { onChessboard = false; }
+		} else { onChessboard = false; }
+		
+		return onChessboard;
+	}
+
 	public void movePiece(Coordinate c1, Coordinate c2) {
 		byte piece = this.getPosCase(c1);
-		this.setPosCase(c1, (byte)0);
+		this.setPosCase(c1,(byte)0);
 		this.setPosCase(c2, piece);
 	}
 	
+	public boolean isChecked() {
+		return true;
+	}
+	
+	public boolean isControlled() {
+		return true;
+	}
+	
 	public byte testAdd(Position p, Coordinate c1, Coordinate c2, boolean b) {
-		return 0;
+		return 1;
 	}
 	
 	public String toString() {
@@ -128,48 +542,42 @@ public class Position {
 	        		chessboard = chessboard + "|   ";
 	        		break;
 	        	case 1:
-	        		chessboard = chessboard + "| \u265C ";
-	        		break;
-	        	case 2:
-	        		chessboard = chessboard + "| \u265E ";
-	        		break;
-	        	case 3:
-	        		chessboard = chessboard + "| \u265D ";
-	        		break;
-	        	case 4:
-	        		chessboard = chessboard + "| \u265B ";
-	        		break;
-	        	case 5:
-	        		chessboard = chessboard + "| \u265A ";
-	        		break;
-	        	case 6:
-	        		chessboard = chessboard + "| \u265F ";
-	        		break;
-	        	case 7:
-	        		chessboard = chessboard + "| \u2659 ";
-	        		break;
-	        	case 8:
 	        		chessboard = chessboard + "| \u2656 ";
 	        		break;
-	        	case 9:
+	        	case 2:
 	        		chessboard = chessboard + "| \u2658 ";
 	        		break;
-	        	case 10:
+	        	case 3:
 	        		chessboard = chessboard + "| \u2657 ";
 	        		break;
-	        	case 11:
+	        	case 4:
 	        		chessboard = chessboard + "| \u2655 ";
 	        		break;
-	        	case 12:
+	        	case 5:
 	        		chessboard = chessboard + "| \u2654 ";
 	        		break;
+	        	case 6:
+	        		chessboard = chessboard + "| \u2659 ";
+	        		break;	
+	        	case 7:
+	        		chessboard = chessboard + "| \u265F ";
+	        		break;
+	        	case 8:
+	        		chessboard = chessboard + "| \u265C ";
+	        		break;
+	        	case 9:
+	        		chessboard = chessboard + "| \u265E ";
+	        		break;
+	        	case 10:
+	        		chessboard = chessboard + "| \u265D ";
+	        		break;
+	        	case 11:
+	        		chessboard = chessboard + "| \u265B ";
+	        		break;
+	        	case 12:
+	        		chessboard = chessboard + "| \u265A ";
+	        		break;
 	        	}
-	        	
-	        	/*if (this.getPosCase(new Coordinate(i,j)) < 10) {
-	        		chessboard = chessboard +"| " + this.getPosCase(new Coordinate(i,j)) + " ";
-	        	} else {
-	        		chessboard = chessboard +"| " + this.getPosCase(new Coordinate(i,j));
-	        	}*/
 	        }
 	        chessboard = chessboard + "|\n";
 	    }
