@@ -722,14 +722,6 @@ public class Position {
 		this.setPosCase(c2, piece);
 	}
 	
-	public boolean isChecked() {
-		return true;
-	}
-	
-	public boolean isControlled() {
-		return true;
-	}
-	
 	public byte testAdd(Position p, Coordinate c1, Coordinate c2, boolean b) {
 		return 1;
 	}
