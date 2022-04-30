@@ -1,4 +1,4 @@
-public class Position implements Cloneable{
+public class Position{
 	
 	private final Coordinate a1 = new Coordinate("a1");
 	private final Coordinate a8 = new Coordinate("a8");
@@ -812,9 +812,9 @@ public class Position implements Cloneable{
 	}
 	
 	public byte testAdd(Coordinate c1, Coordinate c2, boolean take){
-		Position positionTMP = this.clone();
+		Position positionTMP = this.badcopy();
 		positionTMP.pseudoPlayMove(c1,c2);
-		if(positionTMP.isCheck()){
+		if(positionTMP.isChecked()){
 			return 0;
 		}
 		else{
@@ -893,4 +893,20 @@ public class Position implements Cloneable{
 	    chessboard = chessboard + "enPassant       : " + this.getEnPassant() + "\n";
 	    return chessboard;
 	}
+	
+	//I have no idea if the methode clone is working for now
+	public Position badcopy(){
+		Position badclone = new Position();
+		badclone.setPos(this.getPos());
+		badclone.setTurn(this.getTurn());
+		
+		//à priori tout ces setter sont turbo useless puisqu'on utilise tout ça uniquement dans test add ... faudrai faire des test pour voir s'il y en a vraiment besion histoie de gagner du COMPUTATION TIME
+		badclone.setBlackCastle(this.getBlackCastleLong());
+		badclone.setBlackCastleLong(this.getBlackCastleLong());
+		badclone.setWhiteCastle(this.getWhiteCastle());
+		badclone.setWhiteCastleLong(this.getWhiteCastleLong());
+		badclone.setEnPassant(this.getEnPassant());
+		
+        return badclone;
+    }
 }
