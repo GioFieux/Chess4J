@@ -1,4 +1,4 @@
-public class Position {
+public class Position implements Cloneable{
 	
 	private final Coordinate a1 = new Coordinate("a1");
 	private final Coordinate a8 = new Coordinate("a8");
@@ -811,8 +811,20 @@ public class Position {
 		this.setPosCase(c2, piece);
 	}
 	
-	public byte testAdd(Position p, Coordinate c1, Coordinate c2, boolean b) {
-		return 1;
+	public byte testAdd(Coordinate c1, Coordinate c2, boolean take){
+		Position positionTMP = this.clone();
+		positionTMP.pseudoPlayMove(c1,c2);
+		if(positionTMP.isCheck()){
+			return 0;
+		}
+		else{
+			if(take){
+				return 2;
+			}
+			else{
+				return 1;
+			}
+		}
 	}
 	
 	public String toString() {
