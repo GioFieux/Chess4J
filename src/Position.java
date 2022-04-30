@@ -1,5 +1,10 @@
 public class Position {
 	
+	private final Coordinate a1 = new Coordinate("a1");
+	private final Coordinate a8 = new Coordinate("a8");
+	private final Coordinate h1 = new Coordinate("h1");
+	private final Coordinate h8 = new Coordinate("h8");
+	
 	private byte[][] pos = {
 		{Piece.BLACKROOK.getId(),Piece.BLACKKNIGHT.getId(),Piece.BLACKBISHOP.getId(),Piece.BLACKQUEEN.getId(),Piece.BLACKKING.getId(),Piece.BLACKBISHOP.getId(),Piece.BLACKKNIGHT.getId(),Piece.BLACKROOK.getId()},
 		{Piece.BLACKPAWN.getId(),Piece.BLACKPAWN.getId(),Piece.BLACKPAWN.getId(),Piece.BLACKPAWN.getId(),Piece.BLACKPAWN.getId(),Piece.BLACKPAWN.getId(),Piece.BLACKPAWN.getId(),Piece.BLACKPAWN.getId()},
@@ -101,8 +106,80 @@ public class Position {
 		g.setPGN(g.getPGN() + " Promotion en : " + p.name());
 	}
 	
-	private void pseudoPlayMove(Coordinate c1, Coordinate c2) {
+	private void pseudoPlayMove(Coordinate c1, Coordinate c2){
 		
+		this.setEnPassant(null);
+		
+		switch(this.getPosCase(c1)){
+			case WHITEROOK.id:
+				if(c1.equals(a1)){
+					this.setWhiteCastleLong(false);
+				}
+				if(c1.equals(h1)){
+					this.setWhiteCastle(false);
+				}
+			case BLACKROOK.id:
+				if(c1.equals(a8)){
+					this.setBlackCastleLong(false);
+				}
+				if(c1.equals(h8)){
+					this.setBlackCastle(false);
+				}
+			case WHITEKNIGHT.id:
+			case BLACKKNIGHT.id:
+			case WHITEBISHOP;id:
+			case BLACKBISHOP.id:
+			case WHITEQUEEN;id:
+			case BLACKQUEEN.id:
+				movePiece(c1,c2);
+				break;
+				
+				
+				
+			case WHITEKING.id:
+				this.setWhiteCastleLong(false);
+				this.setWhiteCastle(false);
+				if( abs( c1.getCol() -  c2.getCol() ) == 2){			//traduit la condition d'un roque
+					if( c2.getCol() == 2){
+						movePiece(new Case("a1"),new Case("d1");
+					}
+					if( c2.getCol() == 6){
+						movePiece(new Case("h1"),new Case("f1");
+					}
+				}
+				movePiece(c1,c2);
+				
+			case BLACKKING.id:
+				this.setBlackCastleLong(false);
+				this.setBlackCastle(false);
+				if( abs( c1.getCol() -  c2.getCol() ) == 2){			//traduit la condition d'un roque
+					if( c2.getCol() == 2){
+						movePiece(new Case("a8"),new Case("d8");
+					}
+					if( c2.getCol() == 6){
+						movePiece(new Case("h8"),new Case("f8");
+					}
+				}
+				movePiece(c1,c2);
+			
+			
+			
+			case BLACKPAWN.id:
+			case WHITEPAWN.id:
+				if( not( c1.getCol() == c2.getCol() ) && c2.getPosCase() == 0){					//traduit une condition de prise en passant (en chagnement de colonne sur une case vide)
+					Coordinate ct = new Coordinate(c1.getRow(), c2.getCol());
+					movePiece(c1,ct);
+					movePiece(ct,c2);
+				}
+				else{																					//pour tout le reste, déplacement normal, prise et aussi promotion)
+					movePiece(c1,c2);
+				}
+				if( abs( c1.getRow() - c2.getRow() == 2){
+					this.setEnPassant(new Coordinate( (c1.getRow()+c2.getRow())/2,c1.getCol());				//si un déplacement de pion de 2 case : alors une prsie en passant est possible
+				}
+				
+			
+		}
 	}
 	
 	public byte[][] caseAccess(Coordinate c) {
