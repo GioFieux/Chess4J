@@ -111,62 +111,62 @@ public class Position {
 		this.setEnPassant(null);
 		
 		switch(this.getPosCase(c1)){
-			case WHITEROOK.id:
+			case 1: //WHITEROOK
 				if(c1.equals(a1)){
 					this.setWhiteCastleLong(false);
 				}
 				if(c1.equals(h1)){
 					this.setWhiteCastle(false);
 				}
-			case BLACKROOK.id:
+			case 8: //BLACKROOK
 				if(c1.equals(a8)){
 					this.setBlackCastleLong(false);
 				}
 				if(c1.equals(h8)){
 					this.setBlackCastle(false);
 				}
-			case WHITEKNIGHT.id:
-			case BLACKKNIGHT.id:
-			case WHITEBISHOP;id:
-			case BLACKBISHOP.id:
-			case WHITEQUEEN;id:
-			case BLACKQUEEN.id:
+			case 2: //WHITEKNIGHT.id:
+			case 9: //BLACKKNIGHT.id:
+			case 3: //WHITEBISHOP;id:
+			case 10: //BLACKBISHOP.id:
+			case 4: //WHITEQUEEN;id:
+			case 11: //BLACKQUEEN.id:
 				movePiece(c1,c2);
 				break;
 				
 				
 				
-			case WHITEKING.id:
+			case 5: //WHITEKING.id:
 				this.setWhiteCastleLong(false);
 				this.setWhiteCastle(false);
-				if( abs( c1.getCol() -  c2.getCol() ) == 2){			//traduit la condition d'un roque
+				if( Math.abs( c1.getCol() -  c2.getCol() ) == 2){			//traduit la condition d'un roque
 					if( c2.getCol() == 2){
-						movePiece(new Case("a1"),new Case("d1");
+						movePiece(new Coordinate("a1"),new Coordinate("d1"));
 					}
 					if( c2.getCol() == 6){
-						movePiece(new Case("h1"),new Case("f1");
+						movePiece(new Coordinate("h1"),new Coordinate("f1"));
 					}
 				}
 				movePiece(c1,c2);
 				
-			case BLACKKING.id:
+			case 12: //BLACKKING.id:
 				this.setBlackCastleLong(false);
 				this.setBlackCastle(false);
-				if( abs( c1.getCol() -  c2.getCol() ) == 2){			//traduit la condition d'un roque
+				if( Math.abs( c1.getCol() -  c2.getCol() ) == 2){			//traduit la condition d'un roque
 					if( c2.getCol() == 2){
-						movePiece(new Case("a8"),new Case("d8");
+						movePiece(new Coordinate("a8"),new Coordinate("d8"));
 					}
 					if( c2.getCol() == 6){
-						movePiece(new Case("h8"),new Case("f8");
+						movePiece(new Coordinate("h8"),new Coordinate("f8"));
 					}
 				}
 				movePiece(c1,c2);
 			
 			
 			
-			case BLACKPAWN.id:
-			case WHITEPAWN.id:
-				if( not( c1.getCol() == c2.getCol() ) && c2.getPosCase() == 0){					//traduit une condition de prise en passant (en chagnement de colonne sur une case vide)
+			case 6: //WHITEPAWN.id:
+			case 7: //BalckEPAWN.id:
+				if( !( c1.getCol() == c2.getCol() ) && this.getPosCase(c2) == 0){		//traduit une condition de prise en passant (en chagnement de colonne sur une case vide)
 					Coordinate ct = new Coordinate(c1.getRow(), c2.getCol());
 					movePiece(c1,ct);
 					movePiece(ct,c2);
@@ -174,8 +174,8 @@ public class Position {
 				else{																					//pour tout le reste, déplacement normal, prise et aussi promotion)
 					movePiece(c1,c2);
 				}
-				if( abs( c1.getRow() - c2.getRow() == 2){
-					this.setEnPassant(new Coordinate( (c1.getRow()+c2.getRow())/2,c1.getCol());				//si un déplacement de pion de 2 case : alors une prsie en passant est possible
+				if( Math.abs( c1.getRow() - c2.getRow()) == 2) {
+					this.setEnPassant(new Coordinate( (byte) ( (c1.getRow()+c2.getRow())/2),c1.getCol()));				//si un déplacement de pion de 2 case : alors une prsie en passant est possible
 				}
 				
 			
