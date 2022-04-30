@@ -92,7 +92,19 @@ public class Position {
 	}
 	
 	public void playMove(Coordinate c1, Coordinate c2, Game g) {
-		this.setTurn(!(this.getTurn()));
+		byte[][] tmp = caseAccess(c1);
+
+		if (tmp[c2.getRow()][c2.getCol()] > 0) {
+			//pseudoPlayMove(c1,c2)
+			movePiece(c1, c2); 	
+			//UpdateTimePGN
+			System.out.println("Move done");
+			this.setTurn(!(this.getTurn()));
+		} else { 
+			throw new RuntimeException();
+		}
+
+       		System.out.println("tmp = "+Arrays.deepToString(tmp));
 	}
 	
 	public void playMove(Coordinate c1, Coordinate c2, Game g, Piece p) {
