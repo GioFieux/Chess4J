@@ -1,9 +1,19 @@
+import java.util.Arrays;
+
 public class Position{
 	
 	private final Coordinate a1 = new Coordinate("a1");
 	private final Coordinate a8 = new Coordinate("a8");
 	private final Coordinate h1 = new Coordinate("h1");
 	private final Coordinate h8 = new Coordinate("h8");
+	private final Coordinate c1 = new Coordinate("c1");
+	private final Coordinate d1 = new Coordinate("d1");
+	private final Coordinate f1 = new Coordinate("f1");
+	private final Coordinate g1 = new Coordinate("g1");
+	private final Coordinate c8 = new Coordinate("c8");
+	private final Coordinate d8 = new Coordinate("d8");
+	private final Coordinate f8 = new Coordinate("f8");
+	private final Coordinate g8 = new Coordinate("g8");
 	
 	private byte[][] pos = {
 		{Piece.BLACKROOK.getId(),Piece.BLACKKNIGHT.getId(),Piece.BLACKBISHOP.getId(),Piece.BLACKQUEEN.getId(),Piece.BLACKKING.getId(),Piece.BLACKBISHOP.getId(),Piece.BLACKKNIGHT.getId(),Piece.BLACKROOK.getId()},
@@ -283,12 +293,12 @@ public class Position{
 				if(! (this.isChecked()) ) {
 					
 					if (this.getWhiteCastle()) {
-						if (this.isControlled()) {
-							//en l'attente des defs cases d'Alexis
+						if (this.isControlled(f1)&& this.isControlled(g1)) {
+							resultMatrix[g1.getRow()][g1.getCol()]=1;
 						}
 					} else if (this.getWhiteCastleLong()) {
-						if (this.isControlled()) {
-							//en l'attente des defs cases d'Alexis
+						if (this.isControlled(c1)&& this.isControlled(d1)) {
+							resultMatrix[c1.getRow()][c1.getCol()]=1;
 						}
 					}
 				}
@@ -396,12 +406,12 @@ public class Position{
 				if(! (this.isChecked()) ) {
 					
 					if (this.getBlackCastle()) {
-						if (this.isControlled()) {
-							//en l'attente des defs cases d'Alexis
+						if (this.isControlled(f8)&& this.isControlled(g8)) {
+							resultMatrix[g8.getRow()][g8.getCol()]=1;
 						}
 					} else if (this.getBlackCastleLong()) {
-						if (this.isControlled()) {
-							//en l'attente des defs cases d'Alexis
+						if (this.isControlled(c8)&& this.isControlled(d8)) {
+							resultMatrix[c8.getRow()][c8.getCol()]=1;
 						}
 					}
 				}
@@ -435,21 +445,21 @@ public class Position{
 			
 				switch(this.getPosCase(cTest)) {
 				case 0:					 //empty case
-					resultMatrix[cTest.getRow()][cTest.getCol()]=testAdd(this, c, cTest, false);
+					resultMatrix[cTest.getRow()][cTest.getCol()]=this.testAdd(c, cTest, false);
 					break;
 				case 7,8,9,10,11,12:     
 					if (team) { //enemy piece for white player
-						resultMatrix[cTest.getRow()][cTest.getCol()]=testAdd(this, c, cTest, true);
+						resultMatrix[cTest.getRow()][cTest.getCol()]=this.testAdd(c, cTest, true);
 					} else { 	//allied piece for white player
-						resultMatrix[cTest.getRow()][cTest.getCol()]=testAdd(this, c, cTest, false);
+						resultMatrix[cTest.getRow()][cTest.getCol()]=this.testAdd(c, cTest, false);
 					}
 					keepgoing=false;
 					break;
 				case 1,2,3,4,5,6:		 
 					if (team) { //allied piece for white player
-						resultMatrix[cTest.getRow()][cTest.getCol()]=testAdd(this, c, cTest, false);
+						resultMatrix[cTest.getRow()][cTest.getCol()]=this.testAdd(c, cTest, false);
 					} else { 	//enemy piece for white player
-						resultMatrix[cTest.getRow()][cTest.getCol()]=testAdd(this, c, cTest, true);
+						resultMatrix[cTest.getRow()][cTest.getCol()]=this.testAdd(c, cTest, true);
 					}
 					keepgoing=false;
 					break;
@@ -503,10 +513,10 @@ public class Position{
 			cTest.setRow((byte)a);
 			
 			if(this.getPosCase(cTest2)==0) {
-				resultMatrix[cTest2.getRow()][cTest2.getCol()]=testAdd(this, c, cTest2, false);
+				resultMatrix[cTest2.getRow()][cTest2.getCol()]=this.testAdd(c, cTest2, false);
 				//if (true) {//if(testAdd(this, c, cTest2, false)==1) {
 					if(this.getPosCase(cTest)==0) {
-						resultMatrix[cTest.getRow()][cTest.getCol()]=testAdd(this, c, cTest2, false);
+						resultMatrix[cTest.getRow()][cTest.getCol()]=this.testAdd(c, cTest2, false);
 					}
 				//}
 			} //there is no else because whatever it's a allied or enemy piece, the pawn cannot move forward
@@ -527,21 +537,21 @@ public class Position{
 			switch(this.getPosCase(cTest)) {
 			case 7,8,9,10,11,12:     
 				if (team) { //enemy piece for white player
-					resultMatrix[cTest.getRow()][cTest.getCol()]=testAdd(this, c, cTest, true);
+					resultMatrix[cTest.getRow()][cTest.getCol()]=this.testAdd(c, cTest, true);
 				} else { 	//allied piece for white player
-					resultMatrix[cTest.getRow()][cTest.getCol()]=testAdd(this, c, cTest, false);
+					resultMatrix[cTest.getRow()][cTest.getCol()]=this.testAdd(c, cTest, false);
 				}
 				break;
 			case 1,2,3,4,5,6:		 
 				if (team) { //allied piece for white player
-					resultMatrix[cTest.getRow()][cTest.getCol()]=testAdd(this, c, cTest, false);
+					resultMatrix[cTest.getRow()][cTest.getCol()]=this.testAdd(c, cTest, false);
 				} else { 	//enemy piece for white player
-					resultMatrix[cTest.getRow()][cTest.getCol()]=testAdd(this, c, cTest, true);
+					resultMatrix[cTest.getRow()][cTest.getCol()]=this.testAdd(c, cTest, true);
 				}
 				break;
 			}
 			if(accessEnPassant.equals(cTest) && c.getRow()==enPassantRow) { //case prise en passant
-				resultMatrix[accessEnPassant.getRow()][accessEnPassant.getCol()]=testAdd(this,c,cTest,true);
+				resultMatrix[accessEnPassant.getRow()][accessEnPassant.getCol()]=this.testAdd(c,cTest,true);
 			}
 		}
 		
@@ -555,21 +565,21 @@ public class Position{
 			switch(this.getPosCase(cTest)) {
 			case 7,8,9,10,11,12:     
 				if (team) { //enemy piece for white player
-					resultMatrix[cTest.getRow()][cTest.getCol()]=testAdd(this, c, cTest, true);
+					resultMatrix[cTest.getRow()][cTest.getCol()]=this.testAdd(c, cTest, true);
 				} else { 	//allied piece for white player
-					resultMatrix[cTest.getRow()][cTest.getCol()]=testAdd(this, c, cTest, false);
+					resultMatrix[cTest.getRow()][cTest.getCol()]=this.testAdd(c, cTest, false);
 				}
 				break;
 			case 1,2,3,4,5,6:		 
 				if (team) { //allied piece for white player
-					resultMatrix[cTest.getRow()][cTest.getCol()]=testAdd(this, c, cTest, false);
+					resultMatrix[cTest.getRow()][cTest.getCol()]=this.testAdd(c, cTest, false);
 				} else { 	//enemy piece for white player
-					resultMatrix[cTest.getRow()][cTest.getCol()]=testAdd(this, c, cTest, true);
+					resultMatrix[cTest.getRow()][cTest.getCol()]=this.testAdd(c, cTest, true);
 				}
 				break;
 			}
 			if(accessEnPassant.equals(cTest) && c.getRow()==enPassantRow) { //case prise en passant
-				resultMatrix[accessEnPassant.getRow()][accessEnPassant.getCol()]=testAdd(this,c,cTest,true);
+				resultMatrix[accessEnPassant.getRow()][accessEnPassant.getCol()]=this.testAdd(c,cTest,true);
 			}
 		}
 		return resultMatrix;
@@ -602,7 +612,7 @@ public class Position{
 	public boolean isControlled(Coordinate c) {
 		byte l=c.getRow();
 		byte c1=c.getCol();
-		Coordinate casetest;
+		Coordinate casetest = new Coordinate((byte) 0, (byte) 0) ;
 		byte [][] directions;
 		if (this.getTurn()==true){// Player with White Pieces
 			directions=Piece.WHITEROOK.getDirection();
@@ -618,10 +628,10 @@ public class Position{
 						switch (this.getPosCase(casetest)) {
 							case 0 :
 								break;
-							case Piece.WHITEROOK.getId(),Piece.WHITEKNIGHT.getId(),Piece.WHITEBISHOP.getId(),Piece.WHITEQUEEN.getId(),Piece.WHITEKING.getId(),Piece.WHITEPAWN.getId(),Piece.BLACKPAWN.getId(),Piece.BLACKROOK.getId(),Piece.BLACKKNIGHT.getId(),Piece.BLACKBISHOP.getId(),Piece.BLACKKING.getId(): 
+							case 1,2,3,4,5,6,7,9,10,12://Piece.WHITEROOK.getId(),Piece.WHITEKNIGHT.getId(),Piece.WHITEBISHOP.getId(),Piece.WHITEQUEEN.getId(),Piece.WHITEKING.getId(),Piece.WHITEPAWN.getId(),Piece.BLACKPAWN.getId(),Piece.BLACKROOK.getId(),Piece.BLACKKNIGHT.getId(),Piece.BLACKBISHOP.getId(),Piece.BLACKKING.getId(): 
 								keepgoing=false;
 								break;
-							case Piece.BLACKROOK.getId(),Piece.BLACKQUEEN.getId():
+							case 8,11://Piece.BLACKROOK.getId(),Piece.BLACKQUEEN.getId():
 								return true;
 						}
 					}
@@ -637,9 +647,9 @@ public class Position{
 					casetest.setCol((byte) (casetest.getCol()+dy));
 					casetest.setRow((byte) (casetest.getRow()+dx));
 						switch (this.getPosCase(casetest)) {
-							case ((byte) 0),Piece.WHITEROOK.getId(),Piece.WHITEKNIGHT.getId(),Piece.WHITEBISHOP.getId(),Piece.WHITEQUEEN.getId(),Piece.WHITEKING.getId(),Piece.WHITEPAWN.getId(),Piece.BLACKPAWN.getId(),Piece.BLACKROOK.getId(),Piece.BLACKKNIGHT.getId(),Piece.BLACKKING.getId() :
+							case 0,1,2,3,4,5,6,7,8,9,12: //Piece.WHITEROOK.getId(),Piece.WHITEKNIGHT.getId(),Piece.WHITEBISHOP.getId(),Piece.WHITEQUEEN.getId(),Piece.WHITEKING.getId(),Piece.WHITEPAWN.getId(),Piece.BLACKPAWN.getId(),Piece.BLACKROOK.getId(),Piece.BLACKKNIGHT.getId(),Piece.BLACKKING.getId() :
 								break;
-							case Piece.BLACKQUEEN.getId(),Piece.BLACKBISHOP.getId():
+							case  10,11://Piece.BLACKQUEEN.getId(),Piece.BLACKBISHOP.getId():
 								return true;
 						}
 					}
@@ -655,9 +665,9 @@ public class Position{
 					casetest.setCol((byte) (casetest.getCol()+dy));
 					casetest.setRow((byte) (casetest.getRow()+dx));
 						switch (this.getPosCase(casetest)) {
-							case ((byte) 0),Piece.WHITEROOK.getId(),Piece.WHITEKNIGHT.getId(),Piece.WHITEBISHOP.getId(),Piece.WHITEQUEEN.getId(),Piece.WHITEKING.getId(),Piece.WHITEPAWN.getId(),Piece.BLACKPAWN.getId(),Piece.BLACKROOK.getId(),Piece.BLACKBISHOP.getId(),Piece.BLACKQUEEN.getId(),Piece.BLACKKING.getId() :
+							case 0,1,2,3,4,5,6,7,8,10,11,12://Piece.WHITEROOK.getId(),Piece.WHITEKNIGHT.getId(),Piece.WHITEBISHOP.getId(),Piece.WHITEQUEEN.getId(),Piece.WHITEKING.getId(),Piece.WHITEPAWN.getId(),Piece.BLACKPAWN.getId(),Piece.BLACKROOK.getId(),Piece.BLACKBISHOP.getId(),Piece.BLACKQUEEN.getId(),Piece.BLACKKING.getId() :
 								break;
-							case Piece.BLACKKNIGHT.getId():
+							case 9://Piece.BLACKKNIGHT.getId():
 								return true;
 						}
 					}
@@ -680,9 +690,9 @@ public class Position{
 					casetest.setCol((byte) (casetest.getCol()+dy));
 					casetest.setRow((byte) (casetest.getRow()+dx));
 						switch (this.getPosCase(casetest)) {
-							case ((byte) 0),Piece.WHITEROOK.getId(),Piece.WHITEKNIGHT.getId(),Piece.WHITEBISHOP.getId(),Piece.WHITEQUEEN.getId(),Piece.WHITEKING.getId(),Piece.WHITEPAWN.getId(),Piece.BLACKPAWN.getId(),Piece.BLACKROOK.getId(),Piece.BLACKKNIGHT.getId(),Piece.BLACKBISHOP.getId(),Piece.BLACKQUEEN.getId() :
+							case 0,1,2,3,4,5,6,7,8,9,10,11: //Piece.WHITEROOK.getId(),Piece.WHITEKNIGHT.getId(),Piece.WHITEBISHOP.getId(),Piece.WHITEQUEEN.getId(),Piece.WHITEKING.getId(),Piece.WHITEPAWN.getId(),Piece.BLACKPAWN.getId(),Piece.BLACKROOK.getId(),Piece.BLACKKNIGHT.getId(),Piece.BLACKBISHOP.getId(),Piece.BLACKQUEEN.getId() :
 								break;
-							case Piece.BLACKKING.getId():
+							case 12://Piece.BLACKKING.getId():
 								return true;
 						}
 					}
@@ -704,10 +714,10 @@ public class Position{
 						switch (this.getPosCase(casetest)) {
 							case 0 :
 								break;
-							case Piece.WHITEKNIGHT.getId(),Piece.WHITEBISHOP.getId(),Piece.WHITEKING.getId(),Piece.WHITEPAWN.getId(),Piece.BLACKPAWN.getId(),Piece.BLACKROOK.getId(),Piece.BLACKKNIGHT.getId(),Piece.BLACKBISHOP.getId(),Piece.BLACKQUEEN.getId(),Piece.BLACKKING.getId(): 
+							case 2,3,5,6,7,8,9,10,11,12://Piece.WHITEKNIGHT.getId(),Piece.WHITEBISHOP.getId(),Piece.WHITEKING.getId(),Piece.WHITEPAWN.getId(),Piece.BLACKPAWN.getId(),Piece.BLACKROOK.getId(),Piece.BLACKKNIGHT.getId(),Piece.BLACKBISHOP.getId(),Piece.BLACKQUEEN.getId(),Piece.BLACKKING.getId(): 
 								keepgoing=false;
 								break;
-							case Piece.WHITEROOK.getId(),Piece.WHITEQUEEN.getId():
+							case 1,4://Piece.WHITEROOK.getId(),Piece.WHITEQUEEN.getId():
 								return true;
 						}
 					}
@@ -723,9 +733,9 @@ public class Position{
 					casetest.setCol((byte) (casetest.getCol()+dy));
 					casetest.setRow((byte) (casetest.getRow()+dx));
 						switch (this.getPosCase(casetest)) {
-							case ((byte) 0),Piece.WHITEROOK.getId(),Piece.WHITEKNIGHT.getId(),Piece.BLACKBISHOP.getId(),Piece.BLACKQUEEN.getId(),Piece.WHITEKING.getId(),Piece.WHITEPAWN.getId(),Piece.BLACKPAWN.getId(),Piece.BLACKROOK.getId(),Piece.BLACKKNIGHT.getId(),Piece.BLACKKING.getId():
+							case 0,1,2,5,6,7,8,9,10,11,12://Piece.WHITEROOK.getId(),Piece.WHITEKNIGHT.getId(),Piece.BLACKBISHOP.getId(),Piece.BLACKQUEEN.getId(),Piece.WHITEKING.getId(),Piece.WHITEPAWN.getId(),Piece.BLACKPAWN.getId(),Piece.BLACKROOK.getId(),Piece.BLACKKNIGHT.getId(),Piece.BLACKKING.getId():
 								break;
-							case Piece.WHITEBISHOP.getId(),Piece.WHITEQUEEN.getId():
+							case 3,4://Piece.WHITEBISHOP.getId(),Piece.WHITEQUEEN.getId():
 								return true;
 						}
 					}
@@ -741,9 +751,9 @@ public class Position{
 					casetest.setCol((byte) (casetest.getCol()+dy));
 					casetest.setRow((byte) (casetest.getRow()+dx));
 						switch (this.getPosCase(casetest)) {
-							case  ((byte) 0),Piece.WHITEROOK.getId(),Piece.WHITEBISHOP.getId(),Piece.WHITEQUEEN.getId(),Piece.WHITEKING.getId(),Piece.WHITEPAWN.getId(),Piece.BLACKPAWN.getId(),Piece.BLACKROOK.getId(),Piece.BLACKKNIGHT.getId(),Piece.BLACKBISHOP.getId(),Piece.BLACKQUEEN.getId(),Piece.BLACKKING.getId():
+							case  0,1,3,4,5,6,7,8,9,10,11,12://Piece.WHITEROOK.getId(),Piece.WHITEBISHOP.getId(),Piece.WHITEQUEEN.getId(),Piece.WHITEKING.getId(),Piece.WHITEPAWN.getId(),Piece.BLACKPAWN.getId(),Piece.BLACKROOK.getId(),Piece.BLACKKNIGHT.getId(),Piece.BLACKBISHOP.getId(),Piece.BLACKQUEEN.getId(),Piece.BLACKKING.getId():
 								break;
-							case Piece.WHITEKNIGHT.getId():
+							case 2://Piece.WHITEKNIGHT.getId():
 								return true;
 						}
 					}
@@ -766,9 +776,9 @@ public class Position{
 					casetest.setCol((byte) (casetest.getCol()+dy));
 					casetest.setRow((byte) (casetest.getRow()+dx));
 						switch (this.getPosCase(casetest)) {
-							case  ((byte) 0),Piece.WHITEROOK.getId(),Piece.WHITEKNIGHT.getId(),Piece.WHITEBISHOP.getId(),Piece.WHITEQUEEN.getId(),Piece.BLACKKING.getId(),Piece.WHITEPAWN.getId(),Piece.BLACKPAWN.getId(),Piece.BLACKROOK.getId(),Piece.BLACKKNIGHT.getId(),Piece.BLACKBISHOP.getId(),Piece.BLACKQUEEN.getId():
+							case 0,1,2,3,4,6,7,8,9,10,11,12://Piece.WHITEROOK.getId(),Piece.WHITEKNIGHT.getId(),Piece.WHITEBISHOP.getId(),Piece.WHITEQUEEN.getId(),Piece.BLACKKING.getId(),Piece.WHITEPAWN.getId(),Piece.BLACKPAWN.getId(),Piece.BLACKROOK.getId(),Piece.BLACKKNIGHT.getId(),Piece.BLACKBISHOP.getId(),Piece.BLACKQUEEN.getId():
 								break;
-							case Piece.WHITEKING.getId():
+							case 5://Piece.WHITEKING.getId():
 								return true;
 						}
 					}
@@ -894,7 +904,7 @@ public class Position{
 	    return chessboard;
 	}
 	
-	//I have no idea if the methode clone is working for now
+	//I have no idea if the method clone is working for now
 	public Position badcopy(){
 		Position badclone = new Position();
 		badclone.setPos(this.getPos());
