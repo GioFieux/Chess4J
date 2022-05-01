@@ -19,28 +19,28 @@ public class Coordinate {
 		
 		switch(row){
 		case '1':
-			x=0;
+			x=7;
 			break;
 		case '2':
-			x=1;
-			break;
-		case '3':
-			x=2;
-			break;
-		case '4':
-			x=3;
-			break;
-		case '5':
-			x=4;
-			break;
-		case '6':
-			x=5;
-			break;
-		case '7':
 			x=6;
 			break;
+		case '3':
+			x=5;
+			break;
+		case '4':
+			x=4;
+			break;
+		case '5':
+			x=3;
+			break;
+		case '6':
+			x=2;
+			break;
+		case '7':
+			x=1;
+			break;
 		case '8':
-			x=7;
+			x=0;
 			break;
 		}
 		

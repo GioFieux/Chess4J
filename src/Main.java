@@ -11,15 +11,25 @@ public class Main {
 		
 		System.out.println(jeu);
 		
+		//for testing purpose
+		while(true) {
+			System.out.println("Enter a coordinate");
+			
+			String str = sc.nextLine();		
+			Coordinate c1 = new Coordinate(str);
+			
+			System.out.println("co : "+c1.getCol()+c1.getRow());
+			
+		}
 		
+		/*
 		System.out.println("Enter a coordinate");
 		
 		String str = sc.nextLine();		
 		Coordinate c1 = new Coordinate(str);
 		Coordinate c2 = null;
 		
-		// tmp
-		System.out.println(""+c1.getCol()+c1.getCol());
+		
 		
 		while(true){
 			
