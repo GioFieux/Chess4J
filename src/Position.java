@@ -430,39 +430,40 @@ public class Position{
 			byte[] currentDirection = direction[j];
 			byte deltaX = currentDirection[0];
 			byte deltaY = currentDirection[1];
-			int y = c.getCol() + deltaY;
-			int x = c.getRow() + deltaX;
+			int y = c.getCol();
+			int x = c.getRow();
 			cTest.setCol((byte)y);
 			cTest.setRow((byte)x);
 			
-			while(step<limit && keepgoing && isOnChessboard(cTest)) {
+			while(step<limit && keepgoing) {
 				
 				x = x + deltaX;
 				y = y + deltaY;
 				
 				cTest.setRow((byte)x);
 				cTest.setCol((byte)y);
-			
-				switch(this.getPosCase(cTest)) {
-				case 0:					 //empty case
-					resultMatrix[cTest.getRow()][cTest.getCol()]=this.testAdd(c, cTest, false);
-					break;
-				case 7,8,9,10,11,12:     
-					if (team) { //enemy piece for white player
-						resultMatrix[cTest.getRow()][cTest.getCol()]=this.testAdd(c, cTest, true);
-					} else { 	//allied piece for white player
+				if(isOnChessboard(cTest)) {
+					switch(this.getPosCase(cTest)) {
+					case 0:					 //empty case
 						resultMatrix[cTest.getRow()][cTest.getCol()]=this.testAdd(c, cTest, false);
+						break;
+					case 7,8,9,10,11,12:     
+						if (team) { //enemy piece for white player
+							resultMatrix[cTest.getRow()][cTest.getCol()]=this.testAdd(c, cTest, true);
+						} else { 	//allied piece for white player
+							resultMatrix[cTest.getRow()][cTest.getCol()]=this.testAdd(c, cTest, false);
+						}
+						keepgoing=false;
+						break;
+					case 1,2,3,4,5,6:		 
+						if (team) { //allied piece for white player
+							resultMatrix[cTest.getRow()][cTest.getCol()]=this.testAdd(c, cTest, false);
+						} else { 	//enemy piece for white player
+							resultMatrix[cTest.getRow()][cTest.getCol()]=this.testAdd(c, cTest, true);
+						}
+						keepgoing=false;
+						break;
 					}
-					keepgoing=false;
-					break;
-				case 1,2,3,4,5,6:		 
-					if (team) { //allied piece for white player
-						resultMatrix[cTest.getRow()][cTest.getCol()]=this.testAdd(c, cTest, false);
-					} else { 	//enemy piece for white player
-						resultMatrix[cTest.getRow()][cTest.getCol()]=this.testAdd(c, cTest, true);
-					}
-					keepgoing=false;
-					break;
 				}
 				step++;
 			}
@@ -550,8 +551,12 @@ public class Position{
 				}
 				break;
 			}
+			//System.out.println("test "+this.testAdd(c, cTest, true));
+			System.out.println("cTest : "+cTest);
+			System.out.println("Access en Passant : "+accessEnPassant);
+			System.out.println("En Passant Row : "+enPassantRow);
 			if(accessEnPassant.equals(cTest) && c.getRow()==enPassantRow) { //case prise en passant
-				resultMatrix[accessEnPassant.getRow()][accessEnPassant.getCol()]=this.testAdd(c,cTest,true);
+				resultMatrix[accessEnPassant.getRow()][accessEnPassant.getCol()]=2;//this.testAdd(c,cTest,true);
 			}
 		}
 		
@@ -578,8 +583,12 @@ public class Position{
 				}
 				break;
 			}
+			//System.out.println("test "+this.testAdd(c, cTest, true));
+			System.out.println("cTest : "+cTest);
+			System.out.println("Access en Passant : "+accessEnPassant);
+			System.out.println("En Passant Row : "+enPassantRow);
 			if(accessEnPassant.equals(cTest) && c.getRow()==enPassantRow) { //case prise en passant
-				resultMatrix[accessEnPassant.getRow()][accessEnPassant.getCol()]=this.testAdd(c,cTest,true);
+				resultMatrix[accessEnPassant.getRow()][accessEnPassant.getCol()]=2;//this.testAdd(c,cTest,true);
 			}
 		}
 		return resultMatrix;
@@ -611,7 +620,7 @@ public class Position{
 	
 	public boolean isControlled(Coordinate c) {
 		byte l=c.getRow();
-		byte c1=c.getCol();
+		byte co=c.getCol();
 		Coordinate casetest = new Coordinate((byte) 0, (byte) 0) ;
 		byte [][] directions;
 		if (this.getTurn()==true){// Player with White Pieces
@@ -619,12 +628,13 @@ public class Position{
 			for(byte [] direction : directions) {// rook direction
 				byte dx= direction[0];
 				byte dy= direction[1]; 
-				casetest.setCol(c1);
+				casetest.setCol(co);
 				casetest.setRow(l);
 				boolean keepgoing=true;
-				while((keepgoing) && (isOnChessboard(casetest))) {
+				while(keepgoing) {
 					casetest.setCol((byte) (casetest.getCol()+dy));
 					casetest.setRow((byte) (casetest.getRow()+dx));
+					if(isOnChessboard(casetest)) {
 						switch (this.getPosCase(casetest)) {
 							case 0 :
 								break;
@@ -635,35 +645,49 @@ public class Position{
 								return true;
 						}
 					}
+					else {
+						keepgoing=false;
+					}
+				}
+				
 			}
 			
 			directions=Piece.WHITEBISHOP.getDirection();
 			for(byte [] direction : directions) {// Bishop direction
 				byte dx= direction[0];
 				byte dy= direction[1]; 
-				casetest.setCol(c1);
+				casetest.setCol(co);
 				casetest.setRow(l);
-				if(isOnChessboard(casetest)) {
+				boolean keepgoing=true;
+				while(keepgoing) {
 					casetest.setCol((byte) (casetest.getCol()+dy));
 					casetest.setRow((byte) (casetest.getRow()+dx));
-						switch (this.getPosCase(casetest)) {
-							case 0,1,2,3,4,5,6,7,8,9,12: //Piece.WHITEROOK.getId(),Piece.WHITEKNIGHT.getId(),Piece.WHITEBISHOP.getId(),Piece.WHITEQUEEN.getId(),Piece.WHITEKING.getId(),Piece.WHITEPAWN.getId(),Piece.BLACKPAWN.getId(),Piece.BLACKROOK.getId(),Piece.BLACKKNIGHT.getId(),Piece.BLACKKING.getId() :
-								break;
-							case  10,11://Piece.BLACKQUEEN.getId(),Piece.BLACKBISHOP.getId():
-								return true;
-						}
+					if(isOnChessboard(casetest)) {
+						
+							switch (this.getPosCase(casetest)) {
+								case 0,1,2,3,4,5,6,7,8,9,12: //Piece.WHITEROOK.getId(),Piece.WHITEKNIGHT.getId(),Piece.WHITEBISHOP.getId(),Piece.WHITEQUEEN.getId(),Piece.WHITEKING.getId(),Piece.WHITEPAWN.getId(),Piece.BLACKPAWN.getId(),Piece.BLACKROOK.getId(),Piece.BLACKKNIGHT.getId(),Piece.BLACKKING.getId() :
+									keepgoing=false;
+									break;
+								case  10,11://Piece.BLACKQUEEN.getId(),Piece.BLACKBISHOP.getId():
+									return true;
+							}
 					}
+					else {
+						keepgoing=false;
+					}
+				}
 			}
 			
 			directions=Piece.WHITEKNIGHT.getDirection();
 			for(byte [] direction : directions) {// Knight direction
 				byte dx= direction[0];
 				byte dy= direction[1]; 
-				casetest.setCol(c1);
+				casetest.setCol(co);
 				casetest.setRow(l);
+				casetest.setCol((byte) (casetest.getCol()+dy));
+				casetest.setRow((byte) (casetest.getRow()+dx));
 				if(isOnChessboard(casetest)) {
-					casetest.setCol((byte) (casetest.getCol()+dy));
-					casetest.setRow((byte) (casetest.getRow()+dx));
+					
 						switch (this.getPosCase(casetest)) {
 							case 0,1,2,3,4,5,6,7,8,10,11,12://Piece.WHITEROOK.getId(),Piece.WHITEKNIGHT.getId(),Piece.WHITEBISHOP.getId(),Piece.WHITEQUEEN.getId(),Piece.WHITEKING.getId(),Piece.WHITEPAWN.getId(),Piece.BLACKPAWN.getId(),Piece.BLACKROOK.getId(),Piece.BLACKBISHOP.getId(),Piece.BLACKQUEEN.getId(),Piece.BLACKKING.getId() :
 								break;
@@ -684,11 +708,12 @@ public class Position{
 			for(byte [] direction : directions) {// Knight direction
 				byte dx= direction[0];
 				byte dy= direction[1]; 
-				casetest.setCol(c1);
+				casetest.setCol(co);
 				casetest.setRow(l);
+				casetest.setCol((byte) (casetest.getCol()+dy));
+				casetest.setRow((byte) (casetest.getRow()+dx));
 				if(isOnChessboard(casetest)) {
-					casetest.setCol((byte) (casetest.getCol()+dy));
-					casetest.setRow((byte) (casetest.getRow()+dx));
+					
 						switch (this.getPosCase(casetest)) {
 							case 0,1,2,3,4,5,6,7,8,9,10,11: //Piece.WHITEROOK.getId(),Piece.WHITEKNIGHT.getId(),Piece.WHITEBISHOP.getId(),Piece.WHITEQUEEN.getId(),Piece.WHITEKING.getId(),Piece.WHITEPAWN.getId(),Piece.BLACKPAWN.getId(),Piece.BLACKROOK.getId(),Piece.BLACKKNIGHT.getId(),Piece.BLACKBISHOP.getId(),Piece.BLACKQUEEN.getId() :
 								break;
@@ -705,12 +730,13 @@ public class Position{
 			for(byte [] direction : directions) {// rook direction
 				byte dx= direction[0];
 				byte dy= direction[1]; 
-				casetest.setCol(c1);
+				casetest.setCol(co);
 				casetest.setRow(l);
 				boolean keepgoing=true;
-				while((keepgoing) && (isOnChessboard(casetest))) {
+				while(keepgoing) {
 					casetest.setCol((byte) (casetest.getCol()+dy));
 					casetest.setRow((byte) (casetest.getRow()+dx));
+					if(isOnChessboard(casetest)) {	
 						switch (this.getPosCase(casetest)) {
 							case 0 :
 								break;
@@ -721,35 +747,47 @@ public class Position{
 								return true;
 						}
 					}
+					else {
+						keepgoing=false;
+					}
+				}
 			}
 			
 			directions=Piece.BLACKBISHOP.getDirection();
 			for(byte [] direction : directions) {// Bishop direction
 				byte dx= direction[0];
 				byte dy= direction[1]; 
-				casetest.setCol(c1);
+				casetest.setCol(co);
 				casetest.setRow(l);
-				if(isOnChessboard(casetest)) {
+				boolean keepgoing=true;
+				while(keepgoing) {
 					casetest.setCol((byte) (casetest.getCol()+dy));
 					casetest.setRow((byte) (casetest.getRow()+dx));
-						switch (this.getPosCase(casetest)) {
-							case 0,1,2,5,6,7,8,9,10,11,12://Piece.WHITEROOK.getId(),Piece.WHITEKNIGHT.getId(),Piece.BLACKBISHOP.getId(),Piece.BLACKQUEEN.getId(),Piece.WHITEKING.getId(),Piece.WHITEPAWN.getId(),Piece.BLACKPAWN.getId(),Piece.BLACKROOK.getId(),Piece.BLACKKNIGHT.getId(),Piece.BLACKKING.getId():
-								break;
-							case 3,4://Piece.WHITEBISHOP.getId(),Piece.WHITEQUEEN.getId():
-								return true;
+					if(isOnChessboard(casetest)) {
+							switch (this.getPosCase(casetest)) {
+								case 0,1,2,5,6,7,8,9,10,11,12://Piece.WHITEROOK.getId(),Piece.WHITEKNIGHT.getId(),Piece.BLACKBISHOP.getId(),Piece.BLACKQUEEN.getId(),Piece.WHITEKING.getId(),Piece.WHITEPAWN.getId(),Piece.BLACKPAWN.getId(),Piece.BLACKROOK.getId(),Piece.BLACKKNIGHT.getId(),Piece.BLACKKING.getId():
+									keepgoing=false;
+									break;
+								case 3,4://Piece.WHITEBISHOP.getId(),Piece.WHITEQUEEN.getId():
+									return true;
+							}
 						}
+					else {
+						keepgoing=false;
 					}
+				}
 			}
 			
 			directions=Piece.BLACKKNIGHT.getDirection();
 			for(byte [] direction : directions) {// Knight direction
 				byte dx= direction[0];
 				byte dy= direction[1]; 
-				casetest.setCol(c1);
+				casetest.setCol(co);
 				casetest.setRow(l);
+				casetest.setCol((byte) (casetest.getCol()+dy));
+				casetest.setRow((byte) (casetest.getRow()+dx));
 				if(isOnChessboard(casetest)) {
-					casetest.setCol((byte) (casetest.getCol()+dy));
-					casetest.setRow((byte) (casetest.getRow()+dx));
+					
 						switch (this.getPosCase(casetest)) {
 							case  0,1,3,4,5,6,7,8,9,10,11,12://Piece.WHITEROOK.getId(),Piece.WHITEBISHOP.getId(),Piece.WHITEQUEEN.getId(),Piece.WHITEKING.getId(),Piece.WHITEPAWN.getId(),Piece.BLACKPAWN.getId(),Piece.BLACKROOK.getId(),Piece.BLACKKNIGHT.getId(),Piece.BLACKBISHOP.getId(),Piece.BLACKQUEEN.getId(),Piece.BLACKKING.getId():
 								break;
@@ -770,11 +808,11 @@ public class Position{
 			for(byte [] direction : directions) {// Knight direction
 				byte dx= direction[0];
 				byte dy= direction[1]; 
-				casetest.setCol(c1);
+				casetest.setCol(co);
 				casetest.setRow(l);
+				casetest.setCol((byte) (casetest.getCol()+dy));
+				casetest.setRow((byte) (casetest.getRow()+dx));
 				if(isOnChessboard(casetest)) {
-					casetest.setCol((byte) (casetest.getCol()+dy));
-					casetest.setRow((byte) (casetest.getRow()+dx));
 						switch (this.getPosCase(casetest)) {
 							case 0,1,2,3,4,6,7,8,9,10,11,12://Piece.WHITEROOK.getId(),Piece.WHITEKNIGHT.getId(),Piece.WHITEBISHOP.getId(),Piece.WHITEQUEEN.getId(),Piece.BLACKKING.getId(),Piece.WHITEPAWN.getId(),Piece.BLACKPAWN.getId(),Piece.BLACKROOK.getId(),Piece.BLACKKNIGHT.getId(),Piece.BLACKBISHOP.getId(),Piece.BLACKQUEEN.getId():
 								break;
