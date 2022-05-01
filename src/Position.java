@@ -110,7 +110,7 @@ public class Position{
 		byte[][] tmp = caseAccess(c1); // value of caseAccess(c1) in an array of array of byte
 
 		if (tmp[c2.getRow()][c2.getCol()] > 0) { // check if c2 is in tmp (value of caseAccess(c1))
-			//pseudoPlayMove(c1,c2)
+			pseudoPlayMove(c1,c2);
 			movePiece(c1, c2); 	
 			//UpdateTimePGN
 			System.out.println("Move done");
@@ -127,8 +127,8 @@ public class Position{
 		this.setPosCase(c2, p.getId());
 		g.setPGN(g.getPGN() + " Promotion en : " + p.name());
 	}
-	
-	private void pseudoPlayMove(Coordinate c1, Coordinate c2){
+	//ça doit être un private hein
+	public void pseudoPlayMove(Coordinate c1, Coordinate c2){
 		
 		this.setEnPassant(null);
 		
@@ -450,17 +450,13 @@ public class Position{
 					case 7,8,9,10,11,12:     
 						if (team) { //enemy piece for white player
 							resultMatrix[cTest.getRow()][cTest.getCol()]=this.testAdd(c, cTest, true);
-						} else { 	//allied piece for white player
-							resultMatrix[cTest.getRow()][cTest.getCol()]=this.testAdd(c, cTest, false);
 						}
 						keepgoing=false;
 						break;
 					case 1,2,3,4,5,6:		 
-						if (team) { //allied piece for white player
-							resultMatrix[cTest.getRow()][cTest.getCol()]=this.testAdd(c, cTest, false);
-						} else { 	//enemy piece for white player
+						if (!team) { //ennemy piece for black player
 							resultMatrix[cTest.getRow()][cTest.getCol()]=this.testAdd(c, cTest, true);
-						}
+						} 
 						keepgoing=false;
 						break;
 					}
@@ -532,7 +528,7 @@ public class Position{
 		cTest.setRow((byte)a);
 		cTest.setCol((byte)b);
 		
-		Coordinate accessEnPassant = this.getEnPassant();
+		//Coordinate accessEnPassant = this.getEnPassant();
 		
 		if(isOnChessboard(cTest)) {
 			switch(this.getPosCase(cTest)) {
@@ -551,13 +547,10 @@ public class Position{
 				}
 				break;
 			}
-			//System.out.println("test "+this.testAdd(c, cTest, true));
-			System.out.println("cTest : "+cTest);
-			System.out.println("Access en Passant : "+accessEnPassant);
-			System.out.println("En Passant Row : "+enPassantRow);
-			if(accessEnPassant.equals(cTest) && c.getRow()==enPassantRow) { //case prise en passant
-				resultMatrix[accessEnPassant.getRow()][accessEnPassant.getCol()]=2;//this.testAdd(c,cTest,true);
-			}
+			
+			/*if(accessEnPassant.equals(cTest) && c.getRow()==enPassantRow) { //case prise en passant
+				resultMatrix[accessEnPassant.getRow()][accessEnPassant.getCol()]=this.testAdd(c,cTest,true);
+			}*/
 		}
 		
 		a = c.getRow() + iLeft[0];
@@ -583,13 +576,10 @@ public class Position{
 				}
 				break;
 			}
-			//System.out.println("test "+this.testAdd(c, cTest, true));
-			System.out.println("cTest : "+cTest);
-			System.out.println("Access en Passant : "+accessEnPassant);
-			System.out.println("En Passant Row : "+enPassantRow);
-			if(accessEnPassant.equals(cTest) && c.getRow()==enPassantRow) { //case prise en passant
-				resultMatrix[accessEnPassant.getRow()][accessEnPassant.getCol()]=2;//this.testAdd(c,cTest,true);
-			}
+			
+			/*if(accessEnPassant.equals(cTest) && c.getRow()==enPassantRow) { //case prise en passant
+				resultMatrix[accessEnPassant.getRow()][accessEnPassant.getCol()]=this.testAdd(c,cTest,true);
+			}*/
 		}
 		return resultMatrix;
 	}

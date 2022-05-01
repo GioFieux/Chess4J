@@ -36,7 +36,9 @@ public class Main {
 
 			if(accessible[c2.getRow()][c2.getCol()] > 0){	// test if c2 is a reachable destination
 				System.out.println("bravo, c'est un coup valide :");
-				jeu.playMove(c1,c2,partie);
+				jeu.pseudoPlayMove(c1,c2);
+				jeu.setTurn(!(jeu.getTurn()));
+				
 				System.out.println(jeu);
 				
 				System.out.println("joueur suivant, votre coup :");
