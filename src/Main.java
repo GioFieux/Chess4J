@@ -11,18 +11,10 @@ public class Main {
 		
 		System.out.println(jeu);
 		
-		//for testing purpose
-		while(true) {
-			System.out.println("Enter a coordinate");
-			
-			String str = sc.nextLine();		
-			Coordinate c1 = new Coordinate(str);
-			
-			System.out.println("co : "+c1.getCol()+c1.getRow());
-			
-		}
 		
-		/*
+		
+		
+		
 		System.out.println("Enter a coordinate");
 		
 		String str = sc.nextLine();		
@@ -38,7 +30,7 @@ public class Main {
 			
 			
 
-			
+			System.out.println("Enter a second case");
 			str = sc.nextLine();
 			c2= new Coordinate(str);
 
@@ -61,7 +53,20 @@ public class Main {
 		
 		
 		
+		//for testting purpose only
+				/*
+				while(true) {
+					System.out.println("Enter a coordinate");
+					
+					String str = sc.nextLine();		
+					Coordinate c1 = new Coordinate(str);
+					
+					System.out.println("co : "+c1.getCol()+c1.getRow());
+					
+				}
+				*/
 		
+		//old
 		/*
 		System.out.println(jeu.getPosCase(new Coordinate((byte)6,(byte)2)));
 		//jeu.setTurn(false);
