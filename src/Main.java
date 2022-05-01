@@ -16,40 +16,33 @@ public class Main {
 		
 		*/
 		
-		System.out.println("Enter a coordinate");
-		
-		String str = sc.nextLine();		
-		Coordinate c1 = new Coordinate(str);
+			
+		Coordinate c1 = null;
 		Coordinate c2 = null;
 		
 		
 		
 		while(true){
+			System.out.println("Enter a coordinate");
+			String str = sc.nextLine();
+			c1 = new Coordinate(str);
 			
 			System.out.println("here are the reachable cases");
 			byte[][] accessible = jeu.caseAccess(c1); // warning : this line also display the reachable cases
-			
-			
 
 			System.out.println("Enter a second case");
 			str = sc.nextLine();
 			c2= new Coordinate(str);
 
-			if(accessible[c2.getRow()][c2.getCol()] > 0){	// test if c2 is a reachable destination
-				System.out.println("bravo, c'est un coup valide :");
-				jeu.pseudoPlayMove(c1,c2);
-				jeu.setTurn(!(jeu.getTurn()));
+			System.out.println("bravo, c'est un coup valide :");
+			jeu.pseudoPlayMove(c1,c2);
+			jeu.setTurn(!(jeu.getTurn()));
 				
-				System.out.println(jeu);
+			System.out.println(jeu);
 				
-				System.out.println("joueur suivant, votre coup :");
-				str = sc.nextLine();
-				c1= new Coordinate(str);
-			}
-		  else{ 
-			  System.out.println("ce n'est pas une case accessible ...");
-			  c1 = c2;
-		  }
+			
+			
+		  
 		}
 		
 		
