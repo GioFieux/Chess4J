@@ -7,13 +7,14 @@ public class Main {
 		Scanner sc = new Scanner(System.in);		
 		
 		Position jeu = new Position();
-		Game partie = new Game("tmptest");
+		/*
+		System.out.println(jeu);
+		
+		jeu.testAdd(new Coordinate("e2"),new Coordinate("e4"),true);
 		
 		System.out.println(jeu);
 		
-		
-		
-		
+		*/
 		
 		System.out.println("Enter a coordinate");
 		

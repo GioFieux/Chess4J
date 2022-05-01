@@ -9,6 +9,11 @@ public class Coordinate {
 		this.col=y;
 	}
 	
+	public Coordinate(int x, int y) {
+		this.row=(byte)x;
+		this.col=(byte)y;
+	}
+	
 	public Coordinate(String str){
 		if(!(str.length()==2) ) {		}
 		char col = str.charAt(0);

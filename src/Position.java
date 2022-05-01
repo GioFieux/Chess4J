@@ -935,7 +935,12 @@ public class Position{
 	//I have no idea if the method clone is working for now
 	public Position badcopy(){
 		Position badclone = new Position();
-		badclone.setPos(this.getPos());
+		//clone the array byte by byte
+		for(int i=0; i<8;i++) {
+			for(int j=0;j<8;j++) {
+				badclone.setPosCase(new Coordinate(i,j), this.getPosCase(new Coordinate(i,j)));
+			}
+		}
 		badclone.setTurn(this.getTurn());
 		
 		//à priori tout ces setter sont turbo useless puisqu'on utilise tout ça uniquement dans test add ... faudrai faire des test pour voir s'il y en a vraiment besion histoie de gagner du COMPUTATION TIME
