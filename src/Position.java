@@ -127,7 +127,7 @@ public class Position{
 		this.setPosCase(c2, p.getId());
 		g.setPGN(g.getPGN() + " Promotion en : " + p.name());
 	}
-	//ça doit être un private hein
+	//ï¿½a doit ï¿½tre un private hein
 	public void pseudoPlayMove(Coordinate c1, Coordinate c2){
 		
 		this.setEnPassant(null);
@@ -193,11 +193,11 @@ public class Position{
 					movePiece(c1,ct);
 					movePiece(ct,c2);
 				}
-				else{																					//pour tout le reste, déplacement normal, prise et aussi promotion)
+				else{																					//pour tout le reste, dï¿½placement normal, prise et aussi promotion)
 					movePiece(c1,c2);
 				}
 				if( Math.abs( c1.getRow() - c2.getRow()) == 2) {
-					this.setEnPassant(new Coordinate( (byte) ( (c1.getRow()+c2.getRow())/2),c1.getCol()));				//si un déplacement de pion de 2 case : alors une prsie en passant est possible
+					this.setEnPassant(new Coordinate( (byte) ( (c1.getRow()+c2.getRow())/2),c1.getCol()));				//si un dï¿½placement de pion de 2 case : alors une prsie en passant est possible
 				}
 				
 			
@@ -490,7 +490,7 @@ public class Position{
 			cTest.setCol((byte)b);
 			
 			if(this.getPosCase(cTest)==0) {			 //empty case
-				resultMatrix[cTest.getRow()][cTest.getCol()]=1;//testAdd(this, c, cTest, false);
+				resultMatrix[cTest.getRow()][cTest.getCol()]=this.testAdd(c, cTest, false);
 			} //there is no else because whatever it's a allied or enemy piece, the pawn cannot move forward
 				// so resultMatrix in cTest stays to 0
 				
@@ -532,19 +532,15 @@ public class Position{
 		
 		if(isOnChessboard(cTest)) {
 			switch(this.getPosCase(cTest)) {
-			case 7,8,9,10,11,12:     
+			case 7,8,9,10,11,12:    //black pieces 
 				if (team) { //enemy piece for white player
 					resultMatrix[cTest.getRow()][cTest.getCol()]=this.testAdd(c, cTest, true);
-				} else { 	//allied piece for white player
-					resultMatrix[cTest.getRow()][cTest.getCol()]=this.testAdd(c, cTest, false);
 				}
 				break;
-			case 1,2,3,4,5,6:		 
-				if (team) { //allied piece for white player
-					resultMatrix[cTest.getRow()][cTest.getCol()]=this.testAdd(c, cTest, false);
-				} else { 	//enemy piece for white player
+			case 1,2,3,4,5,6:	//white pieces	 
+				if (!team) { //enemy piece for black player
 					resultMatrix[cTest.getRow()][cTest.getCol()]=this.testAdd(c, cTest, true);
-				}
+				} 
 				break;
 			}
 			
@@ -561,19 +557,15 @@ public class Position{
 		
 		if(isOnChessboard(cTest)) {
 			switch(this.getPosCase(cTest)) {
-			case 7,8,9,10,11,12:     
+			case 7,8,9,10,11,12:     //black pieces
 				if (team) { //enemy piece for white player
 					resultMatrix[cTest.getRow()][cTest.getCol()]=this.testAdd(c, cTest, true);
-				} else { 	//allied piece for white player
-					resultMatrix[cTest.getRow()][cTest.getCol()]=this.testAdd(c, cTest, false);
-				}
+				} 
 				break;
-			case 1,2,3,4,5,6:		 
-				if (team) { //allied piece for white player
-					resultMatrix[cTest.getRow()][cTest.getCol()]=this.testAdd(c, cTest, false);
-				} else { 	//enemy piece for white player
+			case 1,2,3,4,5,6:		//white pieces 
+				if (!team) { //enemy piece for black player
 					resultMatrix[cTest.getRow()][cTest.getCol()]=this.testAdd(c, cTest, true);
-				}
+				} 
 				break;
 			}
 			
@@ -943,7 +935,7 @@ public class Position{
 		}
 		badclone.setTurn(this.getTurn());
 		
-		//à priori tout ces setter sont turbo useless puisqu'on utilise tout ça uniquement dans test add ... faudrai faire des test pour voir s'il y en a vraiment besion histoie de gagner du COMPUTATION TIME
+		//ï¿½ priori tout ces setter sont turbo useless puisqu'on utilise tout ï¿½a uniquement dans test add ... faudrai faire des test pour voir s'il y en a vraiment besion histoie de gagner du COMPUTATION TIME
 		badclone.setBlackCastle(this.getBlackCastleLong());
 		badclone.setBlackCastleLong(this.getBlackCastleLong());
 		badclone.setWhiteCastle(this.getWhiteCastle());
