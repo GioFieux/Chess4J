@@ -881,6 +881,38 @@ public class Position{
 		System.out.println("test final vaut : "+test);
 		return test;
 	}
+	
+	public boolean isCheckmate() {
+		Coordinate c = new Coordinate((byte) 0, (byte) 0);
+		boolean checkmate = false;
+		if (isChecked()) {
+			for(byte l=0; l<8; l++) {
+				for(byte col=0; col<8; col++) {
+					c.setCol(col);
+					c.setRow(l);
+					if (this.getTurn()) {	// Player with White Pieces
+						if (this.getPosCase(c)==Piece.WHITEROOK.getId() || this.getPosCase(c)==Piece.WHITEKNIGHT.getId() || this.getPosCase(c)==Piece.WHITEBISHOP.getId() || this.getPosCase(c)==Piece.WHITEQUEEN.getId()) {
+							if (caseAccess(c) == null) {
+								checkmate = true;
+							} else {
+								checkmate = false;
+							}
+						}
+					} else {		// Player with Black Pieces
+						if (this.getPosCase(c)==Piece.BLACKROOK.getId() || this.getPosCase(c)==Piece.BLACKKNIGHT.getId() || this.getPosCase(c)==Piece.BLACKBISHOP.getId() || this.getPosCase(c)==Piece.BLACKQUEEN.getId()) {
+							if (caseAccess(c) == null) {
+								checkmate = true;
+							} else {
+								checkmate = false;
+							}
+						}
+					}
+				}
+			}
+		}
+		return checkmate;
+	}
+
 
 	public void movePiece(Coordinate c1, Coordinate c2) {
 		byte piece = this.getPosCase(c1);
