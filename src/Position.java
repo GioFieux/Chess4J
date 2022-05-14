@@ -23,16 +23,16 @@ public class Position implements Cloneable {
                     Piece.BLACKPAWN.getId(), Piece.BLACKPAWN.getId(), Piece.BLACKPAWN.getId(),
                     Piece.BLACKPAWN.getId() },
             { 0, 0, 0, 0, 0, 0, 0, 0 },
-            { 0, 0, 0, 0, 0, Piece.BLACKKING.getId(), Piece.WHITEKNIGHT.getId(), 0 },
-            { 0, 0, 0, 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0, 0, 0, Piece.WHITEROOK.getId() },
+            { Piece.BLACKKING.getId(), 0, 0, 0, 0, 0, 0, Piece.WHITEQUEEN.getId() },
             { 0, 0, 0, 0, 0, 0, 0, 0 },
             { Piece.WHITEPAWN.getId(), Piece.WHITEPAWN.getId(), Piece.WHITEPAWN.getId(), Piece.WHITEPAWN.getId(),
                     Piece.WHITEPAWN.getId(), Piece.WHITEPAWN.getId(), Piece.WHITEPAWN.getId(),
                     Piece.WHITEPAWN.getId() },
-            { Piece.WHITEROOK.getId(), Piece.WHITEKNIGHT.getId(), Piece.WHITEBISHOP.getId(), Piece.WHITEQUEEN.getId(),
+            { Piece.WHITEROOK.getId(), Piece.WHITEKNIGHT.getId(), Piece.WHITEBISHOP.getId(), 0,
                     Piece.WHITEKING.getId(),
-                    Piece.WHITEBISHOP.getId(), 0,
-                    Piece.WHITEROOK.getId() }
+                    Piece.WHITEBISHOP.getId(), Piece.WHITEKNIGHT.getId(),
+                    0 }
     };
 
     private boolean whiteCastle;
@@ -886,7 +886,7 @@ public class Position implements Cloneable {
 
     public boolean isChecked() {
         Coordinate c = new Coordinate((byte) 0, (byte) 0);
-        boolean test = false;
+        boolean check = false;
         System.out.println("tour : " + this.getTurn());
         for (byte l = 0; l < 8; l++) {
             for (byte col = 0; col < 8; col++) {
@@ -894,65 +894,63 @@ public class Position implements Cloneable {
                 c.setRow(l);
                 if (this.getTurn()) { // Player with White Pieces
                     if (this.getPosCase(c) == Piece.WHITEKING.getId()) {
-                        test = isControlled(c);
-                        System.out.println("test vaut : " + test);
-                        return test;
+                        check = isControlled(c);
+                        return check;
                     }
-                } else {
+                } else { // Player with Black Pieces
                     if (this.getPosCase(c) == Piece.BLACKKING.getId()) {
-                        test = isControlled(c);
-                        System.out.println("test vaut : " + test);
-                        return test;
+                        check = isControlled(c);
+                        return check;
                     }
                 }
 
             }
         }
-        return test;
+        return check;
     }
 
-    /*
-     * public boolean isCheckmate() {
-     * Coordinate c = new Coordinate((byte) 0, (byte) 0);
-     * boolean checkmate = false;
-     * if (isChecked()) {
-     * for (byte l = 0; l < 8; l++) {
-     * for (byte col = 0; col < 8; col++) {
-     * c.setCol(col);
-     * c.setRow(l);
-     * if (this.getTurn() == true) { // Player with White Pieces
-     * if (this.getPosCase(c) == Piece.WHITEROOK.getId()
-     * || this.getPosCase(c) == Piece.WHITEKNIGHT.getId()
-     * || this.getPosCase(c) == Piece.WHITEBISHOP.getId()
-     * || this.getPosCase(c) == Piece.WHITEQUEEN.getId()) {
-     * if (caseAccess(c) == null) {
-     * checkmate = true;
-     * return checkmate;
-     * } else {
-     * checkmate = false;
-     * return checkmate;
-     * }
-     * }
-     * } else if (this.getTurn() == false) { // Player with Black Pieces
-     * if (this.getPosCase(c) == Piece.BLACKROOK.getId()
-     * || this.getPosCase(c) == Piece.BLACKKNIGHT.getId()
-     * || this.getPosCase(c) == Piece.BLACKBISHOP.getId()
-     * || this.getPosCase(c) == Piece.BLACKQUEEN.getId()) {
-     * if (caseAccess(c) == null) {
-     * checkmate = true;
-     * return checkmate;
-     * } else {
-     * checkmate = false;
-     * return checkmate;
-     * }
-     * }
-     * }
-     * }
-     * }
-     * }
-     * return checkmate;
-     * }
-     */
+    public boolean isCheckMate() {
+        boolean checkmate = false;
+        if (this.isChecked()) {
+            for (byte i = 0; i < 8; i++) {
+                for (byte j = 0; j < 8; j++) {
+                    if (this.getTurn()) { // Player with White Pieces
+                        if (this.getPosCase(new Coordinate(i, j)) <= 6
+                                && this.getPosCase(new Coordinate(i, j)) > 0) {
+                            byte[][] possibleMoves = this.caseAccess(new Coordinate(i, j));
+                            for (byte k = 0; k < 8; k++) {
+                                for (byte l = 0; l < 8; l++) {
+                                    if (possibleMoves[k][l] > 0) {
+                                        return false;
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        if (this.getPosCase(new Coordinate(i, j)) <= 12
+                                && this.getPosCase(new Coordinate(i, j)) >= 7) {
+                            byte[][] possibleMoves = new byte[8][8];
+                            for (byte m = 0; m < 8; m++) {
+                                for (byte n = 0; n < 8; n++) {
+                                    System.out.println(
+                                            "valeur caseAccess : " + this.caseAccess(new Coordinate(i, j))[m][n]);
+                                    // possibleMoves[m][n] = this.caseAccess(new Coordinate(i, j))[m][n];
+                                }
+                            }
+                            for (byte k = 0; k < 8; k++) {
+                                for (byte l = 0; l < 8; l++) {
+                                    if (possibleMoves[k][l] > 0) {
+                                        return false;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return checkmate;
+    }
 
     public void movePiece(Coordinate c1, Coordinate c2) {
         byte piece = this.getPosCase(c1);
@@ -1041,6 +1039,8 @@ public class Position implements Cloneable {
         chessboard = chessboard + "blackCastleLong : " + this.getBlackCastleLong() + "\n";
         chessboard = chessboard + "turn            : " + this.getTurn() + "\n";
         chessboard = chessboard + "enPassant       : " + this.getEnPassant() + "\n";
+        chessboard = chessboard + "isChecked       : " + this.isChecked() + "\n";
+        chessboard = chessboard + "isCheckMate     : " + this.isCheckMate() + "\n";
         return chessboard;
     }
     /*
