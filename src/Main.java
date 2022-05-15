@@ -8,7 +8,7 @@ public class Main {
 
         Position jeu = new Position();
 
-        Game g = new Game("blabla le black king ça marche");
+        Game g = new Game("");
         /*
          * System.out.println(jeu);
          * 
@@ -20,27 +20,40 @@ public class Main {
 
         Coordinate c1 = null;
         Coordinate c2 = null;
+        
+        int numberMove=1;
 
-        while (true) {
+        while ( !(jeu.isCheckMate()) || !(jeu.isStaleMate()) ) {
             // System.out.println("isCheckMate() : " + jeu.isCheckMate());
             System.out.println("Enter a coordinate");
             String str = sc.nextLine();
             c1 = new Coordinate(str);
-
-            System.out.println("here are the reachable cases");
-            byte[][] accessible = jeu.caseAccess(c1); // warning : this line also display the reachable cases
+            
+            String piece1 = jeu.getAffichage(c1);
+            
+            System.out.println("Here are the reachable cases");
+            byte[][] accessible = jeu.caseAccess(c1); 
             jeu.displayCaseAccess(accessible);
 
             System.out.println("Enter a second case");
             str = sc.nextLine();
             c2 = new Coordinate(str);
+            
+            String piece2 = jeu.getAffichage(c2);
 
             System.out.println("bravo, c'est un coup valide :");
+            
             jeu.playMove(c1, c2, g);
-            // jeu.setTurn(!(jeu.getTurn()));
-
+            
+            if(piece2.equals("   ")) {
+            	g.setPGN(g.getPGN() + numberMove + ". " + c1.byteConversionToString()[0] + c1.byteConversionToString()[1] + " " + piece1 + c2.byteConversionToString()[0] + c2.byteConversionToString()[1] + "\n");
+            } else {
+            	
+            }
+            
+            System.out.println("PGN : " + g.getPGN());
             System.out.println(jeu);
-
+            numberMove++;
         }
 
         // for testting purpose only

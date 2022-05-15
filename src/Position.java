@@ -16,25 +16,25 @@ public class Position implements Cloneable {
     private final Coordinate b1 = new Coordinate("b1");
 
     private byte[][] pos = {
-            { Piece.BLACKROOK.getId(), 0,
-                    Piece.BLACKBISHOP.getId(), 0,
-                    Piece.WHITEQUEEN.getId(), Piece.BLACKBISHOP.getId(), Piece.BLACKKNIGHT.getId(),
+            { Piece.BLACKROOK.getId(), Piece.BLACKKNIGHT.getId(),
+                    Piece.BLACKBISHOP.getId(), Piece.BLACKKING.getId(),
+                    Piece.BLACKQUEEN.getId(), Piece.BLACKBISHOP.getId(), Piece.BLACKKNIGHT.getId(),
                     Piece.BLACKROOK.getId() },
             { Piece.BLACKPAWN.getId(), Piece.BLACKPAWN.getId(), Piece.BLACKPAWN.getId(),
                     Piece.BLACKPAWN.getId(),
                     Piece.BLACKPAWN.getId(), Piece.BLACKPAWN.getId(), Piece.BLACKPAWN.getId(),
                     Piece.BLACKPAWN.getId() },
-            { 0, 0, Piece.BLACKKNIGHT.getId(), 0, 0, 0, 0, 0 },
-            { 0, 0, 0, 0, 0, 0, 0, Piece.BLACKQUEEN.getId() },
-            { 0, Piece.WHITEKING.getId(), 0, 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0, 0, 0, 0 },
             { 0, 0, 0, 0, 0, 0, 0, 0 },
             { Piece.WHITEPAWN.getId(), Piece.WHITEPAWN.getId(), Piece.WHITEPAWN.getId(),
                     Piece.WHITEPAWN.getId(),
                     Piece.WHITEPAWN.getId(), Piece.WHITEPAWN.getId(), Piece.WHITEPAWN.getId(),
                     Piece.WHITEPAWN.getId() },
             { Piece.WHITEROOK.getId(), Piece.WHITEKNIGHT.getId(),
-                    Piece.WHITEBISHOP.getId(), Piece.BLACKKING.getId(),
-                    0,
+                    Piece.WHITEBISHOP.getId(), Piece.WHITEKING.getId(),
+                    Piece.WHITEQUEEN.getId(),
                     Piece.WHITEBISHOP.getId(), Piece.WHITEKNIGHT.getId(),
                     Piece.WHITEROOK.getId() }
     };
@@ -316,14 +316,14 @@ public class Position implements Cloneable {
                     resultMatrix = searchCaseAccess(c, cTest, resultMatrix, limit, direction, nbDirection, team);
 
                     if (!(this.isChecked())) {
-                        if (this.getWhiteCastle()) {
+                        if (this.getWhiteCastle() && this.getPosCase(h1) == Piece.WHITEROOK.getId()) {
                             if (!(this.isControlled(f1)) && !(this.isControlled(g1))) {
                                 if (this.getPosCase(f1) == 0 && this.getPosCase(g1) == 0) {
                                     resultMatrix[g1.getRow()][g1.getCol()] = 1;
                                 }
                             }
                         }
-                        if (this.getWhiteCastleLong()) {
+                        if (this.getWhiteCastleLong() && this.getPosCase(a1) == Piece.WHITEROOK.getId()) {
                             if (!(this.isControlled(c1)) && !(this.isControlled(d1))) {
                                 if (this.getPosCase(c1) == 0 && this.getPosCase(d1) == 0 && this.getPosCase(b1) == 0) {
                                     resultMatrix[c1.getRow()][c1.getCol()] = 1;
@@ -434,11 +434,11 @@ public class Position implements Cloneable {
 
                     resultMatrix = searchCaseAccess(c, cTest, resultMatrix, limit, direction, nbDirection, team);
                     if (!(this.isChecked())) {
-                        if (this.getBlackCastle()) {
+                        if (this.getBlackCastle() && this.getPosCase(a8) == Piece.BLACKROOK.getId()) {
                             if (this.isControlled(f8) && this.isControlled(g8)) {
                                 resultMatrix[g8.getRow()][g8.getCol()] = 1;
                             }
-                        } else if (this.getBlackCastleLong()) {
+                        } else if (this.getBlackCastleLong() && this.getPosCase(h8) == Piece.BLACKROOK.getId()) {
                             if (this.isControlled(c8) && this.isControlled(d8)) {
                                 resultMatrix[c8.getRow()][c8.getCol()] = 1;
                             }
@@ -1032,32 +1032,39 @@ public class Position implements Cloneable {
         chessboard = chessboard + "isCheckMate     : " + this.isCheckMate() + "\n";
         return chessboard;
     }
-    /*
-     * //I have no idea if the method clone is working for now
-     * public Position badcopy(){
-     * Position badclone = new Position();
-     * //clone the array byte by byte
-     * for(int i=0; i<8;i++) {
-     * for(int j=0;j<8;j++) {
-     * badclone.setPosCase(new Coordinate(i,j), this.getPosCase(new
-     * Coordinate(i,j)));
-     * }
-     * }
-     * 
-     * badclone.setTurn(this.getTurn());
-     * 
-     * //� priori tout ces setter sont turbo useless puisqu'on utilise tout �a
-     * uniquement dans test add ... faudrai faire des test pour voir s'il y en a
-     * vraiment besion histoie de gagner du COMPUTATION TIME
-     * badclone.setBlackCastle(this.getBlackCastleLong());
-     * badclone.setBlackCastleLong(this.getBlackCastleLong());
-     * badclone.setWhiteCastle(this.getWhiteCastle());
-     * badclone.setWhiteCastleLong(this.getWhiteCastleLong());
-     * badclone.setEnPassant(this.getEnPassant());
-     * 
-     * return badclone;
-     * }
-     */
+    
+    public String getAffichage(Coordinate c) {
+    	switch (this.getPosCase(c)) {
+        case 0:
+            return "  ";
+        case 1:
+        	return "\u2656 ";
+        case 2:
+            return "\u2658 ";
+        case 3:
+        	return "\u2657 ";
+        case 4:
+            return "\u2655 ";
+        case 5:
+            return "\u2654 ";
+        case 6:
+            return "\u2659 ";
+        case 7:
+            return "\u265F ";
+        case 8:
+            return "\u265C ";
+        case 9:
+            return "\u265E ";
+        case 10:
+            return "\u265D ";
+        case 11:
+            return "\u265B ";
+        case 12:
+            return "\u265A ";
+        default:
+        	return "";
+    	}
+    }
 
     public Position clone() {
         Position tmp = new Position();
