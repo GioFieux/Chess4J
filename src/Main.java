@@ -22,12 +22,14 @@ public class Main {
         Coordinate c2 = null;
 
         while (true) {
+            // System.out.println("isCheckMate() : " + jeu.isCheckMate());
             System.out.println("Enter a coordinate");
             String str = sc.nextLine();
             c1 = new Coordinate(str);
 
             System.out.println("here are the reachable cases");
             byte[][] accessible = jeu.caseAccess(c1); // warning : this line also display the reachable cases
+            jeu.displayCaseAccess(accessible);
 
             System.out.println("Enter a second case");
             str = sc.nextLine();
