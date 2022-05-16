@@ -14,11 +14,12 @@ public class Position implements Cloneable {
     private final Coordinate f8 = new Coordinate("f8");
     private final Coordinate g8 = new Coordinate("g8");
     private final Coordinate b1 = new Coordinate("b1");
+    private final Coordinate b8 = new Coordinate("b8");
 
     private byte[][] pos = {
             { Piece.BLACKROOK.getId(), Piece.BLACKKNIGHT.getId(),
-                    Piece.BLACKBISHOP.getId(), Piece.BLACKKING.getId(),
-                    Piece.BLACKQUEEN.getId(), Piece.BLACKBISHOP.getId(), Piece.BLACKKNIGHT.getId(),
+                    Piece.BLACKBISHOP.getId(), Piece.BLACKQUEEN.getId(),
+                    Piece.BLACKKING.getId(), Piece.BLACKBISHOP.getId(), Piece.BLACKKNIGHT.getId(),
                     Piece.BLACKROOK.getId() },
             { Piece.BLACKPAWN.getId(), Piece.BLACKPAWN.getId(), Piece.BLACKPAWN.getId(),
                     Piece.BLACKPAWN.getId(),
@@ -27,14 +28,14 @@ public class Position implements Cloneable {
             { 0, 0, 0, 0, 0, 0, 0, 0 },
             { 0, 0, 0, 0, 0, 0, 0, 0 },
             { 0, 0, 0, 0, 0, 0, 0, 0 },
-            { 0, 0, 0, 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0, Piece.WHITEQUEEN.getId(), 0, 0 },
             { Piece.WHITEPAWN.getId(), Piece.WHITEPAWN.getId(), Piece.WHITEPAWN.getId(),
                     Piece.WHITEPAWN.getId(),
                     Piece.WHITEPAWN.getId(), Piece.WHITEPAWN.getId(), Piece.WHITEPAWN.getId(),
                     Piece.WHITEPAWN.getId() },
             { Piece.WHITEROOK.getId(), Piece.WHITEKNIGHT.getId(),
-                    Piece.WHITEBISHOP.getId(), Piece.WHITEKING.getId(),
-                    Piece.WHITEQUEEN.getId(),
+                    Piece.WHITEBISHOP.getId(),
+                    0, Piece.WHITEKING.getId(),
                     Piece.WHITEBISHOP.getId(), Piece.WHITEKNIGHT.getId(),
                     Piece.WHITEROOK.getId() }
     };
@@ -138,8 +139,7 @@ public class Position implements Cloneable {
         g.setPGN(g.getPGN() + " Promotion en : " + p.name());
     }
 
-    // ï¿½a doit ï¿½tre un private hein
-    public void pseudoPlayMove(Coordinate c1, Coordinate c2) {
+    private void pseudoPlayMove(Coordinate c1, Coordinate c2) {
 
         // this.setEnPassant(null);
 
@@ -207,7 +207,7 @@ public class Position implements Cloneable {
                     Coordinate ct = new Coordinate(c1.getRow(), c2.getCol());
                     movePiece(c1, ct);
                     movePiece(ct, c2);
-                } else { // pour tout le reste, dï¿½placement normal, prise et aussi promotion)
+                } else { // pour tout le reste, dï¿½placement normal, déplacement de 2 cases, prise et aussi promotion)
                     movePiece(c1, c2);
                 }
                 if (Math.abs(c1.getRow() - c2.getRow()) == 2) {
@@ -324,7 +324,7 @@ public class Position implements Cloneable {
                             }
                         }
                         if (this.getWhiteCastleLong() && this.getPosCase(a1) == Piece.WHITEROOK.getId()) {
-                            if (!(this.isControlled(c1)) && !(this.isControlled(d1))) {
+                            if (!(this.isControlled(c1)) && !(this.isControlled(d1)) && !(this.isControlled(b1))) {
                                 if (this.getPosCase(c1) == 0 && this.getPosCase(d1) == 0 && this.getPosCase(b1) == 0) {
                                     resultMatrix[c1.getRow()][c1.getCol()] = 1;
                                 }
@@ -436,11 +436,15 @@ public class Position implements Cloneable {
                     if (!(this.isChecked())) {
                         if (this.getBlackCastle() && this.getPosCase(a8) == Piece.BLACKROOK.getId()) {
                             if (this.isControlled(f8) && this.isControlled(g8)) {
-                                resultMatrix[g8.getRow()][g8.getCol()] = 1;
+                            	if(this.getPosCase(f8)==0 && this.getPosCase(g8)==0) {
+                            		 resultMatrix[g8.getRow()][g8.getCol()] = 1;
+                            	}
                             }
                         } else if (this.getBlackCastleLong() && this.getPosCase(h8) == Piece.BLACKROOK.getId()) {
-                            if (this.isControlled(c8) && this.isControlled(d8)) {
-                                resultMatrix[c8.getRow()][c8.getCol()] = 1;
+                            if (this.isControlled(c8) && this.isControlled(d8) && this.isControlled(b8)) {
+                            	if(this.getPosCase(c8)==0 && this.getPosCase(c8)==0 && this.getPosCase(b8)==0) {
+                            		resultMatrix[c8.getRow()][c8.getCol()] = 1;
+                            	}   
                             }
                         }
                     }
@@ -544,8 +548,8 @@ public class Position implements Cloneable {
             if (this.getPosCase(cTest2) == 0) {
                 resultMatrix[cTest2.getRow()][cTest2.getCol()] = this.testAdd(c, cTest2, false);
                 // if (true) {//if(testAdd(this, c, cTest2, false)==1) {
-                if (this.getPosCase(cTest) == 0) {
-                    resultMatrix[cTest.getRow()][cTest.getCol()] = this.testAdd(c, cTest2, false);
+                if (this.getPosCase(cTest) == 0 && resultMatrix[cTest2.getRow()][cTest2.getCol()]==1) {
+                    resultMatrix[cTest.getRow()][cTest.getCol()] = this.testAdd(c, cTest, false);
                 }
                 // }
             } // there is no else because whatever it's a allied or enemy piece, the pawn
@@ -643,81 +647,114 @@ public class Position implements Cloneable {
         byte co = c.getCol();
         Coordinate casetest = new Coordinate((byte) 0, (byte) 0);
         byte[][] directions;
-        if (this.getTurn()) {// Player with White Pieces
-            directions = Piece.WHITEROOK.getDirection();
-            for (byte[] direction : directions) {// rook direction
-                byte dx = direction[0];
-                byte dy = direction[1];
-                casetest.setCol(co);
-                casetest.setRow(l);
-                boolean keepgoing = true;
-                while (keepgoing) {
-                    casetest.setCol((byte) (casetest.getCol() + dy));
-                    casetest.setRow((byte) (casetest.getRow() + dx));
-                    if (isOnChessboard(casetest)) {
-                        switch (this.getPosCase(casetest)) {
-                            case 0:
-                                break;
-                            case 1, 2, 3, 4, 6, 7, 9, 10, 12:// Piece.WHITEROOK.getId(),Piece.WHITEKNIGHT.getId(),Piece.WHITEBISHOP.getId(),Piece.WHITEQUEEN.getId(),Piece.WHITEKING.getId(),Piece.WHITEPAWN.getId(),Piece.BLACKPAWN.getId(),Piece.BLACKROOK.getId(),Piece.BLACKKNIGHT.getId(),Piece.BLACKBISHOP.getId(),Piece.BLACKKING.getId():
-                                keepgoing = false;
-                                break;
-                            case 8, 11:// Piece.BLACKROOK.getId(),Piece.BLACKQUEEN.getId():
-                                return true;
-                        }
-                    } else {
-                        keepgoing = false;
+        
+        directions = Piece.WHITEROOK.getDirection();
+        for (byte[] direction : directions) {// rook direction
+            byte dx = direction[0];
+            byte dy = direction[1];
+            casetest.setCol(co);
+            casetest.setRow(l);
+            boolean keepgoing = true;
+            while (keepgoing) {
+                casetest.setCol((byte) (casetest.getCol() + dy));
+                casetest.setRow((byte) (casetest.getRow() + dx));
+                if (isOnChessboard(casetest)) {
+                    switch (this.getPosCase(casetest)) {
+                        case 0:
+                            break;
+                        case 2, 3, 6, 7, 9, 10, 12:
+                            keepgoing = false;
+                            break;
+                        case 8, 11: //BLACKROOK, BLACKQUEEN
+                        	if (this.getTurn()) {
+                        		return true;
+                        	} else {
+                        		keepgoing = false;
+                        	}
+                        	break;
+                        case 1, 4: //WHITEROOK, WHITEQUEEN
+                        	if(!(this.getTurn())) {
+                        		return true;
+                        	} else {
+                        		keepgoing = false;
+                        	}
+                        	break;
                     }
-                }
-
-            }
-
-            directions = Piece.WHITEBISHOP.getDirection();
-            for (byte[] direction : directions) {// Bishop direction
-                byte dx = direction[0];
-                byte dy = direction[1];
-                casetest.setCol(co);
-                casetest.setRow(l);
-                boolean keepgoing = true;
-                while (keepgoing) {
-                    casetest.setCol((byte) (casetest.getCol() + dy));
-                    casetest.setRow((byte) (casetest.getRow() + dx));
-                    if (isOnChessboard(casetest)) {
-
-                        switch (this.getPosCase(casetest)) {
-                            case 0:
-                                break;
-                            case 1, 2, 3, 4, 6, 7, 8, 9, 12: // Piece.WHITEROOK.getId(),Piece.WHITEKNIGHT.getId(),Piece.WHITEBISHOP.getId(),Piece.WHITEQUEEN.getId(),Piece.WHITEKING.getId(),Piece.WHITEPAWN.getId(),Piece.BLACKPAWN.getId(),Piece.BLACKROOK.getId(),Piece.BLACKKNIGHT.getId(),Piece.BLACKKING.getId()
-                                keepgoing = false;
-                                break;
-                            case 10, 11:// Piece.BLACKQUEEN.getId(),Piece.BLACKBISHOP.getId():
-                                return true;
-                        }
-                    } else {
-                        keepgoing = false;
-                    }
+                } else {
+                    keepgoing = false;
                 }
             }
 
-            directions = Piece.WHITEKNIGHT.getDirection();
-            for (byte[] direction : directions) {// Knight direction
-                byte dx = direction[0];
-                byte dy = direction[1];
-                casetest.setCol(co);
-                casetest.setRow(l);
+        }
+
+        directions = Piece.WHITEBISHOP.getDirection();
+        for (byte[] direction : directions) {// Bishop direction
+            byte dx = direction[0];
+            byte dy = direction[1];
+            casetest.setCol(co);
+            casetest.setRow(l);
+            boolean keepgoing = true;
+            while (keepgoing) {
                 casetest.setCol((byte) (casetest.getCol() + dy));
                 casetest.setRow((byte) (casetest.getRow() + dx));
                 if (isOnChessboard(casetest)) {
 
                     switch (this.getPosCase(casetest)) {
-                        case 0, 1, 2, 3, 4, 6, 7, 8, 10, 11, 12:// Piece.WHITEROOK.getId(),Piece.WHITEKNIGHT.getId(),Piece.WHITEBISHOP.getId(),Piece.WHITEQUEEN.getId(),Piece.WHITEKING.getId(),Piece.WHITEPAWN.getId(),Piece.BLACKPAWN.getId(),Piece.BLACKROOK.getId(),Piece.BLACKBISHOP.getId(),Piece.BLACKQUEEN.getId(),Piece.BLACKKING.getId()
+                        case 0:
                             break;
-                        case 9:// Piece.BLACKKNIGHT.getId():
-                            return true;
+                        case 1, 2, 6, 7, 8, 9, 12:
+                            keepgoing = false;
+                            break;
+                        case 10, 11: //BLACKBISHOP, BLACKQUEEN
+                        	if (this.getTurn()) {
+                        		return true;
+                        	} else {
+                        		keepgoing = false;
+                        	}
+                            break;
+                        case 3, 4: //WHITEBISHOP, WHITEQUEEN
+                        	if (!this.getTurn()) {
+                        		return true;
+                        	} else {
+                        		keepgoing = false;
+                        	}
+                        	break;
                     }
+                } else {
+                    keepgoing = false;
                 }
             }
+        }
 
-            Coordinate casetest1 = new Coordinate((byte) (c.getRow() - 1), (byte) (c.getCol() - 1));
+        directions = Piece.WHITEKNIGHT.getDirection();
+        for (byte[] direction : directions) {// Knight direction
+            byte dx = direction[0];
+            byte dy = direction[1];
+            casetest.setCol(co);
+            casetest.setRow(l);
+            casetest.setCol((byte) (casetest.getCol() + dy));
+            casetest.setRow((byte) (casetest.getRow() + dx));
+            if (isOnChessboard(casetest)) {
+
+                switch (this.getPosCase(casetest)) {
+                    case 0, 1, 3, 4, 6, 7, 8, 10, 11, 12:// Piece.WHITEROOK.getId(),Piece.WHITEKNIGHT.getId(),Piece.WHITEBISHOP.getId(),Piece.WHITEQUEEN.getId(),Piece.WHITEKING.getId(),Piece.WHITEPAWN.getId(),Piece.BLACKPAWN.getId(),Piece.BLACKROOK.getId(),Piece.BLACKBISHOP.getId(),Piece.BLACKQUEEN.getId(),Piece.BLACKKING.getId()
+                        break;
+                    case 9:// BLACKKNIGHT
+                    	if (this.getTurn()) {
+                    		return true;
+                    	}
+                        break;
+                    case 2: //WHITEKNIGHT
+                    	if (!this.getTurn()) {
+                    		return true;
+                    	}
+                    	break;
+                }
+            }
+        }
+        
+        if (this.getTurn()) {
+        	Coordinate casetest1 = new Coordinate((byte) (c.getRow() - 1), (byte) (c.getCol() - 1));
             Coordinate casetest2 = new Coordinate((byte) (c.getRow() - 1), (byte) (c.getCol() + 1));
 
             if (isOnChessboard(casetest1)) {
@@ -730,29 +767,36 @@ public class Position implements Cloneable {
                     return true;
                 }
             }
-
-            directions = Piece.WHITEKING.getDirection();
-            for (byte[] direction : directions) {// Knight direction
-                byte dx = direction[0];
-                byte dy = direction[1];
-                casetest.setCol(co);
-                casetest.setRow(l);
-                casetest.setCol((byte) (casetest.getCol() + dy));
-                casetest.setRow((byte) (casetest.getRow() + dx));
-                if (isOnChessboard(casetest)) {
-
-                    switch (this.getPosCase(casetest)) {
-                        case 0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11: // Piece.WHITEROOK.getId(),Piece.WHITEKNIGHT.getId(),Piece.WHITEBISHOP.getId(),Piece.WHITEQUEEN.getId(),Piece.WHITEKING.getId(),Piece.WHITEPAWN.getId(),Piece.BLACKPAWN.getId(),Piece.BLACKROOK.getId(),Piece.BLACKKNIGHT.getId(),Piece.BLACKBISHOP.getId(),Piece.BLACKQUEEN.getId()
-                            break;
-                        case 12:// Piece.BLACKKING.getId():
-                            return true;
-                    }
-                }
-            }
-            return false;
         }
 
-        else { // Player with Dark Pieces
+        directions = Piece.WHITEKING.getDirection();
+        for (byte[] direction : directions) {// Knight direction
+            byte dx = direction[0];
+            byte dy = direction[1];
+            casetest.setCol(co);
+            casetest.setRow(l);
+            casetest.setCol((byte) (casetest.getCol() + dy));
+            casetest.setRow((byte) (casetest.getRow() + dx));
+            if (isOnChessboard(casetest)) {
+
+                switch (this.getPosCase(casetest)) {
+                    case 0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11: // Piece.WHITEROOK.getId(),Piece.WHITEKNIGHT.getId(),Piece.WHITEBISHOP.getId(),Piece.WHITEQUEEN.getId(),Piece.WHITEKING.getId(),Piece.WHITEPAWN.getId(),Piece.BLACKPAWN.getId(),Piece.BLACKROOK.getId(),Piece.BLACKKNIGHT.getId(),Piece.BLACKBISHOP.getId(),Piece.BLACKQUEEN.getId()
+                        break;
+                    case 12: // BLACKKING
+                    	if (this.getTurn()) {
+                    		return true;
+                    	}
+                        break;
+                    case 5: // WHITEKING
+                    	if (!this.getTurn()) {
+                    		return true;
+                    	}
+                    	break;
+                }
+            }
+        }
+
+        /*else { // Player with Dark Pieces
             directions = Piece.BLACKROOK.getDirection();
             for (byte[] direction : directions) {// rook direction
                 byte dx = direction[0];
@@ -822,23 +866,26 @@ public class Position implements Cloneable {
                             return true;
                     }
                 }
-            }
+            }*/
 
-            Coordinate casetest1 = new Coordinate((byte) (c.getRow() + 1), (byte) (c.getCol() - 1));
-            Coordinate casetest2 = new Coordinate((byte) (c.getRow() + 1), (byte) (c.getCol() + 1));
+    	if (!this.getTurn()) {
+    		 Coordinate casetest1 = new Coordinate((byte) (c.getRow() + 1), (byte) (c.getCol() - 1));
+             Coordinate casetest2 = new Coordinate((byte) (c.getRow() + 1), (byte) (c.getCol() + 1));
 
-            if (isOnChessboard(casetest1)) {
-                if (this.getPosCase(casetest1) == Piece.WHITEPAWN.getId()) {
-                    return true;
-                }
-            }
-            if (isOnChessboard(casetest2)) {
-                if (this.getPosCase(casetest2) == Piece.WHITEPAWN.getId()) {
-                    return true;
-                }
-            }
+             if (isOnChessboard(casetest1)) {
+                 if (this.getPosCase(casetest1) == Piece.WHITEPAWN.getId()) {
+                     return true;
+                 }
+             }
+             if (isOnChessboard(casetest2)) {
+                 if (this.getPosCase(casetest2) == Piece.WHITEPAWN.getId()) {
+                     return true;
+                 }
+             }
+    	}
+           
 
-            directions = Piece.BLACKKING.getDirection();
+           /* directions = Piece.BLACKKING.getDirection();
             for (byte[] direction : directions) {// Knight direction
                 byte dx = direction[0];
                 byte dy = direction[1];
@@ -855,7 +902,7 @@ public class Position implements Cloneable {
                     }
                 }
             }
-        }
+        }*/
         return false;
     }
 
@@ -903,10 +950,7 @@ public class Position implements Cloneable {
                             && this.getPosCase(cCheck) > 0) {
                         for (byte k = 0; k < 8; k++) {
                             for (byte l = 0; l < 8; l++) {
-                                byte test2 = tmpMove[k][l];
-                                System.out.println("test2:" + test2);
                                 if (tmpMove[k][l] > 0) {
-                                    System.out.println("tmpMove : " + tmpMove[k][l]);
                                     stalemate = false;
                                     return stalemate;
                                 }
@@ -914,16 +958,11 @@ public class Position implements Cloneable {
                         }
                     }
                 } else {
-                    byte test = this.getPosCase(cCheck);
-                    System.out.println("test:" + test);
                     if (this.getPosCase(cCheck) <= 12
                             && this.getPosCase(cCheck) >= 7) {
                         for (byte k = 0; k < 8; k++) {
                             for (byte l = 0; l < 8; l++) {
-                                byte test2 = tmpMove[k][l];
-                                System.out.println("test2:" + test2);
                                 if (tmpMove[k][l] > 0) {
-                                    System.out.println("tmpMove : " + tmpMove[k][l]);
                                     stalemate = false;
                                     return stalemate;
                                 }
@@ -966,16 +1005,12 @@ public class Position implements Cloneable {
 
     public String toString() {
         String chessboard = "";
-        int row = 9;
-        String col = "    a   b   c   d   e   f   g   h  \n";
-        chessboard = chessboard + col + "  ";
         for (byte i = 0; i < 8; i++) {
             for (byte k = 0; k < 8; k++) {
                 chessboard = chessboard + "+---";
             }
-            row--;
             chessboard = chessboard + "+";
-            chessboard = chessboard + "\n" + row + " ";
+            chessboard = chessboard + "\n";
             for (byte j = 0; j < 8; j++) {
                 switch (this.getPosCase(new Coordinate(i, j))) {
                     case 0:
@@ -1019,13 +1054,13 @@ public class Position implements Cloneable {
                         break;
                 }
             }
-            chessboard = chessboard + "| " + row + "\n  ";
+            chessboard = chessboard + "|\n";
         }
         for (int k = 0; k < 8; k++) {
             chessboard = chessboard + "+---";
         }
         chessboard = chessboard + "+\n";
-        chessboard = chessboard + col + "\n";
+        chessboard = chessboard + "\n";
         chessboard = chessboard + "whiteCastle     : " + this.getWhiteCastle() + "\n";
         chessboard = chessboard + "blackCastle     : " + this.getBlackCastle() + "\n";
         chessboard = chessboard + "whiteCastleLong : " + this.getWhiteCastleLong() + "\n";
@@ -1036,38 +1071,38 @@ public class Position implements Cloneable {
         chessboard = chessboard + "isCheckMate     : " + this.isCheckMate() + "\n";
         return chessboard;
     }
-
+    
     public String getAffichage(Coordinate c) {
-        switch (this.getPosCase(c)) {
-            case 0:
-                return "  ";
-            case 1:
-                return "\u2656 ";
-            case 2:
-                return "\u2658 ";
-            case 3:
-                return "\u2657 ";
-            case 4:
-                return "\u2655 ";
-            case 5:
-                return "\u2654 ";
-            case 6:
-                return "\u2659 ";
-            case 7:
-                return "\u265F ";
-            case 8:
-                return "\u265C ";
-            case 9:
-                return "\u265E ";
-            case 10:
-                return "\u265D ";
-            case 11:
-                return "\u265B ";
-            case 12:
-                return "\u265A ";
-            default:
-                return "";
-        }
+    	switch (this.getPosCase(c)) {
+        case 0:
+            return "  ";
+        case 1:
+        	return "\u2656 ";
+        case 2:
+            return "\u2658 ";
+        case 3:
+        	return "\u2657 ";
+        case 4:
+            return "\u2655 ";
+        case 5:
+            return "\u2654 ";
+        case 6:
+            return "\u2659 ";
+        case 7:
+            return "\u265F ";
+        case 8:
+            return "\u265C ";
+        case 9:
+            return "\u265E ";
+        case 10:
+            return "\u265D ";
+        case 11:
+            return "\u265B ";
+        case 12:
+            return "\u265A ";
+        default:
+        	return "";
+    	}
     }
 
     public Position clone() {
