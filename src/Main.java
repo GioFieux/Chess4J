@@ -9,14 +9,6 @@ public class Main {
         Position jeu = new Position();
 
         Game g = new Game("");
-        /*
-         * System.out.println(jeu);
-         * 
-         * jeu.testAdd(new Coordinate("e2"),new Coordinate("e4"),true);
-         * 
-         * System.out.println(jeu);
-         * 
-         */
 
         Coordinate c1 = null;
         Coordinate c2 = null;
@@ -24,9 +16,10 @@ public class Main {
         System.out.println(jeu);
         
         int numberMove=1;
+        boolean keepgoing=true;
 
-        while ( !(jeu.isCheckMate()) || !(jeu.isStaleMate()) ) {
-            // System.out.println("isCheckMate() : " + jeu.isCheckMate());
+        while (keepgoing) {
+
             System.out.println("Enter a coordinate");
             String str = sc.nextLine();
             c1 = new Coordinate(str);
@@ -37,25 +30,27 @@ public class Main {
             byte[][] accessible = jeu.caseAccess(c1); 
             jeu.displayCaseAccess(accessible);
             
-            boolean done=false;
-            
             do {
 	            try {
 	            	System.out.println("Enter a second case");
 	                str = sc.nextLine();
 	                c2 = new Coordinate(str);
 	            	jeu.playMove(c1, c2, g);
-	            	done=true;
 	            } catch (NotAccessibleCaseException e) {
-	            	System.out.println("Veuillez faire le nécessaire");
-	            	System.out.println("Enter a second case");
-	                str = sc.nextLine();
-	                c2 = new Coordinate(str);
-	                jeu.playMove(c1, c2, g);
-	                continue;
+	            	System.out.println("Vous n'avez pas entré une case accessible");
+	            	
 	            } 
-            } while (!done);
-            
+            } while (accessible[c2.getRow()][c2.getCol()]);
+
+            //test
+            if(jeu.isCheckMate()) {
+                break;
+            }
+            jeu.setTurn(!(jeu.getTurn()));
+            if(jeu.isStaleMate()) {
+                break;
+            }
+            jeu.setTurn(!(jeu.getTurn()));
             String piece2 = jeu.getAffichage(c2);
 
             System.out.println("bravo, c'est un coup valide :");
@@ -67,11 +62,17 @@ public class Main {
             numberMove++;
         }
         
-        if (jeu.getTurn()) {
-        	System.out.println("Victoire des ");
+        if(jeu.isCheckMate) {
+            if (jeu.getTurn()) {
+                System.out.println("Victoire des noirs par échec et mat");
+            } else {
+                System.out.println("Victoire des blancs par échec et mat");
+            }
         } else {
-        	System.out.println("Victoire des ");
+            System.out.println("Match nul par PAT");
         }
+        System.out.println("Fin de la partie");
+       
         
 
         // for testting purpose only
@@ -104,6 +105,4 @@ public class Main {
          * //boolean b = game.timedOut(); -->
          */
     }
-    
-    
 }
