@@ -2,7 +2,7 @@ import java.util.Scanner;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws NotAccessibleCaseException {
 
         Scanner sc = new Scanner(System.in);
 
@@ -36,22 +36,41 @@ public class Main {
             System.out.println("Here are the reachable cases");
             byte[][] accessible = jeu.caseAccess(c1); 
             jeu.displayCaseAccess(accessible);
-
-            System.out.println("Enter a second case");
-            str = sc.nextLine();
-            c2 = new Coordinate(str);
+            
+            boolean done=false;
+            
+            do {
+	            try {
+	            	System.out.println("Enter a second case");
+	                str = sc.nextLine();
+	                c2 = new Coordinate(str);
+	            	jeu.playMove(c1, c2, g);
+	            	done=true;
+	            } catch (NotAccessibleCaseException e) {
+	            	System.out.println("Veuillez faire le nécessaire");
+	            	System.out.println("Enter a second case");
+	                str = sc.nextLine();
+	                c2 = new Coordinate(str);
+	                jeu.playMove(c1, c2, g);
+	                continue;
+	            } 
+            } while (!done);
             
             String piece2 = jeu.getAffichage(c2);
 
             System.out.println("bravo, c'est un coup valide :");
-            
-            jeu.playMove(c1, c2, g);
             
             g.updatePGN(c1, c2, piece1, piece2, numberMove);
             
             System.out.println("PGN : \n" + g.getPGN());
             System.out.println(jeu);
             numberMove++;
+        }
+        
+        if (jeu.getTurn()) {
+        	System.out.println("Victoire des ");
+        } else {
+        	System.out.println("Victoire des ");
         }
         
 
