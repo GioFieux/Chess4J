@@ -45,16 +45,13 @@ public class Main {
             
             jeu.playMove(c1, c2, g);
             
-            if(piece2.equals("   ")) {
-            	g.setPGN(g.getPGN() + numberMove + ". " + c1.byteConversionToString()[0] + c1.byteConversionToString()[1] + " " + piece1 + c2.byteConversionToString()[0] + c2.byteConversionToString()[1] + "\n");
-            } else {
-            	
-            }
+            g.updatePGN(c1, c2, piece1, piece2, numberMove);
             
             System.out.println("PGN : " + g.getPGN());
             System.out.println(jeu);
             numberMove++;
         }
+        
 
         // for testting purpose only
         /*
@@ -86,4 +83,6 @@ public class Main {
          * //boolean b = game.timedOut(); -->
          */
     }
+    
+    
 }

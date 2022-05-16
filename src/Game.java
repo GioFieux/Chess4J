@@ -21,6 +21,14 @@ public class Game {
     public void setPGN(String s) {
         this.PGN = s;
     }
+    
+    public void updatePGN(Coordinate c1, Coordinate c2, String piece1, String piece2, int numberMove) {
+    	if(piece2.equals("  ")) {
+        	this.setPGN(this.getPGN() + numberMove + ". " + c1.byteConversionToString()[0] + c1.byteConversionToString()[1] + " " + c2.byteConversionToString()[0] + c2.byteConversionToString()[1] + " " + piece1 + "\n");
+        } else {
+        	this.setPGN(this.getPGN() + numberMove + ". " + c1.byteConversionToString()[0] + c1.byteConversionToString()[1] + " " + c2.byteConversionToString()[0] + c2.byteConversionToString()[1] + " " + piece1 + "took " + piece2 + "\n");
+        }
+    }
 
     public boolean getDisplayMode() {
         return this.displayMode;
