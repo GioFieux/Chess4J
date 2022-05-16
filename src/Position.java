@@ -966,12 +966,16 @@ public class Position implements Cloneable {
 
     public String toString() {
         String chessboard = "";
+        int row = 9;
+        String col = "    a   b   c   d   e   f   g   h  \n";
+        chessboard = chessboard + col + "  ";
         for (byte i = 0; i < 8; i++) {
             for (byte k = 0; k < 8; k++) {
                 chessboard = chessboard + "+---";
             }
+            row--;
             chessboard = chessboard + "+";
-            chessboard = chessboard + "\n";
+            chessboard = chessboard + "\n" + row + " ";
             for (byte j = 0; j < 8; j++) {
                 switch (this.getPosCase(new Coordinate(i, j))) {
                     case 0:
@@ -1015,13 +1019,13 @@ public class Position implements Cloneable {
                         break;
                 }
             }
-            chessboard = chessboard + "|\n";
+            chessboard = chessboard + "| " + row + "\n  ";
         }
         for (int k = 0; k < 8; k++) {
             chessboard = chessboard + "+---";
         }
         chessboard = chessboard + "+\n";
-        chessboard = chessboard + "\n";
+        chessboard = chessboard + col + "\n";
         chessboard = chessboard + "whiteCastle     : " + this.getWhiteCastle() + "\n";
         chessboard = chessboard + "blackCastle     : " + this.getBlackCastle() + "\n";
         chessboard = chessboard + "whiteCastleLong : " + this.getWhiteCastleLong() + "\n";
@@ -1032,38 +1036,38 @@ public class Position implements Cloneable {
         chessboard = chessboard + "isCheckMate     : " + this.isCheckMate() + "\n";
         return chessboard;
     }
-    
+
     public String getAffichage(Coordinate c) {
-    	switch (this.getPosCase(c)) {
-        case 0:
-            return "  ";
-        case 1:
-        	return "\u2656 ";
-        case 2:
-            return "\u2658 ";
-        case 3:
-        	return "\u2657 ";
-        case 4:
-            return "\u2655 ";
-        case 5:
-            return "\u2654 ";
-        case 6:
-            return "\u2659 ";
-        case 7:
-            return "\u265F ";
-        case 8:
-            return "\u265C ";
-        case 9:
-            return "\u265E ";
-        case 10:
-            return "\u265D ";
-        case 11:
-            return "\u265B ";
-        case 12:
-            return "\u265A ";
-        default:
-        	return "";
-    	}
+        switch (this.getPosCase(c)) {
+            case 0:
+                return "  ";
+            case 1:
+                return "\u2656 ";
+            case 2:
+                return "\u2658 ";
+            case 3:
+                return "\u2657 ";
+            case 4:
+                return "\u2655 ";
+            case 5:
+                return "\u2654 ";
+            case 6:
+                return "\u2659 ";
+            case 7:
+                return "\u265F ";
+            case 8:
+                return "\u265C ";
+            case 9:
+                return "\u265E ";
+            case 10:
+                return "\u265D ";
+            case 11:
+                return "\u265B ";
+            case 12:
+                return "\u265A ";
+            default:
+                return "";
+        }
     }
 
     public Position clone() {
