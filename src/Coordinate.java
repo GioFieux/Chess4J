@@ -8,6 +8,11 @@ public class Coordinate {
         this.row = x;
         this.col = y;
     }
+    
+    public Coordinate() {
+    	this.row=(byte)0;
+    	this.col=(byte)0;
+    }
 
     public Coordinate(int x, int y) {
         this.row = (byte) x;
@@ -39,7 +44,7 @@ public class Coordinate {
     }
 
     public String toString() {
-        return "Row : " + this.getRow() + " | Col : " + this.getCol();
+        return "(Row : " + this.getRow() + " , Col : " + this.getCol() + ") " + this.byteConversionToString()[0] + this.byteConversionToString()[1];
     }
 
     public boolean equals(Object o) {

@@ -21,6 +21,8 @@ public class Main {
         Coordinate c1 = null;
         Coordinate c2 = null;
         
+        System.out.println(jeu);
+        
         int numberMove=1;
 
         while ( !(jeu.isCheckMate()) || !(jeu.isStaleMate()) ) {

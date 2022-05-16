@@ -123,8 +123,10 @@ public class Position implements Cloneable {
     public void playMove(Coordinate c1, Coordinate c2, Game g) {
         byte[][] tmpMove = caseAccess(c1); // value of caseAccess(c1) in an array of array of byte
 
+        //this.setEnPassant(new Coordinate());
+        
         if (tmpMove[c2.getRow()][c2.getCol()] > 0) { // check if c2 is in tmp (value of caseAccess(c1))
-            pseudoPlayMove(c1, c2);
+        	pseudoPlayMove(c1, c2);
             // UpdateTimePGN
             System.out.println("Move done");
             this.setTurn(!(this.getTurn()));
@@ -141,7 +143,7 @@ public class Position implements Cloneable {
 
     private void pseudoPlayMove(Coordinate c1, Coordinate c2) {
 
-        // this.setEnPassant(null);
+        this.setEnPassant(new Coordinate());
 
         switch (this.getPosCase(c1)) {
             case 1: // WHITEROOK
@@ -207,7 +209,7 @@ public class Position implements Cloneable {
                     Coordinate ct = new Coordinate(c1.getRow(), c2.getCol());
                     movePiece(c1, ct);
                     movePiece(ct, c2);
-                } else { // pour tout le reste, dï¿½placement normal, déplacement de 2 cases, prise et aussi promotion)
+                } else { // pour tout le reste, dï¿½placement normal, dï¿½placement de 2 cases, prise et aussi promotion)
                     movePiece(c1, c2);
                 }
                 if (Math.abs(c1.getRow() - c2.getRow()) == 2) {
@@ -1005,12 +1007,16 @@ public class Position implements Cloneable {
 
     public String toString() {
         String chessboard = "";
+        int row = 9;
+        String col = "    a   b   c   d   e   f   g   h  \n";
+        chessboard = chessboard + col + "  ";
         for (byte i = 0; i < 8; i++) {
             for (byte k = 0; k < 8; k++) {
                 chessboard = chessboard + "+---";
             }
+            row--;
             chessboard = chessboard + "+";
-            chessboard = chessboard + "\n";
+            chessboard = chessboard + "\n" + row + " ";
             for (byte j = 0; j < 8; j++) {
                 switch (this.getPosCase(new Coordinate(i, j))) {
                     case 0:
@@ -1054,13 +1060,13 @@ public class Position implements Cloneable {
                         break;
                 }
             }
-            chessboard = chessboard + "|\n";
+            chessboard = chessboard + "| " + row + "\n  ";
         }
         for (int k = 0; k < 8; k++) {
             chessboard = chessboard + "+---";
         }
         chessboard = chessboard + "+\n";
-        chessboard = chessboard + "\n";
+        chessboard = chessboard + col + "\n";
         chessboard = chessboard + "whiteCastle     : " + this.getWhiteCastle() + "\n";
         chessboard = chessboard + "blackCastle     : " + this.getBlackCastle() + "\n";
         chessboard = chessboard + "whiteCastleLong : " + this.getWhiteCastleLong() + "\n";
@@ -1069,6 +1075,7 @@ public class Position implements Cloneable {
         chessboard = chessboard + "enPassant       : " + this.getEnPassant() + "\n";
         chessboard = chessboard + "isChecked       : " + this.isChecked() + "\n";
         chessboard = chessboard + "isCheckMate     : " + this.isCheckMate() + "\n";
+        chessboard = chessboard + "isStaleMate     : " + this.isStaleMate() + "\n";
         return chessboard;
     }
     
