@@ -25,6 +25,7 @@ public class Main {
             c1 = new Coordinate(str);
             
             String piece1 = jeu.getAffichage(c1);
+            String piece2 = null;
             
             System.out.println("Here are the reachable cases");
             byte[][] accessible = jeu.caseAccess(c1); 
@@ -35,12 +36,13 @@ public class Main {
 	            	System.out.println("Enter a second case");
 	                str = sc.nextLine();
 	                c2 = new Coordinate(str);
+	                piece2 = jeu.getAffichage(c2);
 	            	jeu.playMove(c1, c2, g);
 	            } catch (NotAccessibleCaseException e) {
 	            	System.out.println("Vous n'avez pas entr√© une case accessible");
 	            	
 	            } 
-            } while (accessible[c2.getRow()][c2.getCol()]);
+            } while (accessible[c2.getRow()][c2.getCol()]==0);
 
             //test
             if(jeu.isCheckMate()) {
@@ -51,7 +53,7 @@ public class Main {
                 break;
             }
             jeu.setTurn(!(jeu.getTurn()));
-            String piece2 = jeu.getAffichage(c2);
+            
 
             System.out.println("bravo, c'est un coup valide :");
             
@@ -62,16 +64,17 @@ public class Main {
             numberMove++;
         }
         
-        if(jeu.isCheckMate) {
+        if(jeu.isCheckMate()) {
             if (jeu.getTurn()) {
-                System.out.println("Victoire des noirs par √©chec et mat");
+                System.out.println("Victoire des noirs par Èchec et mat");
             } else {
-                System.out.println("Victoire des blancs par √©chec et mat");
+                System.out.println("Victoire des blancs par Èchec et mat");
             }
         } else {
             System.out.println("Match nul par PAT");
         }
         System.out.println("Fin de la partie");
+        sc.close();
        
         
 
