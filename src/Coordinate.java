@@ -56,9 +56,7 @@ public class Coordinate {
     }
     
     public byte[] stringConversionToByte(String str) {
-    	if (!(str.length() == 2)) {
-    		
-        }
+    	
         char col = str.charAt(0);
         char row = str.charAt(1);
 

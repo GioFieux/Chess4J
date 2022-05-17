@@ -17,29 +17,22 @@ public class Position implements Cloneable {
     private final Coordinate b8 = new Coordinate("b8");
 
     private byte[][] pos = {
-            { Piece.BLACKROOK.getId(), Piece.BLACKKNIGHT.getId(),
-                    Piece.BLACKBISHOP.getId(), Piece.BLACKQUEEN.getId(),
-                    Piece.BLACKKING.getId(), Piece.BLACKBISHOP.getId(), Piece.BLACKKNIGHT.getId(),
-                    Piece.BLACKROOK.getId() },
-            { Piece.BLACKPAWN.getId(), Piece.BLACKPAWN.getId(), Piece.BLACKPAWN.getId(),
-                    Piece.BLACKPAWN.getId(),
-                    Piece.BLACKPAWN.getId(), Piece.BLACKPAWN.getId(), Piece.BLACKPAWN.getId(),
-                    Piece.BLACKPAWN.getId() },
+            { 0, 0, 0, 0, 0, Piece.BLACKQUEEN.getId(), 0, 0 },
+            { 0, 0, 0, 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0, 0, Piece.WHITEPAWN.getId(), 0 },
+            { Piece.BLACKKING.getId(), 0, 0, 0, 0, 0, 0, 0 },
             { 0, 0, 0, 0, 0, 0, 0, 0 },
             { 0, 0, 0, 0, 0, 0, 0, 0 },
-            { 0, 0, 0, 0, 0, 0, 0, 0 },
-            { 0, 0, 0, 0, 0, Piece.WHITEQUEEN.getId(), 0, 0 },
             { Piece.WHITEPAWN.getId(), Piece.WHITEPAWN.getId(), Piece.WHITEPAWN.getId(),
                     Piece.WHITEPAWN.getId(),
                     Piece.WHITEPAWN.getId(), Piece.WHITEPAWN.getId(), Piece.WHITEPAWN.getId(),
-                    Piece.WHITEPAWN.getId() },
+                    0 },
             { Piece.WHITEROOK.getId(), Piece.WHITEKNIGHT.getId(),
                     Piece.WHITEBISHOP.getId(),
-                    0, Piece.WHITEKING.getId(),
+                    Piece.WHITEQUEEN.getId(), Piece.WHITEKING.getId(),
                     Piece.WHITEBISHOP.getId(), Piece.WHITEKNIGHT.getId(),
                     Piece.WHITEROOK.getId() }
     };
-
     private boolean whiteCastle;
     private boolean blackCastle;
     private boolean whiteCastleLong;
@@ -122,8 +115,6 @@ public class Position implements Cloneable {
 
     public void playMove(Coordinate c1, Coordinate c2, Game g) throws NotAccessibleCaseException {
         byte[][] tmpMove = caseAccess(c1); // value of caseAccess(c1) in an array of array of byte
-
-        //this.setEnPassant(new Coordinate());
         
         if (tmpMove[c2.getRow()][c2.getCol()] > 0) { // check if c2 is in tmp (value of caseAccess(c1))
         	pseudoPlayMove(c1, c2);
@@ -137,16 +128,17 @@ public class Position implements Cloneable {
 
     public void playMove(Coordinate c1, Coordinate c2, Game g, Piece p) throws NotAccessibleCaseException {
         this.playMove(c1, c2, g);
-        if (this.getTurn()) {
-			if(c2.getRow()==0 && this.getPosCase(c1)==Piece.WHITEPAWN.getId()) {
+        if (!this.getTurn()) {
+			if(c2.getRow()==0 && this.getPosCase(c2)==Piece.WHITEPAWN.getId()) {
 				this.setPosCase(c2, p.getId());
+				g.setPGN(g.getPGN() + "Promotion en : " + p.name() + " ");
 			}
 		} else {
-			if(c2.getRow()==7 && this.getPosCase(c1)==Piece.BLACKPAWN.getId()) {
+			if(c2.getRow()==7 && this.getPosCase(c2)==Piece.BLACKPAWN.getId()) {
 				this.setPosCase(c2, p.getId());
+				g.setPGN(g.getPGN() + "Promotion en : " + p.name() + " ");
 			}
 		}
-        g.setPGN(g.getPGN() + " Promotion en : " + p.name());
     }
 
     private void pseudoPlayMove(Coordinate c1, Coordinate c2) {
@@ -512,15 +504,18 @@ public class Position implements Cloneable {
         byte twoCasesRow;
         Coordinate cTest2;
         byte enPassantRow;
+        byte promotionRow;
 
         if (team) {
             twoCasesRow = 6;
             enPassantRow = 3;
+            promotionRow = 1;
         } else {
             twoCasesRow = 1;
             enPassantRow = 4;
+            promotionRow = 6;
         }
-
+        
         if (c.getRow() != 1 && c.getRow() != 6) { // case classic move
 
             int a = c.getRow() + classicDirection[0];
@@ -528,16 +523,17 @@ public class Position implements Cloneable {
 
             cTest.setRow((byte) a);
             cTest.setCol((byte) b);
-
-            if (this.getPosCase(cTest) == 0) { // empty case
-                resultMatrix[cTest.getRow()][cTest.getCol()] = this.testAdd(c, cTest, false);
-            } // there is no else because whatever it's a allied or enemy piece, the pawn
-              // cannot move forward
-              // so resultMatrix in cTest stays to 0
-
-        } else if (c.getRow() == twoCasesRow) {
-
-            // case move 2 cases
+            if(isOnChessboard(cTest)) {
+            	if (this.getPosCase(cTest) == 0) { // empty case
+                    resultMatrix[cTest.getRow()][cTest.getCol()] = this.testAdd(c, cTest, false);
+                } // there is no else because whatever it's a allied or enemy piece, the pawn
+                  // cannot move forward
+                  // so resultMatrix in cTest stays to 0
+            }
+        } 
+        
+        if (c.getRow() == twoCasesRow) { // case move 2 cases
+        	
             int a = c.getRow() + twoCasesDirection[0];
             int b = c.getCol() + twoCasesDirection[1];
 
@@ -615,6 +611,19 @@ public class Position implements Cloneable {
                 resultMatrix[accessEnPassant.getRow()][accessEnPassant.getCol()] = this.testAdd(c, cTest, true);
             }
 
+        if(c.getRow()==promotionRow) {
+        	
+        	 int a2 = c.getRow() + classicDirection[0];
+             int b2 = c.getCol() + classicDirection[1];
+
+             cTest.setRow((byte) a2);
+             cTest.setCol((byte) b2);
+
+             if (this.getPosCase(cTest) == 0) { // empty case
+                 resultMatrix[cTest.getRow()][cTest.getCol()] = this.testAdd(c, cTest, false);
+             }
+        }
+            
         }
         return resultMatrix;
     }
@@ -630,7 +639,7 @@ public class Position implements Cloneable {
         System.out.println(test);
     }
 
-    private boolean isOnChessboard(Coordinate c) { // check if the case is on chessboard
+    public boolean isOnChessboard(Coordinate c) { // check if the case is on chessboard
         boolean onChessboard = true;
         byte a = c.getRow();
         byte b = c.getCol();
@@ -643,7 +652,6 @@ public class Position implements Cloneable {
         } else {
             onChessboard = false;
         }
-
         return onChessboard;
     }
 
