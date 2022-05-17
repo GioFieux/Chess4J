@@ -140,8 +140,8 @@ public class Chessboard extends Application {
 		vbox2.getChildren().add(hbox1);
 		vbox2.getChildren().add(pane);
 		vbox2.getChildren().add(hbox2);
-
-		hbox.setSpacing(50);
+		vbox2.setSpacing(3);
+		
 		int count =0;
 		double s = 90;
 		for(byte i=0; i<8; i++) {
@@ -162,7 +162,7 @@ public class Chessboard extends Application {
 		hbox.getChildren().add(vbox);
 		hbox.getChildren().add(vbox2);
 		hbox.getChildren().add(vbox1);
-		
+		hbox.setSpacing(20);
 		MenuBar menuBar = new MenuBar();
 		Menu partie= new Menu("Partie");
 		
@@ -186,22 +186,22 @@ public class Chessboard extends Application {
         paneborder.setTop(menuBar);
         paneborder.setCenter(hbox);
 		vbox.setMargin(number8, new Insets(40,0,55,0));
-		vbox.setMargin(number7, new Insets(15,0,55,0));
-		vbox.setMargin(number6, new Insets(15,0,55,0));
-		vbox.setMargin(number5, new Insets(15,0,55,0));
+		vbox.setMargin(number7, new Insets(25,0,55,0));
+		vbox.setMargin(number6, new Insets(25,0,55,0));
+		vbox.setMargin(number5, new Insets(25,0,55,0));
 		vbox.setMargin(number4, new Insets(20,0,55,0));
 		vbox.setMargin(number3, new Insets(20,0,55,0));
-		vbox.setMargin(number2, new Insets(20,0,55,0));
-		vbox.setMargin(number1, new Insets(15,0,55,0));
+		vbox.setMargin(number2, new Insets(15,0,55,0));
+		vbox.setMargin(number1, new Insets(20,0,55,0));
 		
 		vbox1.setMargin(number8bis, new Insets(40,0,55,0));
-		vbox1.setMargin(number7bis, new Insets(15,0,55,0));
-		vbox1.setMargin(number6bis, new Insets(15,0,55,0));
-		vbox1.setMargin(number5bis, new Insets(15,0,55,0));
+		vbox1.setMargin(number7bis, new Insets(25,0,55,0));
+		vbox1.setMargin(number6bis, new Insets(25,0,55,0));
+		vbox1.setMargin(number5bis, new Insets(25,0,55,0));
 		vbox1.setMargin(number4bis, new Insets(20,0,55,0));
 		vbox1.setMargin(number3bis, new Insets(20,0,55,0));
-		vbox1.setMargin(number2bis, new Insets(20,0,55,0));
-		vbox1.setMargin(number1bis, new Insets(15,0,55,0));
+		vbox1.setMargin(number2bis, new Insets(15,0,55,0));
+		vbox1.setMargin(number1bis, new Insets(20,0,55,0));
         
 		hbox1.setMargin(lettera, new Insets(0,40,0,50));
 		hbox1.setMargin(letterb, new Insets(0,40,0,40));
@@ -222,7 +222,7 @@ public class Chessboard extends Application {
 		hbox2.setMargin(lettergbis, new Insets(0,40,0,45));
 		hbox2.setMargin(letterhbis, new Insets(0,40,0,45));
 		
-		paneborder.setMargin(hbox, new Insets(10,0,0,60));
+		paneborder.setMargin(hbox, new Insets(5,0,0,30));
 		Scene scene= new Scene(paneborder);
 		primaryStage.setTitle("Chessboard");
 		primaryStage.getIcons().add(new Image("file:logo.png"));
