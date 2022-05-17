@@ -53,7 +53,7 @@ public class Position implements Cloneable {
         this.turn = true; // whitePlayer turn
         this.whiteCastle = true;
         this.whiteCastleLong = true;
-        this.enPassant = new Coordinate((byte) 0, (byte) 0);
+        this.enPassant = new Coordinate();
     }
 
     public boolean getWhiteCastle() {
@@ -176,7 +176,7 @@ public class Position implements Cloneable {
                 movePiece(c1, c2);
                 break;
 
-            case 5: // WHITEKING:
+            case 5: // WHITEKING
                 this.setWhiteCastleLong(false);
                 this.setWhiteCastle(false);
                 if (Math.abs(c1.getCol() - c2.getCol()) == 2) { // traduit la condition d'un roque
