@@ -233,7 +233,7 @@ public class Chessboard extends Application {
 		MenuBar menuBar = new MenuBar();
 		Menu partie = new Menu("Partie");
 
-		MenuItem recommencer = new MenuItem("Recommencer d�s le d�but");
+		MenuItem recommencer = new MenuItem("Recommencer dès le début");
 		MenuItem sauvegarder = new MenuItem("Sauvegarder la partie");
 		MenuItem charger = new MenuItem("Charger la partie");
 
@@ -244,7 +244,7 @@ public class Chessboard extends Application {
 		separator.setStyle("-fx-border-colClickedor : #e79423; -fx-border-style: solid;");
 		hbox.getChildren().add(separator);
 
-		TextField textField = new TextField("Text Field");
+		TextField textField = new TextField("");
 		textField.setPrefWidth(110);
 		hbox.getChildren().add(textField);
 
@@ -289,7 +289,7 @@ public class Chessboard extends Application {
 
 		BorderPane.setMargin(hbox, new Insets(5, 0, 0, 30));
 		Scene scene = new Scene(paneborder);
-		primaryStage.setTitle("Chessboard");
+		primaryStage.setTitle("ChessGame");
 		primaryStage.getIcons().add(new Image("images/logo.png"));
 		primaryStage.setScene(scene);
 		primaryStage.show();
