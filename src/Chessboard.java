@@ -1,10 +1,14 @@
 import java.io.File;
 
+import javax.management.openmbean.CompositeDataInvocationHandler;
+
 import javafx.application.Application;
+import javafx.collections.ListChangeListener;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.chart.PieChart;
@@ -20,82 +24,57 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 public class Chessboard extends Application {
-	Image imageblackpawn, imageblackknight, imageblackrook, imageblackbishop, imageblackqueen, imageblackking,
-			imagewhitepawn, imagewhiteknight, imagewhiterook, imagewhitebishop, imagewhiteking, imagewhitequeen;
-	ImageView blackpawn, blackknight, blackrook, blackbishop, blackqueen, blackking, whitepawn, whiteknight, whiterook,
-			whitequeen, whitebishop, whiteking;
+	/*
+	 * public Image imageblackpawn, imageblackknight, imageblackrook,
+	 * imageblackbishop, imageblackqueen, imageblackking,
+	 * imagewhitepawn, imagewhiteknight, imagewhiterook, imagewhitebishop,
+	 * imagewhiteking, imagewhitequeen;
+	 * /*
+	 * ImageView blackpawn, blackknight, blackrook, blackbishop, blackqueen,
+	 * blackking, whitepawn, whiteknight, whiterook,
+	 * whitequeen, whitebishop, whiteking;
+	 */
+
+	public final Image imageblackpawn = new Image("images/BlackPawn.png");
+	public final Image imageblackknight = new Image("images/BlackKnight.png");
+	public final Image imageblackrook = new Image("images/BlackRook.png");
+	public final Image imageblackbishop = new Image("images/BlackBishop.png");
+	public final Image imageblackqueen = new Image("images/BlackQueen.png");
+	public final Image imageblackking = new Image("images/BlackKing.png");
+	public final Image imagewhitepawn = new Image("images/WhitePawn.png");
+	public final Image imagewhiteknight = new Image("images/WhiteKnight.png");
+	public final Image imagewhiterook = new Image("images/WhiteRook.png");
+	public final Image imagewhitebishop = new Image("images/WhiteBishop.png");
+	public final Image imagewhitequeen = new Image("images/WhiteQueen.png");
+	public final Image imagewhiteking = new Image("images/WhiteKing.png");
+	Position pos = new Position();
 
 	@Override
 	public void start(Stage primaryStage) {
 
-		imageblackpawn = new Image("images/BlackPawn.png");
-		imageblackknight = new Image("images/BlackKnight.png");
-		imageblackrook = new Image("images/BlackRook.png");
-		imageblackbishop = new Image("images/BlackBishop.png");
-		imageblackqueen = new Image("images/BlackQueen.png");
-		imageblackking = new Image("images/BlackKing.png");
-		imagewhitepawn = new Image("images/WhitePawn.png");
-		imagewhiteknight = new Image("images/WhiteKnight.png");
-		imagewhiterook = new Image("images/WhiteRook.png");
-		imagewhitebishop = new Image("images/WhiteBishop.png");
-		imagewhitequeen = new Image("images/WhiteQueen.png");
-		imagewhiteking = new Image("images/WhiteKing.png");
-
-		blackpawn = new ImageView(imageblackpawn);
-		blackknight = new ImageView(imageblackknight);
-		blackrook = new ImageView(imageblackrook);
-		blackbishop = new ImageView(imageblackbishop);
-		blackqueen = new ImageView(imageblackqueen);
-		blackking = new ImageView(imageblackking);
-		whitepawn = new ImageView(imagewhitepawn);
-		whiteknight = new ImageView(imagewhiteknight);
-		whiterook = new ImageView(imagewhiterook);
-		whitebishop = new ImageView(imagewhitebishop);
-		whitequeen = new ImageView(imagewhitequeen);
-		whiteking = new ImageView(imagewhiteking);
-
-		Label number1 = new Label("1");
-		Label number2 = new Label("2");
-		Label number3 = new Label("3");
-		Label number4 = new Label("4");
-		Label number5 = new Label("5");
-		Label number6 = new Label("6");
-		Label number7 = new Label("7");
-		Label number8 = new Label("8");
-
-		Label lettera = new Label("a");
-		Label letterb = new Label("b");
-		Label letterc = new Label("c");
-		Label letterd = new Label("d");
-		Label lettere = new Label("e");
-		Label letterf = new Label("f");
-		Label letterg = new Label("g");
-		Label letterh = new Label("h");
-
-		Label number1bis = new Label("1");
-		Label number2bis = new Label("2");
-		Label number3bis = new Label("3");
-		Label number4bis = new Label("4");
-		Label number5bis = new Label("5");
-		Label number6bis = new Label("6");
-		Label number7bis = new Label("7");
-		Label number8bis = new Label("8");
-
-		Label letterabis = new Label("a");
-		Label letterbbis = new Label("b");
-		Label lettercbis = new Label("c");
-		Label letterdbis = new Label("d");
-		Label letterebis = new Label("e");
-		Label letterfbis = new Label("f");
-		Label lettergbis = new Label("g");
-		Label letterhbis = new Label("h");
+		/*
+		 * blackpawn = new ImageView(imageblackpawn);
+		 * blackknight = new ImageView(imageblackknight);
+		 * blackrook = new ImageView(imageblackrook);
+		 * blackbishop = new ImageView(imageblackbishop);
+		 * blackqueen = new ImageView(imageblackqueen);
+		 * blackking = new ImageView(imageblackking);
+		 * whitepawn = new ImageView(imagewhitepawn);
+		 * whiteknight = new ImageView(imagewhiteknight);
+		 * whiterook = new ImageView(imagewhiterook);
+		 * whitebishop = new ImageView(imagewhitebishop);
+		 * whitequeen = new ImageView(imagewhitequeen);
+		 * whiteking = new ImageView(imagewhiteking);
+		 */
 
 		BorderPane paneborder = new BorderPane();
 		GridPane pane = new GridPane();
@@ -108,123 +87,150 @@ public class Chessboard extends Application {
 		HBox hbox2 = new HBox();
 		VBox vbox2 = new VBox();
 
-		vbox.getChildren().add(number8);
-		vbox.getChildren().add(number7);
-		vbox.getChildren().add(number6);
-		vbox.getChildren().add(number5);
-		vbox.getChildren().add(number4);
-		vbox.getChildren().add(number3);
-		vbox.getChildren().add(number2);
-		vbox.getChildren().add(number1);
+		char letter = 'a';
+		for (int i = 0; i < 8; i++) {
+			Label colLetter = new Label(Character.toString(letter));
+			hbox1.getChildren().add(colLetter);
+			hbox1.setAlignment(Pos.CENTER);
+			hbox1.setSpacing(85);
+			letter++;
+		}
 
-		vbox1.getChildren().add(number8bis);
-		vbox1.getChildren().add(number7bis);
-		vbox1.getChildren().add(number6bis);
-		vbox1.getChildren().add(number5bis);
-		vbox1.getChildren().add(number4bis);
-		vbox1.getChildren().add(number3bis);
-		vbox1.getChildren().add(number2bis);
-		vbox1.getChildren().add(number1bis);
+		char letter2 = 'a';
+		for (int i = 0; i < 8; i++) {
+			Label colLetter = new Label(Character.toString(letter2));
+			hbox2.getChildren().add(colLetter);
+			hbox2.setAlignment(Pos.CENTER);
+			hbox2.setSpacing(85);
+			letter2++;
+		}
 
-		hbox1.getChildren().add(lettera);
-		hbox1.getChildren().add(letterb);
-		hbox1.getChildren().add(letterc);
-		hbox1.getChildren().add(letterd);
-		hbox1.getChildren().add(lettere);
-		hbox1.getChildren().add(letterf);
-		hbox1.getChildren().add(letterg);
-		hbox1.getChildren().add(letterh);
+		int number = 1;
+		for (int i = 0; i < 8; i++) {
+			Label rowNumber = new Label(Integer.toString(number));
+			vbox.getChildren().add(rowNumber);
+			vbox.setAlignment(Pos.CENTER);
+			vbox.setSpacing(75);
+			number++;
+		}
 
-		hbox2.getChildren().add(letterabis);
-		hbox2.getChildren().add(letterbbis);
-		hbox2.getChildren().add(lettercbis);
-		hbox2.getChildren().add(letterdbis);
-		hbox2.getChildren().add(letterebis);
-		hbox2.getChildren().add(letterfbis);
-		hbox2.getChildren().add(lettergbis);
-		hbox2.getChildren().add(letterhbis);
+		int number2 = 1;
+		for (int i = 0; i < 8; i++) {
+			Label rowNumber = new Label(Integer.toString(number2));
+			vbox1.getChildren().add(rowNumber);
+			vbox1.setAlignment(Pos.CENTER);
+			vbox1.setSpacing(75);
+			number2++;
+		}
 
 		vbox2.getChildren().add(hbox1);
 		vbox2.getChildren().add(pane);
 		vbox2.getChildren().add(hbox2);
 		vbox2.setSpacing(3);
 
-		int count = 0;
 		double s = 90;
 		Coordinate c = new Coordinate();
-		Position pos = new Position();
-		Piece p;
-		byte[][] matrix = new byte[8][8];
 		for (byte i = 0; i < 8; i++) {
-			count++;
 			for (byte j = 0; j < 8; j++) {
 				c.setRow(j);
 				c.setCol(i);
-				Rectangle r = new Rectangle(s, s, s, s);
-				matrix[i][j] = pos.getPosCase(c);
+				Rectangle r = new Rectangle(s, s);
 
-				if (count % 2 == 0) {
-					r.setFill(Color.BROWN);
-				} else {
+				if ((i + j) % 2 == 0) {
 					r.setFill(Color.BEIGE);
+				} else {
+					r.setFill(Color.BROWN);
 				}
+				pane.add(r, i, j);
 
 				switch (pos.getPosCase(c)) {
 					case 0:
+						pane.add(new Rectangle(s, s, Color.TRANSPARENT), c.getCol(), c.getRow());
 						break;
 					case 1:
-						r.setFill(new ImagePattern(imagewhiterook));
+						pane.add(new Rectangle(s, s, new ImagePattern(imagewhiterook)), c.getCol(),
+								c.getRow());
 						break;
 					case 2:
-						r.setFill(new ImagePattern(imagewhiteknight));
+						pane.add(new Rectangle(s, s, new ImagePattern(imagewhiteknight)), c.getCol(),
+								c.getRow());
 						break;
 					case 3:
-						r.setFill(new ImagePattern(imagewhitebishop));
+						pane.add(new Rectangle(s, s, new ImagePattern(imagewhitebishop)), c.getCol(),
+								c.getRow());
 						break;
 					case 4:
-						r.setFill(new ImagePattern(imagewhitequeen));
+						pane.add(new Rectangle(s, s, new ImagePattern(imagewhitequeen)), c.getCol(),
+								c.getRow());
 						break;
 					case 5:
-						r.setFill(new ImagePattern(imagewhiteking));
+						pane.add(new Rectangle(s, s, new ImagePattern(imagewhiteking)), c.getCol(),
+								c.getRow());
 						break;
 					case 6:
-						r.setFill(new ImagePattern(imagewhitepawn));
+						pane.add(new Rectangle(s, s, new ImagePattern(imagewhitepawn)), c.getCol(),
+								c.getRow());
 						break;
 					case 7:
-						r.setFill(new ImagePattern(imageblackpawn));
+						pane.add(new Rectangle(s, s, new ImagePattern(imageblackpawn)), c.getCol(),
+								c.getRow());
 						break;
 					case 8:
-						r.setFill(new ImagePattern(imageblackrook));
+						pane.add(new Rectangle(s, s, new ImagePattern(imageblackrook)), c.getCol(),
+								c.getRow());
 						break;
 					case 9:
-						r.setFill(new ImagePattern(imageblackknight));
+						pane.add(new Rectangle(s, s, new ImagePattern(imageblackknight)), c.getCol(),
+								c.getRow());
 						break;
 					case 10:
-						r.setFill(new ImagePattern(imageblackbishop));
+						pane.add(new Rectangle(s, s, new ImagePattern(imageblackbishop)), c.getCol(),
+								c.getRow());
 						break;
 					case 11:
-						r.setFill(new ImagePattern(imageblackqueen));
+						pane.add(new Rectangle(s, s, new ImagePattern(imageblackqueen)), c.getCol(),
+								c.getRow());
 						break;
 					case 12:
-						r.setFill(new ImagePattern(imageblackking));
+						pane.add(new Rectangle(s, s, new ImagePattern(imageblackking)), c.getCol(),
+								c.getRow());
 						break;
 				}
 
 				pane.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
 					@Override
 					public void handle(MouseEvent e) {
+						Coordinate cClicked = new Coordinate();
 						Node node = (Node) e.getTarget();
 						int rowClicked = GridPane.getRowIndex(node);
 						int colClicked = GridPane.getColumnIndex(node);
-						c.setRow((byte) rowClicked);
-						c.setCol((byte) colClicked);
-						System.out.println("c: " + c + " - PieceId: " + pos.getPosCase(c));
+						cClicked.setRow((byte) rowClicked);
+						cClicked.setCol((byte) colClicked);
+						System.out.println("cClicked: " + cClicked + " - PieceId: " +
+								pos.getPosCase(cClicked));
 					}
 				});
-				pane.add(r, i, j);
-				count++;
 			}
 		}
+
+		/*
+		 * CtrlChessboard ctrlchess = new CtrlChessboard(pos, pane);
+		 * pos.addObserver(ctrlchess);
+		 */
+
+		pane.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent e) {
+				Coordinate cClicked = new Coordinate();
+				Node node = (Node) e.getTarget();
+				int rowClicked = GridPane.getRowIndex(node);
+				int colClicked = GridPane.getColumnIndex(node);
+				cClicked.setRow((byte) rowClicked);
+				cClicked.setCol((byte) colClicked);
+				System.out.println("cClicked: " + cClicked + " - PieceId: " + pos.getPosCase(cClicked));
+			}
+		});
 
 		hbox.getChildren().add(vbox);
 		hbox.getChildren().add(vbox2);
@@ -233,7 +239,7 @@ public class Chessboard extends Application {
 		MenuBar menuBar = new MenuBar();
 		Menu partie = new Menu("Partie");
 
-		MenuItem recommencer = new MenuItem("Recommencer dès le début");
+		MenuItem recommencer = new MenuItem("Recommencer d�s le d�but");
 		MenuItem sauvegarder = new MenuItem("Sauvegarder la partie");
 		MenuItem charger = new MenuItem("Charger la partie");
 
@@ -250,46 +256,10 @@ public class Chessboard extends Application {
 
 		paneborder.setTop(menuBar);
 		paneborder.setCenter(hbox);
-		VBox.setMargin(number8, new Insets(55, 0, 0, 0));
-		VBox.setMargin(number7, new Insets(75, 0, 0, 0));
-		VBox.setMargin(number6, new Insets(75, 0, 0, 0));
-		VBox.setMargin(number5, new Insets(70, 0, 0, 0));
-		VBox.setMargin(number4, new Insets(70, 0, 0, 0));
-		VBox.setMargin(number3, new Insets(75, 0, 0, 0));
-		VBox.setMargin(number2, new Insets(70, 0, 0, 0));
-		VBox.setMargin(number1, new Insets(70, 0, 0, 0));
-
-		VBox.setMargin(number8bis, new Insets(55, 0, 0, 0));
-		VBox.setMargin(number7bis, new Insets(75, 0, 0, 0));
-		VBox.setMargin(number6bis, new Insets(75, 0, 0, 0));
-		VBox.setMargin(number5bis, new Insets(70, 0, 0, 0));
-		VBox.setMargin(number4bis, new Insets(70, 0, 0, 0));
-		VBox.setMargin(number3bis, new Insets(75, 0, 0, 0));
-		VBox.setMargin(number2bis, new Insets(70, 0, 0, 0));
-		VBox.setMargin(number1bis, new Insets(70, 0, 0, 0));
-
-		HBox.setMargin(lettera, new Insets(0, 40, 0, 50));
-		HBox.setMargin(letterb, new Insets(0, 40, 0, 40));
-		HBox.setMargin(letterc, new Insets(0, 40, 0, 40));
-		HBox.setMargin(letterd, new Insets(0, 40, 0, 40));
-		HBox.setMargin(lettere, new Insets(0, 40, 0, 40));
-		HBox.setMargin(letterf, new Insets(0, 40, 0, 45));
-		HBox.setMargin(letterg, new Insets(0, 40, 0, 45));
-		HBox.setMargin(letterh, new Insets(0, 40, 0, 45));
-
-		HBox.setMargin(letterabis, new Insets(0, 40, 0, 50));
-		HBox.setMargin(letterbbis, new Insets(0, 40, 0, 40));
-		HBox.setMargin(lettercbis, new Insets(0, 40, 0, 40));
-		HBox.setMargin(letterdbis, new Insets(0, 40, 0, 40));
-		HBox.setMargin(letterebis, new Insets(0, 40, 0, 40));
-		HBox.setMargin(letterebis, new Insets(0, 40, 0, 40));
-		HBox.setMargin(letterfbis, new Insets(0, 40, 0, 45));
-		HBox.setMargin(lettergbis, new Insets(0, 40, 0, 45));
-		HBox.setMargin(letterhbis, new Insets(0, 40, 0, 45));
 
 		BorderPane.setMargin(hbox, new Insets(5, 0, 0, 30));
 		Scene scene = new Scene(paneborder);
-		primaryStage.setTitle("ChessGame");
+		primaryStage.setTitle("Chessboard");
 		primaryStage.getIcons().add(new Image("images/logo.png"));
 		primaryStage.setScene(scene);
 		primaryStage.show();
