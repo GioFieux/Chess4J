@@ -1,6 +1,12 @@
 import java.io.File;
+import java.sql.ClientInfoStatus;
+import java.util.ArrayList;
+import java.util.GregorianCalendar;
+import java.util.ListResourceBundle;
+import java.util.prefs.BackingStoreException;
 
 import javax.management.openmbean.CompositeDataInvocationHandler;
+import javax.print.attribute.PrintServiceAttributeSet;
 
 import org.w3c.dom.css.Rect;
 
@@ -22,16 +28,21 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
+import javafx.scene.control.skin.ListCellSkin;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
@@ -93,7 +104,9 @@ public class Chessboard extends Application {
 		 */
 		HBox generalHBox = new HBox();
 		VBox numberVBox1 = new VBox();
+		numberVBox1.setMaxHeight(760);
 		VBox numberVBox2 = new VBox();
+		numberVBox2.setMaxHeight(760);
 		HBox letterHBox1 = new HBox();
 		HBox letterHBox2 = new HBox();
 		VBox leftVBox = new VBox();
@@ -109,7 +122,7 @@ public class Chessboard extends Application {
 
 		Separator separator = new Separator(
 				Orientation.VERTICAL);
-		separator.setStyle("-fx-border-colClickedor : #e79423; -fx-border-style: 5px solid;");
+		separator.setStyle("-fx-border-style: solid;; -fx-border-color: lightgrey;");
 		separator.setMaxHeight(775);
 
 		generalHBox.getChildren().addAll(numberVBox1, leftVBox, numberVBox2, separator, rightVBoxLeft, rightVBoxCenter);
@@ -169,6 +182,8 @@ public class Chessboard extends Application {
 
 		StackPane stack6 = new StackPane();
 		Rectangle r6 = new Rectangle(150, 50, Color.LIGHTGRAY);
+		r5.setArcHeight(15);
+		r5.setArcWidth(15);
 		Label blackTimer = new Label("BLACK time : ");
 		StackPane.setAlignment(blackTimer, Pos.CENTER_LEFT);
 		stack6.getChildren().addAll(r6, blackTimer);
@@ -184,7 +199,7 @@ public class Chessboard extends Application {
 			Label colLetter = new Label(Character.toString(letter));
 			letterHBox1.getChildren().add(colLetter);
 			letterHBox1.setAlignment(Pos.CENTER);
-			letterHBox1.setSpacing(85);
+			letterHBox1.setSpacing(80);
 			letter++;
 		}
 
@@ -193,7 +208,7 @@ public class Chessboard extends Application {
 			Label colLetter = new Label(Character.toString(letter2));
 			letterHBox2.getChildren().add(colLetter);
 			letterHBox2.setAlignment(Pos.CENTER);
-			letterHBox2.setSpacing(85);
+			letterHBox2.setSpacing(80);
 			letter2++;
 		}
 
@@ -220,7 +235,12 @@ public class Chessboard extends Application {
 		leftVBox.getChildren().add(letterHBox2);
 		leftVBox.setSpacing(3);
 
+		int count = 0;
 		double s = 90;
+		ArrayList<Rectangle> listeRColor = new ArrayList<Rectangle>();
+		ArrayList<Paint> listClickedColor = new ArrayList<Paint>();
+		ArrayList<Paint> rImageList = new ArrayList<Paint>();
+		int[] cArray = new int[1];
 		Coordinate c = new Coordinate();
 		for (byte i = 0; i < 8; i++) {
 			for (byte j = 0; j < 8; j++) {
@@ -234,10 +254,62 @@ public class Chessboard extends Application {
 					r.setFill(Color.BROWN);
 				}
 				pane.add(r, i, j);
+				listeRColor.add(r);
+
+				ArrayList<Rectangle> listeRSelected = new ArrayList<Rectangle>();
+
+				pane.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+					@Override
+					public void handle(MouseEvent e) {
+						Coordinate cClicked = new Coordinate();
+						Rectangle rClicked = (Rectangle) e.getTarget();
+						int rowClicked = GridPane.getRowIndex(rClicked);
+						int colClicked = GridPane.getColumnIndex(rClicked);
+						cClicked.setRow((byte) rowClicked);
+						cClicked.setCol((byte) colClicked);
+						Paint rColor = Color.TRANSPARENT;
+						if ((rowClicked + colClicked) % 2 == 0) {
+							rColor = Color.BEIGE;
+						} else {
+							rColor = Color.BROWN;
+						}
+						listClickedColor.add(rColor);
+
+						if (listeRSelected.size() == 0) {
+							if (rClicked.getFill() != Color.BROWN && rClicked.getFill() != Color.BEIGE) {
+
+								rImageList.add(rClicked.getFill());
+								listeRColor.get(8 * colClicked + rowClicked).setFill(Color.GREEN);
+								listeRColor.get(8 * colClicked + rowClicked).setOpacity(0.5);
+								cArray[0] = 8 * colClicked + rowClicked;
+								listeRSelected.add(rClicked);
+							}
+						} else if (listeRSelected.size() == 1) {
+							if (rClicked.getFill() != Color.BROWN && rClicked.getFill() != Color.BEIGE) {
+								listeRColor.get(cArray[0]).setFill(listClickedColor.get(0));
+								listeRSelected.get(0).setFill(rImageList.get(0));
+								listeRColor.get(cArray[0]).setOpacity(1);
+
+								listeRSelected.add(rClicked);
+								listeRColor.get(8 * colClicked + rowClicked).setFill(Color.GREEN);
+								listeRColor.get(8 * colClicked + rowClicked).setOpacity(0.5);
+								cArray[0] = 8 * colClicked + rowClicked;
+								rImageList.add(rClicked.getFill());
+
+								listeRSelected.remove(listeRSelected.get(0));
+								listClickedColor.remove(listClickedColor.get(0));
+								rImageList.remove(rImageList.get(0));
+							}
+						}
+
+						System.out.println("cClicked: " + cClicked + " - PieceId: " +
+								pos.getPosCase(cClicked));
+					}
+				});
 
 				switch (pos.getPosCase(c)) {
 					case 0:
-						pane.add(new Rectangle(s, s, Color.TRANSPARENT), c.getCol(), c.getRow());
 						break;
 					case 1:
 						pane.add(new Rectangle(s, s, new ImagePattern(imagewhiterook)), c.getCol(),
@@ -289,20 +361,19 @@ public class Chessboard extends Application {
 						break;
 				}
 
-				pane.setOnMouseClicked(new EventHandler<MouseEvent>() {
+				int tmp;
+				if (count == 1) {
+					tmp = 1;
+				} else {
+					tmp = 2 * count - 1;
+				}
+				int index = tmp;
 
-					@Override
-					public void handle(MouseEvent e) {
-						Coordinate cClicked = new Coordinate();
-						Node node = (Node) e.getTarget();
-						int rowClicked = GridPane.getRowIndex(node);
-						int colClicked = GridPane.getColumnIndex(node);
-						cClicked.setRow((byte) rowClicked);
-						cClicked.setCol((byte) colClicked);
-						System.out.println("cClicked: " + cClicked + " - PieceId: " +
-								pos.getPosCase(cClicked));
-					}
-				});
+				int row = i;
+				int col = j;
+				int[] pieceSelected = { 0 };
+
+				count++;
 			}
 		}
 
@@ -310,20 +381,6 @@ public class Chessboard extends Application {
 		 * CtrlChessboard ctrlchess = new CtrlChessboard(pos, pane);
 		 * pos.addObserver(ctrlchess);
 		 */
-
-		pane.setOnMouseClicked(new EventHandler<MouseEvent>() {
-
-			@Override
-			public void handle(MouseEvent e) {
-				Coordinate cClicked = new Coordinate();
-				Node node = (Node) e.getTarget();
-				int rowClicked = GridPane.getRowIndex(node);
-				int colClicked = GridPane.getColumnIndex(node);
-				cClicked.setRow((byte) rowClicked);
-				cClicked.setCol((byte) colClicked);
-				System.out.println("cClicked: " + cClicked + " - PieceId: " + pos.getPosCase(cClicked));
-			}
-		});
 
 		MenuBar menuBar = new MenuBar();
 		Menu partie = new Menu("Partie");
