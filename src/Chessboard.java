@@ -2,16 +2,20 @@ import java.io.File;
 
 import javax.management.openmbean.CompositeDataInvocationHandler;
 
+import org.w3c.dom.css.Rect;
+
 import javafx.application.Application;
 import javafx.collections.ListChangeListener;
 import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.chart.PieChart;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -56,7 +60,19 @@ public class Chessboard extends Application {
 	public final Image imagewhitebishop = new Image("images/WhiteBishop.png");
 	public final Image imagewhitequeen = new Image("images/WhiteQueen.png");
 	public final Image imagewhiteking = new Image("images/WhiteKing.png");
+
 	Position pos = new Position();
+	Game g = new Game("");
+
+	Label player = new Label("Player turn : ");
+	Label bPlayerTime = new Label("Black timer : ");
+	Label wPlayerTime = new Label("White timer : ");
+	Label kingState = new Label("King status : ");
+	Label pgn = new Label("PGN : ");
+	Label displayPGN = new Label(g.getPGN());
+	Label bLostPieces = new Label("Black player lost pieces : ");
+	Label wLostPieces = new Label("White player lost pieces : ");
+	Button turn = new Button("ROTATE CHESSBOARD");
 
 	@Override
 	public void start(Stage primaryStage) {
@@ -75,58 +91,134 @@ public class Chessboard extends Application {
 		 * whitequeen = new ImageView(imagewhitequeen);
 		 * whiteking = new ImageView(imagewhiteking);
 		 */
+		HBox generalHBox = new HBox();
+		VBox numberVBox1 = new VBox();
+		VBox numberVBox2 = new VBox();
+		HBox letterHBox1 = new HBox();
+		HBox letterHBox2 = new HBox();
+		VBox leftVBox = new VBox();
+
+		VBox rightVBoxLeft = new VBox();
+		rightVBoxLeft.setSpacing(15);
+
+		VBox rightVBoxCenter = new VBox();
+		rightVBoxCenter.setSpacing(15);
+
+		VBox rightVBoxRight = new VBox();
+		rightVBoxRight.setSpacing(15);
+
+		Separator separator = new Separator(
+				Orientation.VERTICAL);
+		separator.setStyle("-fx-border-colClickedor : #e79423; -fx-border-style: 5px solid;");
+		separator.setMaxHeight(775);
+
+		generalHBox.getChildren().addAll(numberVBox1, leftVBox, numberVBox2, separator, rightVBoxLeft, rightVBoxCenter);
+		generalHBox.setSpacing(20);
+
+		Rectangle r1 = new Rectangle(150, 50, Color.LIGHTGRAY);
+		r1.setArcHeight(15);
+		r1.setArcWidth(15);
+		StackPane stack = new StackPane();
+		Label playerTxt;
+		if (pos.getTurn()) {
+			playerTxt = new Label("Turn : WHITE");
+		} else {
+			playerTxt = new Label("Turn : BLACK");
+		}
+
+		stack.getChildren().addAll(r1, playerTxt);
+
+		Rectangle r2 = new Rectangle(150, 50, Color.LIGHTGRAY);
+		r2.setArcHeight(15);
+		r2.setArcWidth(15);
+		StackPane stack2 = new StackPane();
+		Label kingState;
+		if (pos.isChecked()) {
+			kingState = new Label("King in check");
+		} else {
+			kingState = new Label("King is safe");
+		}
+		stack2.getChildren().addAll(r2, kingState);
+		rightVBoxLeft.getChildren().addAll(stack, stack2);
+
+		StackPane stack3 = new StackPane();
+		Rectangle r3 = new Rectangle(150, 150, Color.LIGHTGRAY);
+		r3.setArcHeight(15);
+		r3.setArcWidth(15);
+		Label wLostPieces = new Label("WHITE lost pieces");
+		StackPane.setAlignment(wLostPieces, Pos.TOP_CENTER);
+		stack3.getChildren().addAll(r3, wLostPieces);
+
+		StackPane stack4 = new StackPane();
+		Rectangle r4 = new Rectangle(150, 150, Color.LIGHTGRAY);
+		r4.setArcHeight(15);
+		r4.setArcWidth(15);
+		Label bLostPieces = new Label("BLACK lost pieces");
+		StackPane.setAlignment(bLostPieces, Pos.TOP_CENTER);
+		stack4.getChildren().addAll(r4, bLostPieces);
+
+		rightVBoxCenter.getChildren().addAll(stack3, stack4);
+
+		StackPane stack5 = new StackPane();
+		Rectangle r5 = new Rectangle(150, 50, Color.LIGHTGRAY);
+		r5.setArcHeight(15);
+		r5.setArcWidth(15);
+		Label whiteTimer = new Label("WHITE time : ");
+		StackPane.setAlignment(whiteTimer, Pos.CENTER_LEFT);
+		stack5.getChildren().addAll(r5, whiteTimer);
+
+		StackPane stack6 = new StackPane();
+		Rectangle r6 = new Rectangle(150, 50, Color.LIGHTGRAY);
+		Label blackTimer = new Label("BLACK time : ");
+		StackPane.setAlignment(blackTimer, Pos.CENTER_LEFT);
+		stack6.getChildren().addAll(r6, blackTimer);
+
+		rightVBoxRight.getChildren().addAll(stack5, stack6);
 
 		BorderPane paneborder = new BorderPane();
 		GridPane pane = new GridPane();
 		pane.setGridLinesVisible(true);
 
-		HBox hbox = new HBox();
-		VBox vbox = new VBox();
-		VBox vbox1 = new VBox();
-		HBox hbox1 = new HBox();
-		HBox hbox2 = new HBox();
-		VBox vbox2 = new VBox();
-
 		char letter = 'a';
 		for (int i = 0; i < 8; i++) {
 			Label colLetter = new Label(Character.toString(letter));
-			hbox1.getChildren().add(colLetter);
-			hbox1.setAlignment(Pos.CENTER);
-			hbox1.setSpacing(85);
+			letterHBox1.getChildren().add(colLetter);
+			letterHBox1.setAlignment(Pos.CENTER);
+			letterHBox1.setSpacing(85);
 			letter++;
 		}
 
 		char letter2 = 'a';
 		for (int i = 0; i < 8; i++) {
 			Label colLetter = new Label(Character.toString(letter2));
-			hbox2.getChildren().add(colLetter);
-			hbox2.setAlignment(Pos.CENTER);
-			hbox2.setSpacing(85);
+			letterHBox2.getChildren().add(colLetter);
+			letterHBox2.setAlignment(Pos.CENTER);
+			letterHBox2.setSpacing(85);
 			letter2++;
 		}
 
-		int number = 1;
+		int number = 8;
 		for (int i = 0; i < 8; i++) {
 			Label rowNumber = new Label(Integer.toString(number));
-			vbox.getChildren().add(rowNumber);
-			vbox.setAlignment(Pos.CENTER);
-			vbox.setSpacing(75);
-			number++;
+			numberVBox1.getChildren().add(rowNumber);
+			numberVBox1.setAlignment(Pos.CENTER);
+			numberVBox1.setSpacing(75);
+			number--;
 		}
 
-		int number2 = 1;
+		int number2 = 8;
 		for (int i = 0; i < 8; i++) {
 			Label rowNumber = new Label(Integer.toString(number2));
-			vbox1.getChildren().add(rowNumber);
-			vbox1.setAlignment(Pos.CENTER);
-			vbox1.setSpacing(75);
-			number2++;
+			numberVBox2.getChildren().add(rowNumber);
+			numberVBox2.setAlignment(Pos.CENTER);
+			numberVBox2.setSpacing(75);
+			number2--;
 		}
 
-		vbox2.getChildren().add(hbox1);
-		vbox2.getChildren().add(pane);
-		vbox2.getChildren().add(hbox2);
-		vbox2.setSpacing(3);
+		leftVBox.getChildren().add(letterHBox1);
+		leftVBox.getChildren().add(pane);
+		leftVBox.getChildren().add(letterHBox2);
+		leftVBox.setSpacing(3);
 
 		double s = 90;
 		Coordinate c = new Coordinate();
@@ -220,6 +312,7 @@ public class Chessboard extends Application {
 		 */
 
 		pane.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
 			@Override
 			public void handle(MouseEvent e) {
 				Coordinate cClicked = new Coordinate();
@@ -232,10 +325,6 @@ public class Chessboard extends Application {
 			}
 		});
 
-		hbox.getChildren().add(vbox);
-		hbox.getChildren().add(vbox2);
-		hbox.getChildren().add(vbox1);
-		hbox.setSpacing(20);
 		MenuBar menuBar = new MenuBar();
 		Menu partie = new Menu("Partie");
 
@@ -246,19 +335,12 @@ public class Chessboard extends Application {
 		partie.getItems().addAll(recommencer, sauvegarder, charger);
 		menuBar.getMenus().addAll(partie);
 
-		Separator separator = new Separator(Orientation.VERTICAL);
-		separator.setStyle("-fx-border-colClickedor : #e79423; -fx-border-style: solid;");
-		hbox.getChildren().add(separator);
-
-		TextField textField = new TextField("");
-		textField.setPrefWidth(110);
-		hbox.getChildren().add(textField);
-
 		paneborder.setTop(menuBar);
-		paneborder.setCenter(hbox);
+		paneborder.setCenter(generalHBox);
 
-		BorderPane.setMargin(hbox, new Insets(5, 0, 0, 30));
-		Scene scene = new Scene(paneborder);
+		BorderPane.setMargin(generalHBox, new Insets(5, 0, 0, 30));
+		Scene scene = new Scene(
+				paneborder);
 		primaryStage.setTitle("Chessboard");
 		primaryStage.getIcons().add(new Image("images/logo.png"));
 		primaryStage.setScene(scene);
