@@ -1,3 +1,10 @@
+/**
+*This class creates the coordinate of a case on a chessboard with the row and column. 
+*In this class, there is a conversion of the String information entered by the user to a byte and inversely which is sent in the class Game. 
+*
+*@author Elias MEHIRA, Florent FRAITOT, Alexis JUST, Giovanni FIEUX
+*@version 1.0
+*/
 
 public class Coordinate {
     private byte row;
@@ -55,6 +62,11 @@ public class Coordinate {
         return false;
     }
     
+    /**
+     * This method converts a string composed with a letter (corresponding column) and a number (corresponding row) in two bytes.
+     * @param str corresponds to a string we want to convert in string.
+     * @return array of byte of length 2 composed with row and column converted in byte.
+     */
     public byte[] stringConversionToByte(String str) {
     	
         char col = str.charAt(0);
@@ -123,6 +135,10 @@ public class Coordinate {
         return conv;
     }
     
+    /**
+     * This method converts a coordinate with its row and column in a byte format to a String.
+     * @return array of String of length composed with row and column converted in string.
+     */
     public String[] byteConversionToString() {
     	byte x=this.getRow();
     	byte y=this.getCol();
