@@ -1,4 +1,3 @@
-
 public class Position implements Cloneable {
 
     private final Coordinate a1 = new Coordinate("a1");
@@ -22,20 +21,21 @@ public class Position implements Cloneable {
                     Piece.BLACKQUEEN.getId(), Piece.BLACKKING.getId(),
                     Piece.BLACKBISHOP.getId(), Piece.BLACKKNIGHT.getId(),
                     Piece.BLACKROOK.getId() },
-            { Piece.BLACKPAWN.getId(), Piece.BLACKPAWN.getId(), Piece.BLACKPAWN.getId(), Piece.BLACKPAWN.getId(),
+            { Piece.BLACKPAWN.getId(), Piece.BLACKPAWN.getId(), Piece.BLACKPAWN.getId(),
+                    Piece.BLACKPAWN.getId(),
                     Piece.BLACKPAWN.getId(), Piece.BLACKPAWN.getId(), Piece.BLACKPAWN.getId(),
                     Piece.BLACKPAWN.getId() },
             { 0, 0, 0, 0, 0, 0, 0, 0 },
             { 0, 0, 0, 0, 0, 0, 0, 0 },
-            { 0, 0, 0, 0, 0, 0, 0, 0 },
+            { 0, 0, 0, Piece.WHITEQUEEN.getId(), 0, 0, 0, 0 },
             { 0, 0, 0, 0, 0, 0, 0, 0 },
             { Piece.WHITEPAWN.getId(), Piece.WHITEPAWN.getId(), Piece.WHITEPAWN.getId(),
                     Piece.WHITEPAWN.getId(),
                     Piece.WHITEPAWN.getId(), Piece.WHITEPAWN.getId(), Piece.WHITEPAWN.getId(),
-                    Piece.WHITEPAWN.getId() },
+                    0 },
             { Piece.WHITEROOK.getId(), Piece.WHITEKNIGHT.getId(),
                     Piece.WHITEBISHOP.getId(),
-                    Piece.WHITEQUEEN.getId(), Piece.WHITEKING.getId(),
+                    0, Piece.WHITEKING.getId(),
                     Piece.WHITEBISHOP.getId(), Piece.WHITEKNIGHT.getId(),
                     Piece.WHITEROOK.getId() }
     };
@@ -138,12 +138,12 @@ public class Position implements Cloneable {
         if (!this.getTurn()) {
             if (c2.getRow() == 0 && this.getPosCase(c2) == Piece.WHITEPAWN.getId()) {
                 this.setPosCase(c2, p.getId());
-                g.setPGN(g.getPGN() + "Promotion en : " + p.name() + " ");
+                g.setPGN(g.getPGN() + "Promotion in : " + p.name() + " ");
             }
         } else {
             if (c2.getRow() == 7 && this.getPosCase(c2) == Piece.BLACKPAWN.getId()) {
                 this.setPosCase(c2, p.getId());
-                g.setPGN(g.getPGN() + "Promotion en : " + p.name() + " ");
+                g.setPGN(g.getPGN() + "Promotion in : " + p.name() + " ");
             }
         }
     }
@@ -178,7 +178,7 @@ public class Position implements Cloneable {
             case 5: // WHITEKING
                 this.setWhiteCastleLong(false);
                 this.setWhiteCastle(false);
-                if (Math.abs(c1.getCol() - c2.getCol()) == 2) { // traduit la condition d'un roque
+                if (Math.abs(c1.getCol() - c2.getCol()) == 2) { // translates roque condition
                     if (c2.getCol() == 2) {
                         movePiece(new Coordinate("a1"), new Coordinate("d1"));
                     }
@@ -192,7 +192,7 @@ public class Position implements Cloneable {
             case 12: // BLACKKING
                 this.setBlackCastleLong(false);
                 this.setBlackCastle(false);
-                if (Math.abs(c1.getCol() - c2.getCol()) == 2) { // traduit la condition d'un roque
+                if (Math.abs(c1.getCol() - c2.getCol()) == 2) { // translates roque condition
                     if (c2.getCol() == 2) {
                         movePiece(new Coordinate("a8"), new Coordinate("d8"));
                     }
@@ -204,15 +204,13 @@ public class Position implements Cloneable {
                 break;
 
             case 6: // WHITEPAWN
-            case 7: // BalckEPAWN
-                if (!(c1.getCol() == c2.getCol()) && this.getPosCase(c2) == 0) { // traduit une condition de prise en
-                                                                                 // passant (en chagnement de colonne
-                                                                                 // sur une case vide)
+            case 7: // BLACKPAWN
+                if (!(c1.getCol() == c2.getCol()) && this.getPosCase(c2) == 0) { // translates a take en passant
+                                                                                 // condition
                     Coordinate ct = new Coordinate(c1.getRow(), c2.getCol());
                     movePiece(c1, ct);
                     movePiece(ct, c2);
-                } else { // pour tout le reste, d�placement normal, d�placement de 2 cases, prise et
-                         // aussi promotion)
+                } else { // for the others moves : classic move, 2 cases moves, take and promotion
                     movePiece(c1, c2);
                 }
                 if (Math.abs(c1.getRow() - c2.getRow()) == 2) {
@@ -237,7 +235,6 @@ public class Position implements Cloneable {
     public byte[][] caseAccess(Coordinate c) {
 
         int limit; // corresponds to the maximum advance of a piece in one direction
-        int nbDirection; // corresponds to the numbers of the different possible directions per piece
 
         byte[][] resultMatrix = new byte[8][8]; // corresponds to the matrix of accessible cases
         for (int i = 0; i < 8; i++) {
@@ -245,8 +242,6 @@ public class Position implements Cloneable {
                 resultMatrix[i][j] = 0;
             }
         } // resultMatrix initialized with 0
-
-        Coordinate cTest = new Coordinate((byte) 0, (byte) 0);
 
         switch (this.getPosCase(c)) {
 
@@ -257,12 +252,9 @@ public class Position implements Cloneable {
                 if (this.getTurn()) {
 
                     limit = Piece.WHITEROOK.getLimit();
-
                     byte[][] direction = Piece.WHITEROOK.getDirection();
-                    nbDirection = Piece.WHITEROOK.getDirection().length;
-                    boolean team = Piece.WHITEROOK.getTeam();
 
-                    resultMatrix = searchCaseAccess(c, cTest, resultMatrix, limit, direction, nbDirection, team);
+                    resultMatrix = searchCaseAccess(c, resultMatrix, limit, direction);
                 }
                 break;
 
@@ -271,12 +263,9 @@ public class Position implements Cloneable {
                 if (this.getTurn()) {
 
                     limit = Piece.WHITEKNIGHT.getLimit();
-
                     byte[][] direction = Piece.WHITEKNIGHT.getDirection();
-                    nbDirection = Piece.WHITEKNIGHT.getDirection().length;
-                    boolean team = Piece.WHITEKNIGHT.getTeam();
 
-                    resultMatrix = searchCaseAccess(c, cTest, resultMatrix, limit, direction, nbDirection, team);
+                    resultMatrix = searchCaseAccess(c, resultMatrix, limit, direction);
                 }
                 break;
 
@@ -285,12 +274,9 @@ public class Position implements Cloneable {
                 if (this.getTurn()) {
 
                     limit = Piece.WHITEBISHOP.getLimit();
-
                     byte[][] direction = Piece.WHITEBISHOP.getDirection();
-                    nbDirection = Piece.WHITEBISHOP.getDirection().length;
-                    boolean team = Piece.WHITEBISHOP.getTeam();
 
-                    resultMatrix = searchCaseAccess(c, cTest, resultMatrix, limit, direction, nbDirection, team);
+                    resultMatrix = searchCaseAccess(c, resultMatrix, limit, direction);
                 }
                 break;
 
@@ -299,12 +285,9 @@ public class Position implements Cloneable {
                 if (this.getTurn()) {
 
                     limit = Piece.WHITEQUEEN.getLimit();
-
                     byte[][] direction = Piece.WHITEQUEEN.getDirection();
-                    nbDirection = Piece.WHITEQUEEN.getDirection().length;
-                    boolean team = Piece.WHITEQUEEN.getTeam();
 
-                    resultMatrix = searchCaseAccess(c, cTest, resultMatrix, limit, direction, nbDirection, team);
+                    resultMatrix = searchCaseAccess(c, resultMatrix, limit, direction);
                 }
                 break;
 
@@ -313,12 +296,9 @@ public class Position implements Cloneable {
                 if (this.getTurn()) {
 
                     limit = Piece.WHITEKING.getLimit();
-
                     byte[][] direction = Piece.WHITEKING.getDirection();
-                    nbDirection = Piece.WHITEKING.getDirection().length;
-                    boolean team = Piece.WHITEKING.getTeam();
 
-                    resultMatrix = searchCaseAccess(c, cTest, resultMatrix, limit, direction, nbDirection, team);
+                    resultMatrix = searchCaseAccess(c, resultMatrix, limit, direction);
 
                     if (!(this.isChecked())) {
                         if (this.getWhiteCastle() && this.getPosCase(h1) == Piece.WHITEROOK.getId()) {
@@ -343,14 +323,9 @@ public class Position implements Cloneable {
 
                 if (this.getTurn()) {
 
-                    byte[] classicDirection = Piece.WHITEPAWN.getDirection()[0];
-                    byte[] twoCasesDirection = Piece.WHITEPAWN.getDirection()[1];
-                    byte[] iRight = Piece.WHITEPAWN.getDirection()[2];
-                    byte[] iLeft = Piece.WHITEPAWN.getDirection()[3];
-                    boolean team = Piece.WHITEPAWN.getTeam();
+                    byte[][] direction = Piece.WHITEPAWN.getDirection();
 
-                    resultMatrix = searchPawnCaseAccess(c, cTest, resultMatrix, classicDirection, twoCasesDirection,
-                            iRight, iLeft, team);
+                    resultMatrix = searchPawnCaseAccess(c, resultMatrix, direction);
                 }
 
                 break;
@@ -359,14 +334,9 @@ public class Position implements Cloneable {
 
                 if (!(this.getTurn())) {
 
-                    byte[] classicDirection = Piece.BLACKPAWN.getDirection()[0];
-                    byte[] twoCasesDirection = Piece.BLACKPAWN.getDirection()[1];
-                    byte[] iRight = Piece.BLACKPAWN.getDirection()[2];
-                    byte[] iLeft = Piece.BLACKPAWN.getDirection()[3];
-                    boolean team = Piece.BLACKPAWN.getTeam();
+                    byte[][] direction = Piece.BLACKPAWN.getDirection();
 
-                    resultMatrix = searchPawnCaseAccess(c, cTest, resultMatrix, classicDirection, twoCasesDirection,
-                            iRight, iLeft, team);
+                    resultMatrix = searchPawnCaseAccess(c, resultMatrix, direction);
                 }
 
                 break;
@@ -376,12 +346,9 @@ public class Position implements Cloneable {
                 if (!(this.getTurn())) {
 
                     limit = Piece.BLACKROOK.getLimit();
-
                     byte[][] direction = Piece.BLACKROOK.getDirection();
-                    nbDirection = Piece.BLACKROOK.getDirection().length;
-                    boolean team = Piece.BLACKROOK.getTeam();
 
-                    resultMatrix = searchCaseAccess(c, cTest, resultMatrix, limit, direction, nbDirection, team);
+                    resultMatrix = searchCaseAccess(c, resultMatrix, limit, direction);
                 }
                 break;
 
@@ -390,12 +357,9 @@ public class Position implements Cloneable {
                 if (!(this.getTurn())) {
 
                     limit = Piece.BLACKKNIGHT.getLimit();
-
                     byte[][] direction = Piece.BLACKKNIGHT.getDirection();
-                    nbDirection = Piece.BLACKKNIGHT.getDirection().length;
-                    boolean team = Piece.BLACKKNIGHT.getTeam();
 
-                    resultMatrix = searchCaseAccess(c, cTest, resultMatrix, limit, direction, nbDirection, team);
+                    resultMatrix = searchCaseAccess(c, resultMatrix, limit, direction);
                 }
                 break;
 
@@ -404,12 +368,9 @@ public class Position implements Cloneable {
                 if (!(this.getTurn())) {
 
                     limit = Piece.BLACKBISHOP.getLimit();
-
                     byte[][] direction = Piece.BLACKBISHOP.getDirection();
-                    nbDirection = Piece.BLACKBISHOP.getDirection().length;
-                    boolean team = Piece.BLACKBISHOP.getTeam();
 
-                    resultMatrix = searchCaseAccess(c, cTest, resultMatrix, limit, direction, nbDirection, team);
+                    resultMatrix = searchCaseAccess(c, resultMatrix, limit, direction);
                 }
                 break;
 
@@ -418,12 +379,9 @@ public class Position implements Cloneable {
                 if (!(this.getTurn())) {
 
                     limit = Piece.BLACKQUEEN.getLimit();
-
                     byte[][] direction = Piece.BLACKQUEEN.getDirection();
-                    nbDirection = Piece.BLACKQUEEN.getDirection().length;
-                    boolean team = Piece.BLACKQUEEN.getTeam();
 
-                    resultMatrix = searchCaseAccess(c, cTest, resultMatrix, limit, direction, nbDirection, team);
+                    resultMatrix = searchCaseAccess(c, resultMatrix, limit, direction);
                 }
                 break;
 
@@ -432,12 +390,10 @@ public class Position implements Cloneable {
                 if (!(this.getTurn())) {
 
                     limit = Piece.BLACKKING.getLimit();
-
                     byte[][] direction = Piece.BLACKKING.getDirection();
-                    nbDirection = Piece.BLACKKING.getDirection().length;
-                    boolean team = Piece.BLACKKING.getTeam();
 
-                    resultMatrix = searchCaseAccess(c, cTest, resultMatrix, limit, direction, nbDirection, team);
+                    resultMatrix = searchCaseAccess(c, resultMatrix, limit, direction);
+
                     if (!(this.isChecked())) {
                         if (this.getBlackCastle() && this.getPosCase(a8) == Piece.BLACKROOK.getId()) {
                             if (this.isControlled(f8) && this.isControlled(g8)) {
@@ -456,17 +412,18 @@ public class Position implements Cloneable {
                 }
                 break;
         }
-        // displayCaseAccess(resultMatrix);
         return resultMatrix;
     }
 
-    private byte[][] searchCaseAccess(Coordinate c, Coordinate cTest, byte[][] resultMatrix, int limit,
-            byte[][] direction, int nbDirection, boolean team) {
+    private byte[][] searchCaseAccess(Coordinate c, byte[][] resultMatrix, int limit,
+            byte[][] direction) {
 
+        Coordinate cTest = new Coordinate();
+        int nbDirection = direction.length; // corresponds to the number of the different direction possible
         for (int j = 0; j < nbDirection; j++) {
             int step = 0; // corresponds to the advance of a piece in one direction at a certain time
             boolean keepgoing = true; // check if the next cases could be accessible
-            byte[] currentDirection = direction[j];
+            byte[] currentDirection = direction[j]; // the direction in which we will move
             byte deltaX = currentDirection[0];
             byte deltaY = currentDirection[1];
             int y = c.getCol();
@@ -486,17 +443,17 @@ public class Position implements Cloneable {
                         case 0: // empty case
                             resultMatrix[cTest.getRow()][cTest.getCol()] = this.testAdd(c, cTest, false);
                             break;
-                        case 7, 8, 9, 10, 11, 12:
-                            if (team) { // enemy piece for white player
+                        case 7, 8, 9, 10, 11, 12: // black pieces
+                            if (this.getTurn()) { // enemy piece for white player
                                 resultMatrix[cTest.getRow()][cTest.getCol()] = this.testAdd(c, cTest, true);
                             }
-                            keepgoing = false;
+                            keepgoing = false; // allied piece for black player
                             break;
-                        case 1, 2, 3, 4, 5, 6:
-                            if (!team) { // enemy piece for black player
+                        case 1, 2, 3, 4, 5, 6: // white pieces
+                            if (!this.getTurn()) { // enemy piece for black player
                                 resultMatrix[cTest.getRow()][cTest.getCol()] = this.testAdd(c, cTest, true);
                             }
-                            keepgoing = false;
+                            keepgoing = false; // allied piece for white player
                             break;
                     }
                 }
@@ -506,15 +463,22 @@ public class Position implements Cloneable {
         return resultMatrix;
     }
 
-    private byte[][] searchPawnCaseAccess(Coordinate c, Coordinate cTest, byte[][] resultMatrix,
-            byte[] classicDirection, byte[] twoCasesDirection, byte[] iRight, byte[] iLeft, boolean team) {
+    private byte[][] searchPawnCaseAccess(Coordinate c, byte[][] resultMatrix,
+            byte[][] direction) {
+
+        Coordinate cTest = new Coordinate();
+
+        byte[] classicDirection = direction[0]; // when a pawn move forward (one case)
+        byte[] twoCasesDirection = direction[1]; // when a pawn move forward (two cases)
+        byte[] iRight = direction[2]; // when a pawn can take a piece (diagonal right)
+        byte[] iLeft = direction[3]; // when a pawn can take a piece (diagonal left)
 
         byte twoCasesRow;
         Coordinate cTest2;
         byte enPassantRow;
         byte promotionRow;
 
-        if (team) {
+        if (this.getTurn()) {
             twoCasesRow = 6;
             enPassantRow = 3;
             promotionRow = 1;
@@ -545,7 +509,7 @@ public class Position implements Cloneable {
             int a = c.getRow() + twoCasesDirection[0];
             int b = c.getCol() + twoCasesDirection[1];
 
-            if (team) {
+            if (this.getTurn()) {
                 cTest2 = new Coordinate((byte) (a + 1), (byte) b);
             } else {
                 cTest2 = new Coordinate((byte) (a - 1), (byte) b);
@@ -556,11 +520,9 @@ public class Position implements Cloneable {
 
             if (this.getPosCase(cTest2) == 0) {
                 resultMatrix[cTest2.getRow()][cTest2.getCol()] = this.testAdd(c, cTest2, false);
-                // if (true) {//if(testAdd(this, c, cTest2, false)==1) {
                 if (this.getPosCase(cTest) == 0 && resultMatrix[cTest2.getRow()][cTest2.getCol()] == 1) {
                     resultMatrix[cTest.getRow()][cTest.getCol()] = this.testAdd(c, cTest, false);
                 }
-                // }
             } // there is no else because whatever it's a allied or enemy piece, the pawn
               // cannot move forward
               // so resultMatrix in cTest stays to 0
@@ -579,12 +541,12 @@ public class Position implements Cloneable {
         if (isOnChessboard(cTest)) {
             switch (this.getPosCase(cTest)) {
                 case 7, 8, 9, 10, 11, 12: // black pieces
-                    if (team) { // enemy piece for white player
+                    if (this.getTurn()) { // enemy piece for white player
                         resultMatrix[cTest.getRow()][cTest.getCol()] = this.testAdd(c, cTest, true);
                     }
                     break;
                 case 1, 2, 3, 4, 5, 6: // white pieces
-                    if (!team) { // enemy piece for black player
+                    if (!this.getTurn()) { // enemy piece for black player
                         resultMatrix[cTest.getRow()][cTest.getCol()] = this.testAdd(c, cTest, true);
                     }
                     break;
@@ -604,12 +566,12 @@ public class Position implements Cloneable {
         if (isOnChessboard(cTest)) {
             switch (this.getPosCase(cTest)) {
                 case 7, 8, 9, 10, 11, 12: // black pieces
-                    if (team) { // enemy piece for white player
+                    if (this.getTurn()) { // enemy piece for white player
                         resultMatrix[cTest.getRow()][cTest.getCol()] = this.testAdd(c, cTest, true);
                     }
                     break;
                 case 1, 2, 3, 4, 5, 6: // white pieces
-                    if (!team) { // enemy piece for black player
+                    if (!this.getTurn()) { // enemy piece for black player
                         resultMatrix[cTest.getRow()][cTest.getCol()] = this.testAdd(c, cTest, true);
                     }
                     break;
@@ -663,7 +625,7 @@ public class Position implements Cloneable {
         return onChessboard;
     }
 
-    public boolean isControlled(Coordinate c) {
+    private boolean isControlled(Coordinate c) {
         byte l = c.getRow();
         byte co = c.getCol();
         Coordinate casetest = new Coordinate((byte) 0, (byte) 0);
@@ -708,7 +670,7 @@ public class Position implements Cloneable {
         }
 
         directions = Piece.WHITEBISHOP.getDirection();
-        for (byte[] direction : directions) {// Bishop direction
+        for (byte[] direction : directions) { // Bishop direction
             byte dx = direction[0];
             byte dy = direction[1];
             casetest.setCol(co);
@@ -757,9 +719,9 @@ public class Position implements Cloneable {
             if (isOnChessboard(casetest)) {
 
                 switch (this.getPosCase(casetest)) {
-                    case 0, 1, 3, 4, 6, 7, 8, 10, 11, 12:// Piece.WHITEROOK.getId(),Piece.WHITEKNIGHT.getId(),Piece.WHITEBISHOP.getId(),Piece.WHITEQUEEN.getId(),Piece.WHITEKING.getId(),Piece.WHITEPAWN.getId(),Piece.BLACKPAWN.getId(),Piece.BLACKROOK.getId(),Piece.BLACKBISHOP.getId(),Piece.BLACKQUEEN.getId(),Piece.BLACKKING.getId()
+                    case 0, 1, 3, 4, 6, 7, 8, 10, 11, 12:
                         break;
-                    case 9:// BLACKKNIGHT
+                    case 9: // BLACKKNIGHT
                         if (this.getTurn()) {
                             return true;
                         }
@@ -774,7 +736,7 @@ public class Position implements Cloneable {
         }
 
         directions = Piece.WHITEKING.getDirection();
-        for (byte[] direction : directions) {// Knight direction
+        for (byte[] direction : directions) { // King direction
             byte dx = direction[0];
             byte dy = direction[1];
             casetest.setCol(co);
@@ -784,7 +746,7 @@ public class Position implements Cloneable {
             if (isOnChessboard(casetest)) {
 
                 switch (this.getPosCase(casetest)) {
-                    case 0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11: // Piece.WHITEROOK.getId(),Piece.WHITEKNIGHT.getId(),Piece.WHITEBISHOP.getId(),Piece.WHITEQUEEN.getId(),Piece.WHITEKING.getId(),Piece.WHITEPAWN.getId(),Piece.BLACKPAWN.getId(),Piece.BLACKROOK.getId(),Piece.BLACKKNIGHT.getId(),Piece.BLACKBISHOP.getId(),Piece.BLACKQUEEN.getId()
+                    case 0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11:
                         break;
                     case 12: // BLACKKING
                         if (this.getTurn()) {
@@ -917,7 +879,7 @@ public class Position implements Cloneable {
         this.setPosCase(c2, piece);
     }
 
-    public byte testAdd(Coordinate c1, Coordinate c2, boolean take) {
+    private byte testAdd(Coordinate c1, Coordinate c2, boolean take) {
         Position positionTMP = this.clone();
         positionTMP.pseudoPlayMove(c1, c2);
         if (positionTMP.isChecked()) {
@@ -1001,16 +963,13 @@ public class Position implements Cloneable {
     public Position clone() {
         Position tmp = new Position();
 
-        tmp.setTurn(this.getTurn());
-
-        for (byte i = 0; i < 8; i++) {
+        for (byte i = 0; i < 8; i++) { // copy of this.pos in tmp.pos
             for (byte j = 0; j < 8; j++) {
                 tmp.setPosCase(new Coordinate(i, j), this.getPosCase(new Coordinate(i, j)));
             }
         }
-        // tmp.setPos(Arrays.copyOf(this.pos, this.pos.length));
-        // System.arraycopy(this.pos, 0, tmp.pos, 0, this.pos.length);
 
+        tmp.setTurn(this.getTurn());
         tmp.setBlackCastle(this.getBlackCastleLong());
         tmp.setBlackCastleLong(this.getBlackCastleLong());
         tmp.setWhiteCastle(this.getWhiteCastle());
