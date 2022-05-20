@@ -79,39 +79,39 @@ public class Chessboard extends Application {
 	Game g = new Game("");
 
 	private ArrayList<StackPane> createStackPanes(Rectangle r1, Rectangle r2, Rectangle r3, Rectangle r4, Rectangle r5,
-			Rectangle r6) {
+			Rectangle r6, Label l1, Label l2, Label l3, Label l4, Label l5, Label l6, Label l7, Label l8) {
 		ArrayList<StackPane> stackList = new ArrayList<StackPane>();
 
 		// Black lost pieces
 		StackPane stackLeftTop = new StackPane();
-		stackLeftTop.getChildren().addAll(r1, createLabels().get(0), createLabels().get(1));
+		stackLeftTop.getChildren().addAll(r1, l1, l2);
 		VBox.setMargin(stackLeftTop, new Insets(50, 10, 50, 25));
 		stackList.add(stackLeftTop);
 
 		// White lost pieces
 		StackPane stackLeftBottom = new StackPane();
-		stackLeftBottom.getChildren().addAll(r2, createLabels().get(2), createLabels().get(3));
+		stackLeftBottom.getChildren().addAll(r2, l3, l4);
 		VBox.setMargin(stackLeftBottom, new Insets(50, 10, 50, 25));
 		stackList.add(stackLeftBottom);
 
 		// PGN
 		StackPane stackLeftCenterRight = new StackPane();
-		stackLeftCenterRight.getChildren().addAll(r3, createLabels().get(4));
+		stackLeftCenterRight.getChildren().addAll(r3, l5);
 		VBox.setMargin(stackLeftCenterRight, new Insets(50, 10, 50, 25));
 		stackList.add(stackLeftCenterRight);
 
 		StackPane stackRightTop = new StackPane();
-		stackRightTop.getChildren().addAll(r4, createLabels().get(5));
+		stackRightTop.getChildren().addAll(r4, l6);
 		VBox.setMargin(stackRightTop, new Insets(100, 25, 100, 10));
 		stackList.add(stackRightTop);
 
 		StackPane stackRightBottom = new StackPane();
-		stackRightBottom.getChildren().addAll(r5, createLabels().get(6));
+		stackRightBottom.getChildren().addAll(r5, l7);
 		VBox.setMargin(stackRightBottom, new Insets(100, 25, 100, 10));
 		stackList.add(stackRightBottom);
 
 		StackPane stackRightCenter = new StackPane();
-		stackRightCenter.getChildren().addAll(r6, createLabels().get(7));
+		stackRightCenter.getChildren().addAll(r6, l8);
 		VBox.setMargin(stackRightCenter, new Insets(25, 25, 25, 10));
 		stackList.add(stackRightCenter);
 
