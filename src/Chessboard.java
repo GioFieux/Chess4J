@@ -1,66 +1,35 @@
-import java.io.File;
-import java.sql.Blob;
-import java.sql.ClientInfoStatus;
+
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
-import java.util.ListResourceBundle;
-import java.util.Stack;
-import java.util.prefs.BackingStoreException;
-
-import javax.management.openmbean.CompositeDataInvocationHandler;
-import javax.print.attribute.PrintServiceAttributeSet;
-
-import org.w3c.dom.css.Rect;
 
 import javafx.animation.RotateTransition;
 import javafx.application.Application;
-import javafx.collections.ListChangeListener;
-import javafx.css.converter.InsetsConverter;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
-import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
-import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.Separator;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.paint.Paint;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 public class Chessboard extends Application {
-	/*
-	 * public Image imageblackpawn, imageblackknight, imageblackrook,
-	 * imageblackbishop, imageblackqueen, imageblackking,
-	 * imagewhitepawn, imagewhiteknight, imagewhiterook, imagewhitebishop,
-	 * imagewhiteking, imagewhitequeen;
-	 * /*
-	 * ImageView blackpawn, blackknight, blackrook, blackbishop, blackqueen,
-	 * blackking, whitepawn, whiteknight, whiterook,
-	 * whitequeen, whitebishop, whiteking;
-	 */
 
 	public final Image imageblackpawn = new Image("images/BlackPawn.png");
 	public final Image imageblackknight = new Image("images/BlackKnight.png");
@@ -78,6 +47,8 @@ public class Chessboard extends Application {
 	Position pos = new Position();
 	Game g = new Game("");
 
+	ArrayList<Rectangle> allCases = new ArrayList<Rectangle>();
+
 	private ArrayList<StackPane> createStackPanes(Rectangle r1, Rectangle r2, Rectangle r3, Rectangle r4, Rectangle r5,
 			Rectangle r6, Label l1, Label l2, Label l3, Label l4, Label l5, Label l6, Label l7, Label l8) {
 		ArrayList<StackPane> stackList = new ArrayList<StackPane>();
@@ -85,6 +56,8 @@ public class Chessboard extends Application {
 		// Black lost pieces
 		StackPane stackLeftTop = new StackPane();
 		stackLeftTop.getChildren().addAll(r1, l1, l2);
+		stackLeftTop.setStyle(
+				"-fx-background-color: white; -fx-background-radius: 25; -fx-border-width: 2.5px; -fx-border-color: BEIGE; -fx-border-radius: 25;");
 		VBox.setMargin(stackLeftTop, new Insets(50, 10, 50, 25));
 		stackList.add(stackLeftTop);
 
@@ -220,40 +193,41 @@ public class Chessboard extends Application {
 		return labelList;
 	}
 
-	private Button displayTurnButton() {
-		Button displayTurn = new Button("Rotate");
-		displayTurn.setMaxWidth(100);
-		displayTurn.setMaxHeight(150);
-		displayTurn
-				.setStyle(
-						"-fx-background-color: white; -fx-background-radius: 25;-fx-border-width: 2.5px; -fx-border-color: BEIGE; -fx-border-radius: 25; -fx-font-family: 'Consolas'; -fx-font-size: 17.5;");
-		VBox.setMargin(displayTurn, new Insets(25, 25, 50, 25));
+	// private Button displayTurnButton() {
 
-		displayTurn.setOnMouseClicked(new EventHandler<MouseEvent>() {
+	/*
+	 * displayTurn.setOnMouseClicked(new EventHandler<MouseEvent>() {
+	 * 
+	 * @Override
+	 * public void handle(MouseEvent e) {
+	 * RotateTransition rotate = new RotateTransition();
+	 * Node node = (Node) e.getSource();
+	 * 
+	 * rotate.setByAngle(180);
+	 * displayTurn.setRotate(180);
+	 * rotate.setNode(createLabels().get(0));
+	 * rotate.play();
+	 * }
+	 * });
+	 */
 
-			@Override
-			public void handle(MouseEvent e) {
-				RotateTransition rotate = new RotateTransition();
-				Node node = (Node) e.getTarget();
-
-				rotate.setByAngle(180);
-				createGridPane().setRotate(180);
-				rotate.play();
-			}
-		});
-
-		return displayTurn;
-	}
+	// return displayTurn;
+	// }
 
 	private GridPane createGridPane() {
 		GridPane pane = new GridPane();
-		int count = 0;
 		double s = 75;
 		ArrayList<Rectangle> listeRColor = new ArrayList<Rectangle>();
 		ArrayList<Paint> listClickedColor = new ArrayList<Paint>();
 		ArrayList<Paint> rImageList = new ArrayList<Paint>();
+		ArrayList<Rectangle> listeRSelected = new ArrayList<Rectangle>();
+		ArrayList<Circle> toRemove = new ArrayList<Circle>();
+		ArrayList<Coordinate> saveCoordinates = new ArrayList<Coordinate>();
+		ArrayList<Coordinate> possibleCaseList = new ArrayList<Coordinate>();
 		int[] cArray = new int[1];
+		Rectangle rCase = new Rectangle();
 		Coordinate c = new Coordinate();
+		Coordinate circleCoordinate = new Coordinate();
 		for (byte i = 0; i < 8; i++) {
 			for (byte j = 0; j < 8; j++) {
 				c.setRow(j);
@@ -268,58 +242,68 @@ public class Chessboard extends Application {
 				pane.add(r, i, j);
 				listeRColor.add(r);
 
-				ArrayList<Rectangle> listeRSelected = new ArrayList<Rectangle>();
-
 				switch (pos.getPosCase(c)) {
 					case 0:
 						break;
 					case 1:
-						pane.add(new Rectangle(s, s, new ImagePattern(imagewhiterook)), c.getCol(),
-								c.getRow());
+						rCase = new Rectangle(s, s, new ImagePattern(imagewhiterook));
+						pane.add(rCase, c.getCol(), c.getRow());
+						allCases.add(rCase);
 						break;
 					case 2:
-						pane.add(new Rectangle(s, s, new ImagePattern(imagewhiteknight)), c.getCol(),
-								c.getRow());
+						rCase = new Rectangle(s, s, new ImagePattern(imagewhiteknight));
+						pane.add(rCase, c.getCol(), c.getRow());
+						allCases.add(rCase);
 						break;
 					case 3:
-						pane.add(new Rectangle(s, s, new ImagePattern(imagewhitebishop)), c.getCol(),
-								c.getRow());
+						rCase = new Rectangle(s, s, new ImagePattern(imagewhitebishop));
+						pane.add(rCase, c.getCol(), c.getRow());
+						allCases.add(rCase);
 						break;
 					case 4:
-						pane.add(new Rectangle(s, s, new ImagePattern(imagewhitequeen)), c.getCol(),
-								c.getRow());
+						rCase = new Rectangle(s, s, new ImagePattern(imagewhitequeen));
+						pane.add(rCase, c.getCol(), c.getRow());
+						allCases.add(rCase);
 						break;
 					case 5:
-						pane.add(new Rectangle(s, s, new ImagePattern(imagewhiteking)), c.getCol(),
-								c.getRow());
+						rCase = new Rectangle(s, s, new ImagePattern(imagewhiteking));
+						pane.add(rCase, c.getCol(), c.getRow());
+						allCases.add(rCase);
 						break;
 					case 6:
-						pane.add(new Rectangle(s, s, new ImagePattern(imagewhitepawn)), c.getCol(),
-								c.getRow());
+						rCase = new Rectangle(s, s, new ImagePattern(imagewhitepawn));
+						pane.add(rCase, c.getCol(), c.getRow());
+						allCases.add(rCase);
 						break;
 					case 7:
-						pane.add(new Rectangle(s, s, new ImagePattern(imageblackpawn)), c.getCol(),
-								c.getRow());
+						rCase = new Rectangle(s, s, new ImagePattern(imageblackpawn));
+						pane.add(rCase, c.getCol(), c.getRow());
+						allCases.add(rCase);
 						break;
 					case 8:
-						pane.add(new Rectangle(s, s, new ImagePattern(imageblackrook)), c.getCol(),
-								c.getRow());
+						rCase = new Rectangle(s, s, new ImagePattern(imageblackrook));
+						pane.add(rCase, c.getCol(), c.getRow());
+						allCases.add(rCase);
 						break;
 					case 9:
-						pane.add(new Rectangle(s, s, new ImagePattern(imageblackknight)), c.getCol(),
-								c.getRow());
+						rCase = new Rectangle(s, s, new ImagePattern(imageblackknight));
+						pane.add(rCase, c.getCol(), c.getRow());
+						allCases.add(rCase);
 						break;
 					case 10:
-						pane.add(new Rectangle(s, s, new ImagePattern(imageblackbishop)), c.getCol(),
-								c.getRow());
+						rCase = new Rectangle(s, s, new ImagePattern(imageblackbishop));
+						pane.add(rCase, c.getCol(), c.getRow());
+						allCases.add(rCase);
 						break;
 					case 11:
-						pane.add(new Rectangle(s, s, new ImagePattern(imageblackqueen)), c.getCol(),
-								c.getRow());
+						rCase = new Rectangle(s, s, new ImagePattern(imageblackqueen));
+						pane.add(rCase, c.getCol(), c.getRow());
+						allCases.add(rCase);
 						break;
 					case 12:
-						pane.add(new Rectangle(s, s, new ImagePattern(imageblackking)), c.getCol(),
-								c.getRow());
+						rCase = new Rectangle(s, s, new ImagePattern(imageblackking));
+						pane.add(rCase, c.getCol(), c.getRow());
+						allCases.add(rCase);
 						break;
 				}
 
@@ -327,88 +311,276 @@ public class Chessboard extends Application {
 
 					@Override
 					public void handle(MouseEvent e) {
-						Coordinate cClicked = new Coordinate();
-						Rectangle rClicked = (Rectangle) e.getTarget();
-						int rowClicked = GridPane.getRowIndex(rClicked);
-						int colClicked = GridPane.getColumnIndex(rClicked);
-						cClicked.setRow((byte) rowClicked);
-						cClicked.setCol((byte) colClicked);
+						Coordinate cClicked1 = new Coordinate();
+						Rectangle rClicked1 = (Rectangle) e.getTarget();
+						int rowClicked1 = GridPane.getRowIndex(rClicked1);
+						int colClicked1 = GridPane.getColumnIndex(rClicked1);
+						cClicked1.setRow((byte) rowClicked1);
+						cClicked1.setCol((byte) colClicked1);
+
 						Paint rColor = Color.TRANSPARENT;
-						if ((rowClicked + colClicked) % 2 == 0) {
+						Circle circlePossibleCase = new Circle();
+						if ((rowClicked1 + colClicked1) % 2 == 0) {
 							rColor = Color.BEIGE;
 						} else {
 							rColor = Color.BURLYWOOD;
 						}
 
 						if (listeRSelected.size() == 0) {
-							if (rClicked.getFill() != Color.BURLYWOOD
-									&& rClicked.getFill() != Color.BEIGE) {
-								listClickedColor.add(rColor);
+							if (rClicked1.getFill() != Color.BURLYWOOD
+									&& rClicked1.getFill() != Color.BEIGE) {
+								if (pos.getTurn()) {
+									if (pos.getPosCase(cClicked1) >= 0 && pos.getPosCase(cClicked1) <= 6) {
+										saveCoordinates.add(cClicked1);
+										byte[][] accessible = pos.caseAccess(cClicked1);
+										for (byte i = 0; i < 8; i++) {
+											for (byte j = 0; j < 8; j++) {
+												switch (accessible[i][j]) {
+													case 1:
+														circlePossibleCase = new Circle(15, Color.GREEN);
+														circlePossibleCase.setOpacity(0.5);
+														pane.add(circlePossibleCase, j, i);
+														circleCoordinate.setRow(i);
+														circleCoordinate.setCol(j);
+														possibleCaseList.add(circleCoordinate);
+														break;
+													case 2:
+														circlePossibleCase = new Circle(15, Color.RED);
+														circlePossibleCase.setOpacity(0.5);
+														pane.add(circlePossibleCase, j, i);
+														circleCoordinate.setRow(i);
+														circleCoordinate.setCol(j);
+														possibleCaseList.add(circleCoordinate);
+														break;
+												}
 
-								rImageList.add(rClicked.getFill());
-								listeRColor.get(8 * colClicked + rowClicked).setFill(Color.GREEN);
-								listeRColor.get(8 * colClicked + rowClicked).setOpacity(0.5);
-								cArray[0] = 8 * colClicked + rowClicked;
-								listeRSelected.add(rClicked);
+												for (Node node : pane.getChildren()) {
+													if (node instanceof Circle) {
+														GridPane.setHalignment(node, HPos.CENTER);
+													}
+												}
+											}
+										}
+										System.out.println("PossibleCaseList: " + possibleCaseList);
+
+										listClickedColor.add(rColor);
+
+										rImageList.add(rClicked1.getFill());
+										listeRColor.get(8 * colClicked1 + rowClicked1).setFill(Color.GREEN);
+										listeRColor.get(8 * colClicked1 + rowClicked1).setOpacity(0.5);
+										cArray[0] = 8 * colClicked1 + rowClicked1;
+										listeRSelected.add(rClicked1);
+
+										System.out.println("cClicked1: " + cClicked1 + " - PieceId: " +
+												pos.getPosCase(cClicked1));
+									} else if (pos.getPosCase(cClicked1) >= 7 && pos.getPosCase(cClicked1) <= 12) {
+										System.out.println("Not a White piece");
+									}
+								} else {
+									if (pos.getPosCase(cClicked1) >= 7 && pos.getPosCase(cClicked1) <= 12) {
+										saveCoordinates.add(cClicked1);
+										byte[][] accessible = pos.caseAccess(cClicked1);
+										for (byte i = 0; i < 8; i++) {
+											for (byte j = 0; j < 8; j++) {
+												switch (accessible[i][j]) {
+													case 1:
+														circlePossibleCase = new Circle(15, Color.GREEN);
+														circlePossibleCase.setOpacity(0.5);
+														circleCoordinate.setRow(i);
+														circleCoordinate.setCol(j);
+														pane.add(circlePossibleCase, j, i);
+														possibleCaseList.add(circleCoordinate);
+														break;
+													case 2:
+														circlePossibleCase = new Circle(15, Color.RED);
+														circlePossibleCase.setOpacity(0.5);
+														pane.add(circlePossibleCase, j, i);
+														circleCoordinate.setRow(j);
+														circleCoordinate.setCol(j);
+														possibleCaseList.add(circleCoordinate);
+														break;
+												}
+
+												for (Node node : pane.getChildren()) {
+													if (node instanceof Circle) {
+														GridPane.setHalignment(node, HPos.CENTER);
+													}
+												}
+											}
+										}
+										System.out.println("possibleCaseList: " + possibleCaseList);
+
+										listClickedColor.add(rColor);
+
+										rImageList.add(rClicked1.getFill());
+										listeRColor.get(8 * colClicked1 + rowClicked1).setFill(Color.GREEN);
+										listeRColor.get(8 * colClicked1 + rowClicked1).setOpacity(0.5);
+										cArray[0] = 8 * colClicked1 + rowClicked1;
+										listeRSelected.add(rClicked1);
+
+										System.out.println("cClicked1: " + cClicked1 + " - PieceId: " +
+												pos.getPosCase(cClicked1));
+									} else if (pos.getPosCase(cClicked1) >= 0 && pos.getPosCase(cClicked1) <= 6) {
+										System.out.println("Not a Black piece");
+									}
+								}
 							}
 						} else if (listeRSelected.size() == 1) {
-							if (rClicked.getFill() != Color.BURLYWOOD
-									&& rClicked.getFill() != Color.BEIGE) {
-								listClickedColor.add(rColor);
+							if (rClicked1.getFill() != Color.BURLYWOOD
+									&& rClicked1.getFill() != Color.BEIGE) {
+								if (pos.getTurn()) {
+									if (pos.getPosCase(cClicked1) >= 0 && pos.getPosCase(cClicked1) <= 6) {
+										saveCoordinates.add(cClicked1);
+										saveCoordinates.remove(saveCoordinates.get(0));
+										possibleCaseList.removeAll(possibleCaseList);
+										for (Node node : pane.getChildren()) {
+											if (node instanceof Circle) {
+												toRemove.add((Circle) node);
+											}
+										}
+										pane.getChildren().removeAll(toRemove);
 
-								listeRColor.get(cArray[0]).setFill(listClickedColor.get(0));
-								listeRSelected.get(0).setFill(rImageList.get(0));
-								listeRColor.get(cArray[0]).setOpacity(1);
-								listeRSelected.add(rClicked);
-								listeRColor.get(8 * colClicked + rowClicked).setFill(Color.GREEN);
-								listeRColor.get(8 * colClicked + rowClicked).setOpacity(0.5);
-								cArray[0] = 8 * colClicked + rowClicked;
-								rImageList.add(rClicked.getFill());
+										byte[][] accessible = pos.caseAccess(cClicked1);
+										for (byte i = 0; i < 8; i++) {
+											for (byte j = 0; j < 8; j++) {
+												switch (accessible[i][j]) {
+													case 1:
+														circlePossibleCase = new Circle(15, Color.GREEN);
+														circlePossibleCase.setOpacity(0.5);
+														pane.add(circlePossibleCase, j, i);
+														circleCoordinate.setRow((byte) i);
+														circleCoordinate.setCol((byte) j);
+														possibleCaseList.add(circleCoordinate);
+														break;
+													case 2:
+														circlePossibleCase = new Circle(15, Color.RED);
+														circlePossibleCase.setOpacity(0.5);
+														pane.add(circlePossibleCase, j, i);
+														circleCoordinate.setRow((byte) i);
+														circleCoordinate.setCol((byte) j);
+														possibleCaseList.add(circleCoordinate);
+														break;
+												}
+												for (Node node : pane.getChildren()) {
+													if (node instanceof Circle) {
+														GridPane.setHalignment(node, HPos.CENTER);
+													}
+												}
+											}
+										}
+										System.out.println("PossibleCaseList: " + possibleCaseList);
 
-								listeRSelected.remove(listeRSelected.get(0));
-								listClickedColor.remove(listClickedColor.get(0));
-								rImageList.remove(rImageList.get(0));
+										listClickedColor.add(rColor);
+
+										listeRColor.get(cArray[0]).setFill(listClickedColor.get(0));
+										listeRSelected.get(0).setFill(rImageList.get(0));
+										listeRColor.get(cArray[0]).setOpacity(1);
+										listeRSelected.add(rClicked1);
+										listeRColor.get(8 * colClicked1 + rowClicked1).setFill(Color.GREEN);
+										listeRColor.get(8 * colClicked1 + rowClicked1).setOpacity(0.5);
+										cArray[0] = 8 * colClicked1 + rowClicked1;
+										rImageList.add(rClicked1.getFill());
+
+										listeRSelected.remove(listeRSelected.get(0));
+										listClickedColor.remove(listClickedColor.get(0));
+										rImageList.remove(rImageList.get(0));
+
+										System.out.println("cClicked1: " + cClicked1 + " - PieceId: " +
+												pos.getPosCase(cClicked1));
+									} else if (pos.getPosCase(cClicked1) >= 7 && pos.getPosCase(cClicked1) <= 12) {
+										System.out.println("Not a White piece");
+									}
+								} else {
+									// Coordinate cClicked2 = new Coordinate();
+									// Rectangle rClicked2 = (Rectangle) e.getTarget();
+									// int rowClicked2 = GridPane.getRowIndex(rClicked2);
+									// int colClicked2 = GridPane.getColumnIndex(rClicked2);
+									// cClicked2.setRow((byte) rowClicked2);
+									// cClicked2.setCol((byte) colClicked2);
+
+									if (pos.getPosCase(cClicked1) >= 7 && pos.getPosCase(cClicked1) <= 12) {
+										saveCoordinates.add(cClicked1);
+										saveCoordinates.remove(saveCoordinates.get(0));
+										for (Node node : pane.getChildren()) {
+											if (node instanceof Circle) {
+												toRemove.add((Circle) node);
+											}
+										}
+										pane.getChildren().removeAll(toRemove);
+
+										byte[][] accessible = pos.caseAccess(cClicked1);
+										for (byte i = 0; i < 8; i++) {
+											for (byte j = 0; j < 8; j++) {
+												switch (accessible[i][j]) {
+													case 1:
+														circlePossibleCase = new Circle(15, Color.GREEN);
+														circlePossibleCase.setOpacity(0.5);
+														pane.add(circlePossibleCase, j, i);
+														circleCoordinate.setRow(i);
+														circleCoordinate.setCol(j);
+														possibleCaseList.add(circleCoordinate);
+														break;
+													case 2:
+														circlePossibleCase = new Circle(15, Color.RED);
+														circlePossibleCase.setOpacity(0.5);
+														pane.add(circlePossibleCase, j, i);
+														circleCoordinate.setRow(i);
+														circleCoordinate.setCol(j);
+														possibleCaseList.add(circleCoordinate);
+														break;
+												}
+												for (Node node : pane.getChildren()) {
+													if (node instanceof Circle) {
+														GridPane.setHalignment(node, HPos.CENTER);
+													}
+												}
+											}
+										}
+										System.out.println("PossibleCaseList: " + possibleCaseList);
+
+										listClickedColor.add(rColor);
+
+										listeRColor.get(cArray[0]).setFill(listClickedColor.get(0));
+										listeRSelected.get(0).setFill(rImageList.get(0));
+										listeRColor.get(cArray[0]).setOpacity(1);
+										listeRSelected.add(rClicked1);
+										listeRColor.get(8 * colClicked1 + rowClicked1).setFill(Color.GREEN);
+										listeRColor.get(8 * colClicked1 + rowClicked1).setOpacity(0.5);
+										cArray[0] = 8 * colClicked1 + rowClicked1;
+										rImageList.add(rClicked1.getFill());
+
+										listeRSelected.remove(listeRSelected.get(0));
+										listClickedColor.remove(listClickedColor.get(0));
+										rImageList.remove(rImageList.get(0));
+
+										System.out.println(
+												"cClicked1: " + cClicked1 + " - PieceId: "
+														+
+														pos.getPosCase(cClicked1));
+									} else if (pos.getPosCase(cClicked1) >= 0 && pos.getPosCase(cClicked1) <= 6) {
+										System.out.println("Not a Black piece");
+									}
+								}
 							}
 						}
-
-						System.out.println("cClicked: " + cClicked + " - PieceId: " +
-								pos.getPosCase(cClicked));
+						System.out.println("SaveCoordinates : " + saveCoordinates);
 					}
 				});
-
-				int tmp;
-				if (count == 1) {
-					tmp = 1;
-				} else {
-					tmp = 2 * count - 1;
-				}
-				int index = tmp;
-
-				count++;
 			}
 		}
+
+		// System.out.println("allCases: " + allCases);
+
 		pane.setStyle(
 				"-fx-border-style: solid; -fx-border-color: rgb(139,69,19); -fx-border-width: 10px;");
 		return pane;
 	}
 
+	int degree = 0;
+
 	@Override
 	public void start(Stage primaryStage) {
 
-		/*
-		 * blackpawn = new ImageView(imageblackpawn);
-		 * blackknight = new ImageView(imageblackknight);
-		 * blackrook = new ImageView(imageblackrook);
-		 * blackbishop = new ImageView(imageblackbishop);
-		 * blackqueen = new ImageView(imageblackqueen);
-		 * blackking = new ImageView(imageblackking);
-		 * whitepawn = new ImageView(imagewhitepawn);
-		 * whiteknight = new ImageView(imagewhiteknight);
-		 * whiterook = new ImageView(imagewhiterook);
-		 * whitebishop = new ImageView(imagewhitebishop);
-		 * whitequeen = new ImageView(imagewhitequeen);
-		 * whiteking = new ImageView(imagewhiteking);
-		 */
 		VBox centerVBox = new VBox();
 		VBox rightVBox = new VBox();
 		VBox leftVBoxRight = new VBox();
@@ -426,7 +598,24 @@ public class Chessboard extends Application {
 		Rectangle r5 = createRectangles().get(4);
 		Rectangle r6 = createRectangles().get(5);
 
-		ArrayList<StackPane> stack = createStackPanes(r1, r2, r3, r4, r5, r6);
+		Label l1 = createLabels().get(0);
+		Label l2 = createLabels().get(1);
+		Label l3 = createLabels().get(2);
+		Label l4 = createLabels().get(3);
+		Label l5 = createLabels().get(4);
+		Label l6 = createLabels().get(5);
+		Label l7 = createLabels().get(6);
+		Label l8 = createLabels().get(7);
+
+		Button displayTurn = new Button("Rotate");
+		displayTurn.setMaxWidth(100);
+		displayTurn.setMaxHeight(150);
+		displayTurn
+				.setStyle(
+						"-fx-background-color: white; -fx-background-radius: 25; -fx-border-width: 2.5px; -fx-border-color: rgb(125, 206, 160); -fx-border-radius: 25; -fx-font-family: 'Consolas'; -fx-font-size: 17.5;");
+		VBox.setMargin(displayTurn, new Insets(25, 25, 50, 25));
+
+		ArrayList<StackPane> stack = createStackPanes(r1, r2, r3, r4, r5, r6, l1, l2, l3, l4, l5, l6, l7, l8);
 
 		borderpane.setStyle("-fx-background-color: rgb(222,184,135);");
 		borderpane.setLeft(leftHBox);
@@ -435,7 +624,7 @@ public class Chessboard extends Application {
 		borderpane.setBottom(bottomVBox);
 
 		centerVBox.getChildren().add(pane);
-		centerVBox.setMaxSize(600, 600);
+		centerVBox.setMaxSize(300, 300);
 		centerVBox.setAlignment(Pos.CENTER);
 		VBox.setMargin(pane, new Insets(0, 125, 0, 100));
 
@@ -463,13 +652,31 @@ public class Chessboard extends Application {
 		rightVBox.getChildren().addAll(stack.get(3), stack.get(5), stack.get(4));
 		rightVBox.setAlignment(Pos.CENTER);
 
-		bottomVBox.getChildren().addAll(displayTurnButton());
+		bottomVBox.getChildren().addAll(displayTurn);
 		bottomVBox.setAlignment(Pos.CENTER);
 
 		/*
 		 * CtrlChessboard ctrlchess = new CtrlChessboard(pos, pane);
 		 * pos.addObserver(ctrlchess);
 		 */
+
+		// RotateTransition rTransition2 = new RotateTransition(Duration.seconds(2),
+		// allCases.get(0));
+
+		// rTransition2.setByAngle(180);
+
+		displayTurn.setOnAction(e -> {
+			if (e.getSource() == displayTurn) {
+				RotateTransition rTransition = new RotateTransition(Duration.seconds(2), pane);
+				rTransition.setByAngle(90);
+				for (int i = 0; i < allCases.size(); i++) {
+					RotateTransition rTransitionCase = new RotateTransition(Duration.seconds(2), allCases.get(i));
+					rTransitionCase.setByAngle(-90);
+					rTransitionCase.play();
+				}
+				rTransition.play();
+			}
+		});
 
 		MenuBar menuBar = new MenuBar();
 		Menu game = new Menu("Game");
