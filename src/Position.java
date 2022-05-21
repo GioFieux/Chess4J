@@ -5,11 +5,13 @@ import java.io.Serializable;
  * chessboard where we put the pieces.
  * In this class, for each piece we can find its accessible cases.
  * If the piece has an accessible case, we can move the piece to the new
- * destination chosen by the player.
+ * destination chosen by the player.<br>
  * Furthermore, the class can check if the kings are in check or not, in
  * checkmate or not, in stalemate position or not.
- * Note : the Position class implements Cloneable to give an implementation of
- * the method clone,
+ * <br>
+ * Note : the Position class implements Cloneable and Serializable to give an
+ * implementation of
+ * the method clone, and to allow the classe to serialize for saves.
  * and has classic methods such as toString(), and gives getters and setters for
  * every attributs.
  * 
@@ -21,98 +23,98 @@ public class Position implements Cloneable, Serializable {
 
     /**
      * Corresponding the cases in the first and last line of the chessboard
-     * in order to realize the whiteCastle, blackCastle, whiteCastleLong,
+     * in order to control the whiteCastle, blackCastle, whiteCastleLong,
      * blackCastleLong
      * with the rook and king pieces.
      */
     private final Coordinate a1 = new Coordinate("a1");
     /**
      * Corresponding the cases in the first and last line of the chessboard
-     * in order to realize the whiteCastle, blackCastle, whiteCastleLong,
+     * in order to control the whiteCastle, blackCastle, whiteCastleLong,
      * blackCastleLong
      * with the rook and king pieces.
      */
     private final Coordinate a8 = new Coordinate("a8");
     /**
      * Corresponding the cases in the first and last line of the chessboard
-     * in order to realize the whiteCastle, blackCastle, whiteCastleLong,
+     * in order to control the whiteCastle, blackCastle, whiteCastleLong,
      * blackCastleLong
      * with the rook and king pieces.
      */
     private final Coordinate h1 = new Coordinate("h1");
     /**
      * Corresponding the cases in the first and last line of the chessboard
-     * in order to realize the whiteCastle, blackCastle, whiteCastleLong,
+     * in order to control the whiteCastle, blackCastle, whiteCastleLong,
      * blackCastleLong
      * with the rook and king pieces.
      */
     private final Coordinate h8 = new Coordinate("h8");
     /**
      * Corresponding the cases in the first and last line of the chessboard
-     * in order to realize the whiteCastle, blackCastle, whiteCastleLong,
+     * in order to control the whiteCastle, blackCastle, whiteCastleLong,
      * blackCastleLong
      * with the rook and king pieces.
      */
     private final Coordinate c1 = new Coordinate("c1");
     /**
      * Corresponding the cases in the first and last line of the chessboard
-     * in order to realize the whiteCastle, blackCastle, whiteCastleLong,
+     * in order to control the whiteCastle, blackCastle, whiteCastleLong,
      * blackCastleLong
      * with the rook and king pieces.
      */
     private final Coordinate d1 = new Coordinate("d1");
     /**
      * Corresponding the cases in the first and last line of the chessboard
-     * in order to realize the whiteCastle, blackCastle, whiteCastleLong,
+     * in order to control the whiteCastle, blackCastle, whiteCastleLong,
      * blackCastleLong
      * with the rook and king pieces.
      */
     private final Coordinate f1 = new Coordinate("f1");
     /**
      * Corresponding the cases in the first and last line of the chessboard
-     * in order to realize the whiteCastle, blackCastle, whiteCastleLong,
+     * in order to control the whiteCastle, blackCastle, whiteCastleLong,
      * blackCastleLong
      * with the rook and king pieces.
      */
     private final Coordinate g1 = new Coordinate("g1");
     /**
      * Corresponding the cases in the first and last line of the chessboard
-     * in order to realize the whiteCastle, blackCastle, whiteCastleLong,
+     * in order to control the whiteCastle, blackCastle, whiteCastleLong,
      * blackCastleLong
      * with the rook and king pieces.
      */
     private final Coordinate c8 = new Coordinate("c8");
     /**
      * Corresponding the cases in the first and last line of the chessboard
-     * in order to realize the whiteCastle, blackCastle, whiteCastleLong,
+     * in order to control the whiteCastle, blackCastle, whiteCastleLong,
      * blackCastleLong
      * with the rook and king pieces.
      */
     private final Coordinate d8 = new Coordinate("d8");
     /**
      * Corresponding the cases in the first and last line of the chessboard
-     * in order to realize the whiteCastle, blackCastle, whiteCastleLong,
+     * in order to control the whiteCastle, blackCastle, whiteCastleLong,
      * blackCastleLong
      * with the rook and king pieces.
      */
     private final Coordinate f8 = new Coordinate("f8");
     /**
      * Corresponding the cases in the first and last line of the chessboard
-     * in order to realize the whiteCastle, blackCastle, whiteCastleLong,
+     * in order to control the whiteCastle, blackCastle, whiteCastleLong,
      * blackCastleLong
      * with the rook and king pieces.
      */
     private final Coordinate g8 = new Coordinate("g8");
     /**
      * Corresponding the cases in the first and last line of the chessboard
-     * in order to realize the whiteCastle, blackCastle, whiteCastleLong,
+     * in order to control the whiteCastle, blackCastle, whiteCastleLong,
      * blackCastleLong
      * with the rook and king pieces.
      */
     private final Coordinate b1 = new Coordinate("b1");
     /**
      * Corresponding the cases in the first and last line of the chessboard
-     * in order to realize the whiteCastle, blackCastle, whiteCastleLong,
+     * in order to control the whiteCastle, blackCastle, whiteCastleLong,
      * blackCastleLong
      * with the rook and king pieces.
      */
@@ -152,26 +154,26 @@ public class Position implements Cloneable, Serializable {
 
     /**
      * Indicating if said castles are still allowed,
-     * they�re initialized as true
-     * and can turn false when calling the playMove method.
+     * they're initialized as true
+     * and can turn false when called the playMove method.
      */
     private boolean whiteCastle;
     /**
      * Indicating if said castles are still allowed,
-     * they�re initialized as true
-     * and can turn false when calling the playMove method.
+     * they're initialized as true
+     * and can turn false when called the playMove method.
      */
     private boolean blackCastle;
     /**
      * Indicating if said castles are still allowed,
-     * they�re initialized as true
-     * and can turn false when calling the playMove method.
+     * they're initialized as true
+     * and can turn false when called the playMove method.
      */
     private boolean whiteCastleLong;
     /**
      * Indicating if said castles are still allowed,
-     * they�re initialized as true
-     * and can turn false when calling the playMove method.
+     * they're initialized as true
+     * and can turn false when called the playMove method.
      */
     private boolean blackCastleLong;
 
@@ -247,7 +249,7 @@ public class Position implements Cloneable, Serializable {
      * If there is no piece, it returns.
      * 
      * @param c coordinate of the case on the chessboard that we want to get the id.
-     * @return the id of the piece.
+     * @return The id of the piece.
      */
     public byte getPosCase(Coordinate c) {
         return this.pos[c.getRow()][c.getCol()];
@@ -282,8 +284,8 @@ public class Position implements Cloneable, Serializable {
      * The reason : the turn boolean is not updated in pseudoPlayMove,
      * because isChecked() method is called right after pseudoPlayMove to check
      * if the pseudo legal move is a real legal move,
-     * so we don�t want the �active� pos to change. (And isChecked() checks if the
-     * king of the <b>active</b> player is in a check status �)
+     * so we don't want the "active" pos to change. (And isChecked() checks if the
+     * king of the <b>active</b> player is in a check status...)
      * 
      * @param c1 the starting case of the displacement
      * @param c2 the destination case of the displacement
@@ -291,6 +293,8 @@ public class Position implements Cloneable, Serializable {
      * @throws NotAccessibleCaseException If the player enters a coordinate to move
      *                                    a piece on a not accessible case, then the
      *                                    exception is thrown.
+     * @see Position#playMove(Coordinate, Coordinate, Game, Piece)
+     * @see Position#pseudoPlayMove(Coordinate, Coordinate)
      */
     public void playMove(Coordinate c1, Coordinate c2, Game g) throws NotAccessibleCaseException {
         byte[][] tmpMove = caseAccess(c1); // value of caseAccess(c1) in an array of array of byte
@@ -307,7 +311,7 @@ public class Position implements Cloneable, Serializable {
 
     /**
      * This method calls the previous playMove method, and then just manages the
-     * promotion if there�s promotion.
+     * promotion if there is promotion.
      * 
      * @param c1 the starting case of the displacement
      * @param c2 the destination case of the displacement
@@ -317,6 +321,7 @@ public class Position implements Cloneable, Serializable {
      * @throws NotAccessibleCaseException If the player enters a coordinate to move
      *                                    a piece on a not accessible case, then the
      *                                    exception is thrown.
+     * @see Position#playMove(Coordinate, Coordinate, Game)
      */
     public void playMove(Coordinate c1, Coordinate c2, Game g, Piece p) throws NotAccessibleCaseException {
         this.playMove(c1, c2, g);
@@ -337,8 +342,8 @@ public class Position implements Cloneable, Serializable {
      * Definition : a pseudo legal move is a move that would be legal if having his
      * king in a chess status at the end of its turn would be legal.<br>
      * pseudoPlayMove plays a pseudo legal move and updates relevant information
-     * EXCEPT the turn.
-     * The reason for that is that pseudoPlayMove <b><span style="color:red">is ONLY
+     * <b>except the turn.</b>
+     * The reason for that is that pseudoPlayMove <b><span style="color:red">is only
      * called by playMove and caseAcess</span></b>.
      * The data updated by pseudoPlaymove are : <br>
      * - Castles Boolean, <br>
@@ -346,16 +351,17 @@ public class Position implements Cloneable, Serializable {
      * - and of course, the pos attribute. <br>
      * <br>
      * Handling the pos attribute is done with the help of movePiece.
-     * It�s basically a switch(pos[startCase]), If the piece in case1 is a queen, a
+     * It is basically a switch(pos[startCase]), If the piece in case1 is a queen, a
      * rook, a bishop, or knight (mostly in 90% of occurrences), this will just call
      * movePiece(case1, case2).
-     * If it�s a pawn or a King, more complexe handling will happen in the case of
+     * If it is a pawn or a King, more complexe handling will happen in the case of
      * Castle, prise en passant, and promotion.
      * This method will also update relevant information such as : Castles Boolean,
      * Turn.
      * 
      * @param c1 the starting case of the displacement
      * @param c2 the destination case of the displacement
+     * @see Position#testAdd(Coordinate, Coordinate, boolean)
      */
     private void pseudoPlayMove(Coordinate c1, Coordinate c2) {
 
@@ -423,18 +429,8 @@ public class Position implements Cloneable, Serializable {
                     movePiece(c1, c2);
                 }
                 if (Math.abs(c1.getRow() - c2.getRow()) == 2) {
-                    this.setEnPassant(new Coordinate((byte) ((c1.getRow() + c2.getRow()) / 2), c1.getCol())); // si un
-                                                                                                              // d�placement
-                                                                                                              // de pion
-                                                                                                              // de 2
-                                                                                                              // case :
-                                                                                                              // alors
-                                                                                                              // une
-                                                                                                              // prsie
-                                                                                                              // en
-                                                                                                              // passant
-                                                                                                              // est
-                                                                                                              // possible
+                    this.setEnPassant(new Coordinate((byte) ((c1.getRow() + c2.getRow()) / 2), c1.getCol()));
+                    // if there is a 2 cases pawn move, then a take en passant is possible
                 }
                 break;
 
@@ -454,28 +450,30 @@ public class Position implements Cloneable, Serializable {
      * - highlighting properly cases for the graphic interface <br>
      * <br>
      * The way caseAccess is coded is such as it will generate every single
-     * pseudo-legal move, and for each case that is a �pseudo-legal destination�, it
+     * pseudo-legal move, and for each case that is a "pseudo-legal destination", it
      * will generate a new position object, call the pseudoPlayMove, and then check
      * if the new position is in a check status.
      * See the testAdd method.
-     * This works out quite well because a pseudo legal move that doesn�t end up in
-     * a position where you�re in check is in fact a legal move. It may be quite
-     * expensive in term of computation but it�s very short in term of code. <br>
+     * This works out quite well because a pseudo legal move that does not end up in
+     * a position where you are in check is in fact a legal move. It may be quite
+     * expensive in term of computation but it is very short in term of code. <br>
      * <br>
      * Note : This is probably the longest function, as it needs to consider every
-     * possibility, standard as well as castle, take �en passant� and promotion�
+     * possibility, standard as well as castle, take en passant and promotions
      * <br>
      * <br>
      * Update : We have created two methods to search the cases accessible. On one
      * hand, one method called searchCaseAccess(), for all the pieces except the
      * Pawn.
      * On the other hand, the second method, called searchPawnCaseAccess() is only
-     * used to search pawns� accessible cases.
+     * used to search pawns' accessible cases.
      * 
      * @param c the case of the piece we want to know reachable cases on the
      *          chessboard.
-     * @return all cases where the piece can go which are legal moves (plus roque
+     * @return All cases where the piece can go which are legal moves (plus roque
      *         for king pieces).
+     * @see Position#searchCaseAccess(Coordinate, byte[][], int, byte[][])
+     * @see Position#searchPawnCaseAccess(Coordinate, byte[][], byte[][])
      */
     public byte[][] caseAccess(Coordinate c) {
 
@@ -664,7 +662,7 @@ public class Position implements Cloneable, Serializable {
      * This method is searching all the pseudos legal moves for all pieces on the
      * chessboard except the pawn.
      * It calls the testAdd method in order to verify if the piece can or not move
-     * on the next case (in fact, it verifies if it�s a real legal move).
+     * on the next case (in fact, it verifies if it is a real legal move).
      * The returned matrix contains the possibilities to move for each piece.
      * The way to search these cases is to browse the cases in the direction given
      * by the enumeration Piece.
@@ -672,14 +670,14 @@ public class Position implements Cloneable, Serializable {
      * Then, we look step by step : <br>
      * - Is the caseTest still on the chessboard ? <br>
      * - Is on caseTest already a piece ? Is it an allied or enemy piece ? <br>
-     * Finally, we call testAdd to see if it�s a real legal move.
+     * Finally, we call testAdd to see if it is a real legal move.
      * 
      * @param c            initial coordinate of the case
      * @param resultMatrix corresponds to the matrix of accessible cases
      * @param limit        corresponds to the maximum advance of a piece in one
      *                     direction
      * @param direction    corresponds to the different directions of the piece
-     * @return all cases where the piece can go which are legal moves
+     * @return All cases where the piece can go which are legal moves
      */
     private byte[][] searchCaseAccess(Coordinate c, byte[][] resultMatrix, int limit,
             byte[][] direction) {
@@ -738,8 +736,9 @@ public class Position implements Cloneable, Serializable {
      * - promotion moves<br>
      * - enPassant moves<br>
      * <br>
-     * It�s the same concept as searchCaseAccess method, for each caseTest, we look
-     * if it�s still on the chessboard and if there is already a piece or not on the
+     * It is the same concept as searchCaseAccess method, for each caseTest, we look
+     * if it is still on the chessboard and if there is already a piece or not on
+     * the
      * caseTest.
      * Then, we call testAdd method.
      * 
@@ -747,7 +746,7 @@ public class Position implements Cloneable, Serializable {
      * @param resultMatrix corresponds to the matrix of accessible cases
      * @param direction    corresponds to every possible direction of pawn pieces
      *                     given by the enumeration Piece.
-     * @return all cases where the pawn can go which are legal moves
+     * @return All cases where the pawn can go which are legal moves
      */
     private byte[][] searchPawnCaseAccess(Coordinate c, byte[][] resultMatrix,
             byte[][] direction) {
@@ -889,7 +888,7 @@ public class Position implements Cloneable, Serializable {
      * printed in the console : <br>
      * - 0 : case no accessible <br>
      * - 1 : case where the piece can go <br>
-     * - 2 : case where the piece can move and take the enemy�s piece <br>
+     * - 2 : case where the piece can move and take the enemy's piece <br>
      * <br>
      * This method is only used to play the game in console mode.
      * 
@@ -908,7 +907,7 @@ public class Position implements Cloneable, Serializable {
 
     /**
      * Check if the coordinate passed in parameter is in the chessboard.
-     * It simply checks if the coordinates� row and column are lower than 8 and
+     * It simply checks if the coordinates' row and column are lower than 8 and
      * higher than 0.
      * 
      * @param c coordinate of the case that we want to verify if it is on the
@@ -932,21 +931,21 @@ public class Position implements Cloneable, Serializable {
     }
 
     /**
-     * Check if a case around the king�s current player is controlled <b>by the
-     * opponent of the current player�s turn</b> used for a simpler implementation
+     * Check if a case around the king's current player is controlled <b>by the
+     * opponent of the current player's turn</b> used for a simpler implementation
      * of handling legal moves and checkmate.
-     * A case controlled means that in this case, the king�s current player cannot
+     * A case controlled means that in this case, the king's current player cannot
      * go.
      * The concept consists in checking if a piece can move in its pseudo legal
-     * moves, only if the king won�t be checked.
-     * For each direction of each piece starting from the current player�s king
+     * moves, only if the king will not be checked.
+     * For each direction of each piece starting from the current player's king
      * position, we look if the caseTest is controlled or not.
      * In a certain way, it looks like the concept of searchCaseAccess.
      * 
      * @param c the case which will be said to be controlled or not by the opponent
-     *          of the current�s player, which in fact will always correspond to the
-     *          current player�s king�s position.
-     * @return true if a case is controlled by the opponent
+     *          of the current's player, which in fact will always correspond to the
+     *          current player's king's position.
+     * @return True if a case is controlled by the opponent
      */
     private boolean isControlled(Coordinate c) {
         byte l = c.getRow();
@@ -1120,11 +1119,11 @@ public class Position implements Cloneable, Serializable {
     }
 
     /**
-     * Check if the current player�s king is checked.
-     * It simply searches the current player�s king on the board and calls the
+     * Check if the current player's king is checked.
+     * It simply searches the current player's king on the board and calls the
      * isControlled() method on it.
      * 
-     * @return true if the current player�s king is checked.
+     * @return True if the current player's king is checked.
      */
     public boolean isChecked() {
         Coordinate c = new Coordinate((byte) 0, (byte) 0);
@@ -1151,12 +1150,13 @@ public class Position implements Cloneable, Serializable {
     }
 
     /**
-     * If the current player�s king is in check, the method calls the
+     * If the current player's king is in check, the method calls the
      * isCheckStaleMate method.
      * If there is any possibility to counter or avoid the checkmate, then the
-     * current player�s king is in checkmate.
+     * current player's king is in checkmate.
      * 
-     * @return true if the current player�s king is in check.
+     * @return True if the current player's king is in check.
+     * @see Position#isCheckStaleMate()
      */
     public boolean isCheckMate() {
         if (this.isChecked()) {
@@ -1166,16 +1166,16 @@ public class Position implements Cloneable, Serializable {
     }
 
     /**
-     * This method enables to see if the current player�s king has no possibility to
+     * This method enables to see if the current player's king has no possibility to
      * move and if no allied piece has a legal move possible.
-     * If the king was already checked, it�s a CheckMate. If this king wasn�t
-     * already checked, it�s a StaleMate.
+     * If the king was already checked, it's a CheckMate. If this king was not
+     * already checked, it's a StaleMate.
      * The concept of the method consists in browsing every allied piece of the
      * current player and looking if one can move.
      * This method is only here to short the code, so that isCheckMate and
      * isStaleMate methods only check if the king is checked or not.
      * 
-     * @return true if there is a CheckMate or a StaleMate.
+     * @return True if there is a CheckMate or a StaleMate.
      */
     private boolean isCheckStaleMate() {
         Coordinate cCheck = new Coordinate((byte) 0, (byte) 0);
@@ -1217,13 +1217,14 @@ public class Position implements Cloneable, Serializable {
     }
 
     /**
-     * If the current player�s king isn�t in check, the method calls the
+     * If the current player's king is not in check, the method calls the
      * isCheckStaleMate method.
      * If there is any possibility to counter or avoid the checked position around
      * the king,
-     * then the current player�s king is in a stalemate position.
+     * then the current player's king is in a stalemate position.
      * 
-     * @return true if the current player�s king is in a stalemate position.
+     * @return True if the current player's king is in a stalemate position.
+     * @see Position#isCheckStaleMate()
      */
     public boolean isStaleMate() {
         if (!(this.isChecked())) {
@@ -1236,8 +1237,8 @@ public class Position implements Cloneable, Serializable {
      * Move a piece from one case to another regardless of the value stored in case2
      * in pos.
      * This method is always called by pseudoPlayMove, at least once.
-     * It may be called up to 2 times in the following case : Castle and take �en
-     * passant�.
+     * It may be called up to 2 times in the following case : Castle and take en
+     * passant.
      * 
      * @param c1 the starting case of the displacement
      * @param c2 the destination case of the displacement
@@ -1258,7 +1259,7 @@ public class Position implements Cloneable, Serializable {
      * 
      * @param c1   the starting case of the displacement
      * @param c2   the destination case of the displacement, which we want to check
-     *             if it�s a legal move or not
+     *             if it is a legal move or not
      * @param take a boolean indicating if casetest contains an enemy piece.
      * @return 0, 1 or 2 as explained.
      */
@@ -1276,6 +1277,17 @@ public class Position implements Cloneable, Serializable {
         }
     }
 
+    /**
+     * Check if the game is over. The game is over for one the following reason :
+     * <br>
+     * - stalemate, <br>
+     * - checkmate, <br>
+     * - the time of one ot the player is over, <br>
+     * <br>
+     * It will end the game appropriately by updating the relevant attribute : PGN
+     * 
+     * @return True if the game is finished
+     */
     public boolean isGameFinished(Game g) {
         if (this.isCheckMate()) {
             return true;
@@ -1297,6 +1309,18 @@ public class Position implements Cloneable, Serializable {
         return false;
     }
 
+    /**
+     * This method displays a chessboard in console mode, drawn with character such
+     * as +, -, |, etc.
+     * The chessboard highlights all pieces present on the chessboard.
+     * It also displays every Position attribute and the status of the current
+     * player's king :<br>
+     * - check,<br>
+     * - checkmate,<br>
+     * - stalemate.
+     * 
+     * @return A long String representing the chessboard.
+     */
     public String toString() {
         String chessboard = "";
         int row = 9;
@@ -1337,7 +1361,8 @@ public class Position implements Cloneable, Serializable {
      * 
      * @param c coordinate of the case on the chessboard that we want to get the
      *          unicode
-     * @return the unicode corresponding to the piece in the coordinate case.
+     * @return The unicode corresponding to the piece in the coordinate case.
+     * @see Position#toString()
      */
     public String getAffichage(Coordinate c) {
         switch (this.getPosCase(c)) {

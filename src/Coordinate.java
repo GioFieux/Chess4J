@@ -5,6 +5,9 @@ import java.io.Serializable;
  * column.
  * In this class, there is a conversion of the String information entered by the
  * user to a byte and inversely which is sent in the class Game.
+ * 
+ * Note : the Coordinate class implements Serializable to allow the classe to
+ * serialize for saves.
  *
  * @author Elias MEHIRA, Florent FRAITOT, Alexis JUST, Giovanni FIEUX
  * @version 1.0
