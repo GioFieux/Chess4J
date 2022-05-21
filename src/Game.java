@@ -1,17 +1,12 @@
-import java.util.Timer;
-import java.util.TimerTask;
-
 public class Game {
     private String PGN;
-    private Timer timeP1;
-    private Timer timeP2;
-    private boolean displayMode;
+    private Chrono timeP1;
+    private Chrono timeP2;
 
     public Game(String pgn) {
         this.PGN = pgn;
-        this.timeP1 = new Timer();
-        this.timeP2 = new Timer();
-        this.displayMode = true;
+        this.timeP1 = new Chrono();
+        this.timeP2 = new Chrono();
     }
 
     public String getPGN() {
@@ -34,24 +29,26 @@ public class Game {
         }
     }
 
-    public boolean getDisplayMode() {
-        return this.displayMode;
-    }
-
-    public void setDisplayMode(boolean b) {
-        this.displayMode = b;
-    }
-
-    public Timer getTimerP1() {
+    public Chrono getTimerP1() {
         return this.timeP1;
     }
 
-    public Timer getTimerP2() {
+    public Chrono getTimerP2() {
         return this.timeP2;
     }
 
+    public boolean timeOutP1() {
+        return this.getTimerP1().timeOut();
+    }
+
+    public boolean timeOutP2() {
+        return this.getTimerP2().timeOut();
+    }
+
     /*
-     * public boolean timedOut() {
+     * public int[] manageTimeP1() {
+     * 
+     * int[] tabtimeP1 = new int[2];
      * 
      * TimerTask task1 = new TimerTask() {
      * 
@@ -60,25 +57,68 @@ public class Game {
      * 
      * @Override
      * public void run() {
-     * if(secondes>0) {
+     * if (secondes > 0) {
      * System.out.println(minutes + ":" + secondes);
      * secondes--;
-     * } else if(secondes==0 && minutes==0) {
+     * } else if (secondes == 0 && minutes == 0) {
      * System.out.println("time finished");
      * timeP1.cancel();
-     * } else if (secondes==0) {
+     * } else if (secondes == 0) {
      * System.out.println(minutes + ":" + secondes);
      * minutes--;
-     * secondes=5;
+     * secondes = 5;
      * }
+     * tabtimeP1[0] = minutes;
+     * tabtimeP1[1] = secondes;
      * }
      * };
-     * timeP1.scheduleAtFixedRate(task1, 0, 1000);
-     * //timer.schedule(task, 0);
-     * //timer.schedule(task, date.getTime());
-     * //timer.scheduleAtFixedRate(task, 0, 1000);
-     * return true;
+     * this.getTimerP1().scheduleAtFixedRate(task1, 0, 1000);
+     * return tabtimeP1;
+     * }
+     * 
+     * public int[] manageTimeP2() {
+     * 
+     * int[] tabtimeP2 = new int[2];
+     * 
+     * TimerTask task2 = new TimerTask() {
+     * 
+     * int secondes = 5;
+     * int minutes = 1;
+     * 
+     * @Override
+     * public void run() {
+     * if (secondes > 0) {
+     * System.out.println(minutes + ":" + secondes);
+     * secondes--;
+     * } else if (secondes == 0 && minutes == 0) {
+     * System.out.println("time finished");
+     * timeP1.cancel();
+     * } else if (secondes == 0) {
+     * System.out.println(minutes + ":" + secondes);
+     * minutes--;
+     * secondes = 5;
+     * }
+     * tabtimeP2[0] = minutes;
+     * tabtimeP2[1] = secondes;
+     * }
+     * };
+     * this.getTimerP2().scheduleAtFixedRate(task2, 0, 1000);
+     * 
+     * // timer.schedule(task, 0);
+     * // timer.schedule(task, date.getTime());
+     * // timer.scheduleAtFixedRate(task, 0, 1000);
+     * return tabtimeP2;
      * }
      */
 
+    /*
+     * public static void main(String[] args) {
+     * Game g = new Game("");
+     * int[] tabtimeP1 = g.manageTimeP1();
+     * System.out.println("Player 1 : " + tabtimeP1[0] + " " + tabtimeP1[1]);
+     * if (tabtimeP1[0] == 0) {
+     * g.getTimerP1().cancel();
+     * }
+     * }
+     */
 }

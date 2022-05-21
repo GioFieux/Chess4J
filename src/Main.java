@@ -1,10 +1,5 @@
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.nio.*;
 
 public class Main {
 
@@ -15,6 +10,9 @@ public class Main {
         Position jeu = new Position();
 
         Game g = new Game("");
+        g.getTimerP1().start();
+        g.getTimerP1().pause();
+        g.getTimerP2().start();
 
         Coordinate c1 = null;
         Coordinate c2 = null;
@@ -22,10 +20,16 @@ public class Main {
         System.out.println(jeu);
 
         int numberMove = 1;
-        boolean keepgoing = true;
-        // boolean stop = false;
 
-        while (keepgoing) {
+        while (!jeu.isGameFinished(g)) {
+
+            if (jeu.getTurn()) {
+                g.getTimerP1().resume();
+                g.getTimerP2().pause();
+            } else {
+                g.getTimerP1().pause();
+                g.getTimerP2().resume();
+            }
 
             boolean verified = false;
             while (!verified) {
@@ -33,12 +37,6 @@ public class Main {
                 System.out.println("Enter a coordinate");
                 String str = sc.nextLine();
 
-                /*
-                 * if (str.equals("stop")) {
-                 * keepgoing = false;
-                 * verified = true;
-                 * } else
-                 */
                 if (!(str.length() == 2) || (str.charAt(1) > 8 && str.charAt(1) < 1)
                         || (str.charAt(0) < 97 && str.charAt(0) > 104)) {
                     System.out.println("Vous n'avez pas entr�e une cha�ne de caract�re l�gal");
@@ -60,12 +58,6 @@ public class Main {
             do {
                 System.out.println("Enter a second case");
                 str2 = sc.nextLine();
-                /*
-                 * if (str2.equals("stop")) {
-                 * stop = true;
-                 * break;
-                 * }
-                 */
                 try {
                     c2 = new Coordinate(str2);
                     piece2 = jeu.getAffichage(c2);
@@ -75,55 +67,42 @@ public class Main {
                 }
             } while (accessible[c2.getRow()][c2.getCol()] == 0);
 
-            // test
-            if (jeu.isCheckMate()) {
-                break;
-            }
-            jeu.setTurn(!(jeu.getTurn()));
-            if (jeu.isStaleMate()) {
-                break;
-            }
-            jeu.setTurn(!(jeu.getTurn()));
-
             System.out.println("bravo, c'est un coup valide :");
 
-            // if (!stop) {
             g.updatePGN(c1, c2, piece1, piece2, numberMove);
-            // }
 
             System.out.println("PGN : \n" + g.getPGN());
             System.out.println(jeu);
             numberMove++;
         }
 
+        if (jeu.getTurn()) {
+            g.getTimerP1().resume();
+        } else {
+            g.getTimerP2().resume();
+        }
+        g.getTimerP1().stop();
+        g.getTimerP2().stop();
+
         if (jeu.isCheckMate()) {
             if (jeu.getTurn()) {
-                System.out.println("Victoire des noirs par �chec et mat");
+                System.out.println("Victoire des noirs par échec et mat");
             } else {
-                System.out.println("Victoire des blancs par �chec et mat");
+                System.out.println("Victoire des blancs par échec et mat");
             }
         } else {
             System.out.println("Match nul par PAT");
         }
+        System.out.println("Temps de jeu player 1 : " + Chrono.timeToHMS(g.getTimerP1().getDureeSec()));
+        System.out.println("Temps de jeu player 2 : " + Chrono.timeToHMS(g.getTimerP2().getDureeSec()));
         System.out.println("Fin de la partie");
-        sc.close();
 
-        // Sérialisation
-        /*
-         * ArrayList<Position> al = new ArrayList<Position>();
-         * al.add(jeu);
-         * try {
-         * FileOutputStream fileOut = new FileOutputStream("test");
-         * ObjectOutputStream out = new ObjectOutputStream(fileOut);
-         * out.writeObject(al);
-         * out.close();
-         * fileOut.close();
-         * sc.close();
-         * } catch (FileNotFoundException e) {
-         * e.printStackTrace();
-         * } catch (IOException e) {
-         * e.printStackTrace();
-         * }
-         */
+        SerializeObject.main(jeu);
+
+        System.out.println("jeu après deserialisation : ");
+        ArrayList<Position> pos = DesezializeObject.main(args);
+        System.out.println(pos.get(0));
+
+        sc.close();
     }
 }
