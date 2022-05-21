@@ -326,12 +326,12 @@ public class Position implements Cloneable, Serializable {
     public void playMove(Coordinate c1, Coordinate c2, Game g, Piece p) throws NotAccessibleCaseException {
         this.playMove(c1, c2, g);
         if (!this.getTurn()) {
-            if (c2.getRow() == 0 && this.getPosCase(c2) == Piece.WHITEPAWN.getId()) {
+            if (c2.getRow() == 0 && this.getPosCase(c2) == Piece.WHITEPAWN.getId()) { // if WHITEPAWN is on last line
                 this.setPosCase(c2, p.getId());
                 g.setPGN(g.getPGN() + "Promotion in : " + p.name() + " ");
             }
         } else {
-            if (c2.getRow() == 7 && this.getPosCase(c2) == Piece.BLACKPAWN.getId()) {
+            if (c2.getRow() == 7 && this.getPosCase(c2) == Piece.BLACKPAWN.getId()) { // if BLACKPAWN is on first line
                 this.setPosCase(c2, p.getId());
                 g.setPGN(g.getPGN() + "Promotion in : " + p.name() + " ");
             }
@@ -389,7 +389,6 @@ public class Position implements Cloneable, Serializable {
             case 2, 3, 4, 9, 10, 11: // WHITEKNIGHT, WHITEBISHOP, WHITEQUEEN, BLACKKNIGHT, BLACKBISHOP, BLACKQUEEN
                 movePiece(c1, c2);
                 break;
-
             case 5: // WHITEKING
                 this.setWhiteCastleLong(false);
                 this.setWhiteCastle(false);
@@ -433,7 +432,6 @@ public class Position implements Cloneable, Serializable {
                     // if there is a 2 cases pawn move, then a take en passant is possible
                 }
                 break;
-
         }
     }
 
@@ -480,6 +478,7 @@ public class Position implements Cloneable, Serializable {
         int limit; // corresponds to the maximum advance of a piece in one direction
 
         byte[][] resultMatrix = new byte[8][8]; // corresponds to the matrix of accessible cases
+        byte[][] direction; // corresponds to every piece possible move (see Piece enumeration)
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 resultMatrix[i][j] = 0;
@@ -495,7 +494,7 @@ public class Position implements Cloneable, Serializable {
                 if (this.getTurn()) {
 
                     limit = Piece.WHITEROOK.getLimit();
-                    byte[][] direction = Piece.WHITEROOK.getDirection();
+                    direction = Piece.WHITEROOK.getDirection();
 
                     resultMatrix = searchCaseAccess(c, resultMatrix, limit, direction);
                 }
@@ -506,7 +505,7 @@ public class Position implements Cloneable, Serializable {
                 if (this.getTurn()) {
 
                     limit = Piece.WHITEKNIGHT.getLimit();
-                    byte[][] direction = Piece.WHITEKNIGHT.getDirection();
+                    direction = Piece.WHITEKNIGHT.getDirection();
 
                     resultMatrix = searchCaseAccess(c, resultMatrix, limit, direction);
                 }
@@ -517,7 +516,7 @@ public class Position implements Cloneable, Serializable {
                 if (this.getTurn()) {
 
                     limit = Piece.WHITEBISHOP.getLimit();
-                    byte[][] direction = Piece.WHITEBISHOP.getDirection();
+                    direction = Piece.WHITEBISHOP.getDirection();
 
                     resultMatrix = searchCaseAccess(c, resultMatrix, limit, direction);
                 }
@@ -528,7 +527,7 @@ public class Position implements Cloneable, Serializable {
                 if (this.getTurn()) {
 
                     limit = Piece.WHITEQUEEN.getLimit();
-                    byte[][] direction = Piece.WHITEQUEEN.getDirection();
+                    direction = Piece.WHITEQUEEN.getDirection();
 
                     resultMatrix = searchCaseAccess(c, resultMatrix, limit, direction);
                 }
@@ -539,7 +538,7 @@ public class Position implements Cloneable, Serializable {
                 if (this.getTurn()) {
 
                     limit = Piece.WHITEKING.getLimit();
-                    byte[][] direction = Piece.WHITEKING.getDirection();
+                    direction = Piece.WHITEKING.getDirection();
 
                     resultMatrix = searchCaseAccess(c, resultMatrix, limit, direction);
 
@@ -548,8 +547,10 @@ public class Position implements Cloneable, Serializable {
                             if (!(this.isControlled(f1)) && !(this.isControlled(g1))) {
                                 if (this.getPosCase(f1) == 0 && this.getPosCase(g1) == 0) {
                                     resultMatrix[g1.getRow()][g1.getCol()] = 1;
-                                }
-                            }
+                                } // no need to make other checks, roque move will be necessarily a legal move if
+                                  // Castle attributes are true :
+                            } // king and towers are on their position, and the cases between king and tower
+                              // are empty and not Controlled
                         }
                         if (this.getWhiteCastleLong() && this.getPosCase(a1) == Piece.WHITEROOK.getId()) {
                             if (!(this.isControlled(c1)) && !(this.isControlled(d1)) && !(this.isControlled(b1))) {
@@ -566,7 +567,7 @@ public class Position implements Cloneable, Serializable {
 
                 if (this.getTurn()) {
 
-                    byte[][] direction = Piece.WHITEPAWN.getDirection();
+                    direction = Piece.WHITEPAWN.getDirection();
 
                     resultMatrix = searchPawnCaseAccess(c, resultMatrix, direction);
                 }
@@ -577,7 +578,7 @@ public class Position implements Cloneable, Serializable {
 
                 if (!(this.getTurn())) {
 
-                    byte[][] direction = Piece.BLACKPAWN.getDirection();
+                    direction = Piece.BLACKPAWN.getDirection();
 
                     resultMatrix = searchPawnCaseAccess(c, resultMatrix, direction);
                 }
@@ -589,7 +590,7 @@ public class Position implements Cloneable, Serializable {
                 if (!(this.getTurn())) {
 
                     limit = Piece.BLACKROOK.getLimit();
-                    byte[][] direction = Piece.BLACKROOK.getDirection();
+                    direction = Piece.BLACKROOK.getDirection();
 
                     resultMatrix = searchCaseAccess(c, resultMatrix, limit, direction);
                 }
@@ -600,7 +601,7 @@ public class Position implements Cloneable, Serializable {
                 if (!(this.getTurn())) {
 
                     limit = Piece.BLACKKNIGHT.getLimit();
-                    byte[][] direction = Piece.BLACKKNIGHT.getDirection();
+                    direction = Piece.BLACKKNIGHT.getDirection();
 
                     resultMatrix = searchCaseAccess(c, resultMatrix, limit, direction);
                 }
@@ -611,7 +612,7 @@ public class Position implements Cloneable, Serializable {
                 if (!(this.getTurn())) {
 
                     limit = Piece.BLACKBISHOP.getLimit();
-                    byte[][] direction = Piece.BLACKBISHOP.getDirection();
+                    direction = Piece.BLACKBISHOP.getDirection();
 
                     resultMatrix = searchCaseAccess(c, resultMatrix, limit, direction);
                 }
@@ -622,7 +623,7 @@ public class Position implements Cloneable, Serializable {
                 if (!(this.getTurn())) {
 
                     limit = Piece.BLACKQUEEN.getLimit();
-                    byte[][] direction = Piece.BLACKQUEEN.getDirection();
+                    direction = Piece.BLACKQUEEN.getDirection();
 
                     resultMatrix = searchCaseAccess(c, resultMatrix, limit, direction);
                 }
@@ -633,7 +634,7 @@ public class Position implements Cloneable, Serializable {
                 if (!(this.getTurn())) {
 
                     limit = Piece.BLACKKING.getLimit();
-                    byte[][] direction = Piece.BLACKKING.getDirection();
+                    direction = Piece.BLACKKING.getDirection();
 
                     resultMatrix = searchCaseAccess(c, resultMatrix, limit, direction);
 
@@ -688,8 +689,8 @@ public class Position implements Cloneable, Serializable {
             int step = 0; // corresponds to the advance of a piece in one direction at a certain time
             boolean keepgoing = true; // check if the next cases could be accessible
             byte[] currentDirection = direction[j]; // the direction in which we will move
-            byte deltaX = currentDirection[0];
-            byte deltaY = currentDirection[1];
+            byte deltaX = currentDirection[0]; // corresponds to the displacement on rows
+            byte deltaY = currentDirection[1]; // corresponds to the displacement on columns
             int y = c.getCol();
             int x = c.getRow();
             cTest.setCol((byte) y);
@@ -758,10 +759,10 @@ public class Position implements Cloneable, Serializable {
         byte[] iRight = direction[2]; // when a pawn can take a piece (diagonal right)
         byte[] iLeft = direction[3]; // when a pawn can take a piece (diagonal left)
 
-        byte twoCasesRow;
+        byte twoCasesRow; // corresponds to the line where pawns can move 2 cases forward
         Coordinate cTest2;
-        byte enPassantRow;
-        byte promotionRow;
+        byte enPassantRow; // corresponds to the line where pawns can take en Passant
+        byte promotionRow; // correponds to the line where pawns can be promoted
 
         if (this.getTurn()) {
             twoCasesRow = 6;
@@ -878,7 +879,6 @@ public class Position implements Cloneable, Serializable {
                     resultMatrix[cTest.getRow()][cTest.getCol()] = this.testAdd(c, cTest, false);
                 }
             }
-
         }
         return resultMatrix;
     }
@@ -953,10 +953,10 @@ public class Position implements Cloneable, Serializable {
         Coordinate casetest = new Coordinate((byte) 0, (byte) 0);
         byte[][] directions;
 
-        directions = Piece.WHITEROOK.getDirection();
-        for (byte[] direction : directions) {// rook direction
-            byte dx = direction[0];
-            byte dy = direction[1];
+        directions = Piece.WHITEROOK.getDirection(); // Whatever it is WHITEROOK or BLACKROOK directions,
+        for (byte[] direction : directions) {// it stays the same directions
+            byte dx = direction[0]; // corresponds to the displacement on rows
+            byte dy = direction[1]; // corresponds to the displacement on columns
             casetest.setCol(co);
             casetest.setRow(l);
             boolean keepgoing = true;
@@ -1179,7 +1179,7 @@ public class Position implements Cloneable, Serializable {
      */
     private boolean isCheckStaleMate() {
         Coordinate cCheck = new Coordinate((byte) 0, (byte) 0);
-        boolean stalemate = false;
+        boolean checkStale = false;
         for (byte i = 0; i < 8; i++) {
             for (byte j = 0; j < 8; j++) {
                 cCheck.setRow(i);
@@ -1187,12 +1187,11 @@ public class Position implements Cloneable, Serializable {
                 byte[][] tmpMove = caseAccess(cCheck);
                 if (this.getTurn()) { // Player with White Pieces
                     if (this.getPosCase(cCheck) <= 6
-                            && this.getPosCase(cCheck) > 0) {
+                            && this.getPosCase(cCheck) > 0) { // if an allied piece
                         for (byte k = 0; k < 8; k++) {
                             for (byte l = 0; l < 8; l++) {
-                                if (tmpMove[k][l] > 0) {
-                                    stalemate = false;
-                                    return stalemate;
+                                if (tmpMove[k][l] > 0) { // can move
+                                    return checkStale; // then there is no checkMate or staleMate
                                 }
                             }
                         }
@@ -1203,8 +1202,7 @@ public class Position implements Cloneable, Serializable {
                         for (byte k = 0; k < 8; k++) {
                             for (byte l = 0; l < 8; l++) {
                                 if (tmpMove[k][l] > 0) {
-                                    stalemate = false;
-                                    return stalemate;
+                                    return checkStale;
                                 }
                             }
                         }
@@ -1212,8 +1210,8 @@ public class Position implements Cloneable, Serializable {
                 }
             }
         }
-        stalemate = true;
-        return stalemate;
+        checkStale = true;
+        return checkStale;
     }
 
     /**
