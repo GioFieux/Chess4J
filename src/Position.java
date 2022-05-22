@@ -633,14 +633,14 @@ public class Position implements Cloneable, Serializable {
 
                     if (!(this.isChecked())) {
                         if (this.getBlackCastle() && this.getPosCase(a8) == Piece.BLACKROOK.getId()) {
-                            if (this.isControlled(f8) && this.isControlled(g8)) {
+                            if (!(this.isControlled(f8)) && !(this.isControlled(g8))) {
                                 if (this.getPosCase(f8) == 0 && this.getPosCase(g8) == 0) {
                                     resultMatrix[g8.getRow()][g8.getCol()] = 1;
                                 }
                             }
                         } else if (this.getBlackCastleLong() && this.getPosCase(h8) == Piece.BLACKROOK.getId()) {
-                            if (this.isControlled(c8) && this.isControlled(d8) && this.isControlled(b8)) {
-                                if (this.getPosCase(c8) == 0 && this.getPosCase(c8) == 0 && this.getPosCase(b8) == 0) {
+                            if (!(this.isControlled(c8)) && !(this.isControlled(d8)) && !(this.isControlled(b8))) {
+                                if (this.getPosCase(c8) == 0 && this.getPosCase(d8) == 0 && this.getPosCase(b8) == 0) {
                                     resultMatrix[c8.getRow()][c8.getCol()] = 1;
                                 }
                             }
