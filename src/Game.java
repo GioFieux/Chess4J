@@ -1,3 +1,11 @@
+/**
+ * This class allows to manage every elements linked to every ChessGame, such as
+ * PGN and time for both players.
+ * 
+ * @author Elias MEHIRA, Florent FRAITOT, Alexis JUST, Giovanni FIEUX
+ * @version 1.0
+ */
+
 public class Game {
     private String PGN;
     private Chrono timeP1;
@@ -19,6 +27,26 @@ public class Game {
         this.PGN = s;
     }
 
+    public Chrono getTimerP1() {
+        return this.timeP1;
+    }
+
+    public Chrono getTimerP2() {
+        return this.timeP2;
+    }
+
+    /**
+     * This method updates the PGN and saves move pieces since the start of the
+     * game, and the piece takes.
+     * 
+     * @param c1         : the initial case before the move of the piece.
+     * @param c2         : the destination case of the piece.
+     * @param piece1     : corresponds to the name of the piece played by the
+     *                   player.
+     * @param piece2     : corresponds to the enemy piece’s name taken by the
+     *                   player’s piece or to an empty case if there is no take.
+     * @param numberMove : corresponds to the number of moves played in a game.
+     */
     public void updatePGN(Coordinate c1, Coordinate c2, String piece1, String piece2, int numberMove) {
         if (piece2.equals("  ")) {
             this.setPGN(this.getPGN() + numberMove + ". " + c1.byteConversionToString()[0]
@@ -31,14 +59,11 @@ public class Game {
         }
     }
 
-    public Chrono getTimerP1() {
-        return this.timeP1;
-    }
-
-    public Chrono getTimerP2() {
-        return this.timeP2;
-    }
-
+    /**
+     * This method calculates the time passed by White player since the Game began.
+     * 
+     * @return The time passed by White player
+     */
     public long getTimerP1Time() {
         if (this.getTimerP1().getTime() != 0) {
             duree1 = this.getTimerP1().getTime();
@@ -47,6 +72,11 @@ public class Game {
         return tempsRestant;
     }
 
+    /**
+     * This method calculates the time passed by Black player since the Game began.
+     * 
+     * @return The time passed by Black player
+     */
     public long getTimerP2Time() {
         if (this.getTimerP2().getTime() != 0) {
             duree2 = this.getTimerP2().getTime();
@@ -55,88 +85,23 @@ public class Game {
         return tempsRestant;
     }
 
+    /**
+     * This method checks if the time passed by White player since the Game began is
+     * higher than 10 minutes
+     * 
+     * @return True if time passed by White player is higher than 10 minutes
+     */
     public boolean timeOutP1() {
         return this.getTimerP1().timeOut();
     }
 
+    /**
+     * This method checks if the time passed by Black player since the Game began is
+     * higher than 10 minutes
+     * 
+     * @return True if time passed by Black player is higher than 10 minutes
+     */
     public boolean timeOutP2() {
         return this.getTimerP2().timeOut();
     }
-
-    /*
-     * public int[] manageTimeP1() {
-     * 
-     * int[] tabtimeP1 = new int[2];
-     * 
-     * TimerTask task1 = new TimerTask() {
-     * 
-     * int secondes = 5;
-     * int minutes = 1;
-     * 
-     * @Override
-     * public void run() {
-     * if (secondes > 0) {
-     * System.out.println(minutes + ":" + secondes);
-     * secondes--;
-     * } else if (secondes == 0 && minutes == 0) {
-     * System.out.println("time finished");
-     * timeP1.cancel();
-     * } else if (secondes == 0) {
-     * System.out.println(minutes + ":" + secondes);
-     * minutes--;
-     * secondes = 5;
-     * }
-     * tabtimeP1[0] = minutes;
-     * tabtimeP1[1] = secondes;
-     * }
-     * };
-     * this.getTimerP1().scheduleAtFixedRate(task1, 0, 1000);
-     * return tabtimeP1;
-     * }
-     * 
-     * public int[] manageTimeP2() {
-     * 
-     * int[] tabtimeP2 = new int[2];
-     * 
-     * TimerTask task2 = new TimerTask() {
-     * 
-     * int secondes = 5;
-     * int minutes = 1;
-     * 
-     * @Override
-     * public void run() {
-     * if (secondes > 0) {
-     * System.out.println(minutes + ":" + secondes);
-     * secondes--;
-     * } else if (secondes == 0 && minutes == 0) {
-     * System.out.println("time finished");
-     * timeP1.cancel();
-     * } else if (secondes == 0) {
-     * System.out.println(minutes + ":" + secondes);
-     * minutes--;
-     * secondes = 5;
-     * }
-     * tabtimeP2[0] = minutes;
-     * tabtimeP2[1] = secondes;
-     * }
-     * };
-     * this.getTimerP2().scheduleAtFixedRate(task2, 0, 1000);
-     * 
-     * // timer.schedule(task, 0);
-     * // timer.schedule(task, date.getTime());
-     * // timer.scheduleAtFixedRate(task, 0, 1000);
-     * return tabtimeP2;
-     * }
-     */
-
-    /*
-     * public static void main(String[] args) {
-     * Game g = new Game("");
-     * int[] tabtimeP1 = g.manageTimeP1();
-     * System.out.println("Player 1 : " + tabtimeP1[0] + " " + tabtimeP1[1]);
-     * if (tabtimeP1[0] == 0) {
-     * g.getTimerP1().cancel();
-     * }
-     * }
-     */
 }
