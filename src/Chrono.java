@@ -7,6 +7,7 @@ public class Chrono implements Cloneable {
     private long pauseDepart;
     private long pauseFin;
     private long duree;
+    private boolean resumed;
 
     public Chrono() {
         this.tempsDepart = 0;
@@ -14,6 +15,7 @@ public class Chrono implements Cloneable {
         this.pauseDepart = 0;
         this.pauseFin = 0;
         this.duree = 0;
+        this.resumed = false;
     }
 
     public void start() {
@@ -29,6 +31,7 @@ public class Chrono implements Cloneable {
             return;
         }
         this.pauseDepart = System.currentTimeMillis();
+        this.resumed = false;
     }
 
     public void resume() {
@@ -44,6 +47,7 @@ public class Chrono implements Cloneable {
         this.pauseDepart = 0;
         this.pauseFin = 0;
         this.duree = 0;
+        this.resumed = true;
     }
 
     public void stop() {
@@ -64,6 +68,14 @@ public class Chrono implements Cloneable {
 
     public long getDureeMs() {
         return this.duree;
+    }
+
+    public long getTime() {
+        Chrono tmp = this.clone();
+        if (this.resumed) {
+            tmp.stop();
+        }
+        return tmp.getDureeSec();
     }
 
     public static String timeToHMS(long tempsS) {
@@ -94,9 +106,7 @@ public class Chrono implements Cloneable {
     }
 
     public boolean timeOut() {
-        Chrono tmp = this.clone();
-        tmp.stop();
-        if (tmp.getDureeSec() > 30) {
+        if (this.getTime() > 60) {
             return true;
         }
         return false;
@@ -133,6 +143,16 @@ public class Chrono implements Cloneable {
         System.out.println("Temps de jeu player 1 : " + Chrono.timeToHMS(t1.getDureeSec()));
         System.out.println("Temps de jeu player 2 : " + Chrono.timeToHMS(t2.getDureeSec()));
         sc.close();
+    }
+
+    public String toString() {
+        String chrono = "";
+        chrono = chrono + "duree       : " + this.getDureeSec() + "\n";
+        chrono = chrono + "tempsDepart : " + this.tempsDepart + "\n";
+        chrono = chrono + "tempsFin    : " + this.tempsFin + "\n";
+        chrono = chrono + "pauseDepart : " + this.pauseDepart + "\n";
+        chrono = chrono + "pauseFin    : " + this.pauseFin + "\n";
+        return chrono;
     }
 
     public Chrono clone() {

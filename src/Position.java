@@ -1296,14 +1296,13 @@ public class Position implements Cloneable, Serializable {
             return true;
         }
         this.setTurn(!this.getTurn());
-        /*
-         * if (g.timeOutP1()) {
-         * return true;
-         * }
-         * if (g.timeOutP2()) {
-         * return true;
-         * }
-         */
+
+        if (g.timeOutP1()) {
+            return true;
+        }
+        if (g.timeOutP2()) {
+            return true;
+        }
         return false;
     }
 
