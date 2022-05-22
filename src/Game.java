@@ -1,3 +1,5 @@
+import java.io.Serializable;
+
 /**
  * This class allows to manage every elements linked to every ChessGame, such as
  * PGN and time for both players.
@@ -6,7 +8,7 @@
  * @version 1.0
  */
 
-public class Game {
+public class Game implements Serializable {
     private String PGN;
     private Chrono timeP1;
     private Chrono timeP2;

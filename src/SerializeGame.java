@@ -3,12 +3,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
-public class SerializeObject {
-    public static void main(Position pos) {
+public class SerializeGame {
+    public static void main(Game g) {
         try {
-            FileOutputStream fos = new FileOutputStream("src/save/save.ser");
+            FileOutputStream fos = new FileOutputStream("src/save/saveGame.ser");
             ObjectOutputStream oos = new ObjectOutputStream(fos);
-            oos.writeObject(pos);
+            oos.writeObject(g);
             oos.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();

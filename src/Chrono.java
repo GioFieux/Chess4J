@@ -1,6 +1,7 @@
+import java.io.Serializable;
 import java.util.Scanner;
 
-public class Chrono implements Cloneable {
+public class Chrono implements Cloneable, Serializable {
 
     private long tempsDepart;
     private long tempsFin;

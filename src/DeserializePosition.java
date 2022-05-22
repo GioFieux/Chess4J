@@ -4,11 +4,11 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 
-public class DesezializeObject {
+public class DeserializePosition {
     public static ArrayList<Position> main(String[] args) {
         ArrayList<Position> jeu = new ArrayList<Position>();
         try {
-            FileInputStream fis = new FileInputStream("src/save/save.ser");
+            FileInputStream fis = new FileInputStream("src/save/savePosition.ser");
             ObjectInputStream ois = new ObjectInputStream(fis);
             Position pos = (Position) ois.readObject();
             jeu.add(pos);
