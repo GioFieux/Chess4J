@@ -28,27 +28,91 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
+/**
+ *It displays the chessboard with all the complementary elements for the chessboard like the timer, player’s turn, etc.
+ *@author Elias MEHIRA, Florent FRAITOT, Alexis JUST, Giovanni FIEUX
+ *@version 1.0
+ */
 public class Chessboard extends Application {
 
+	/**
+	 * Get Images from “images” folder.
+	 */
 	public final Image imageblackpawn = new Image("images/BlackPawn.png");
+	/**
+	 * Get Images from “images” folder.
+	 */
 	public final Image imageblackknight = new Image("images/BlackKnight.png");
+	/**
+	 * Get Images from “images” folder.
+	 */
 	public final Image imageblackrook = new Image("images/BlackRook.png");
+	/**
+	 * Get Images from “images” folder.
+	 */
 	public final Image imageblackbishop = new Image("images/BlackBishop.png");
+	/**
+	 * Get Images from “images” folder.
+	 */
 	public final Image imageblackqueen = new Image("images/BlackQueen.png");
+	/**
+	 * Get Images from “images” folder.
+	 */
 	public final Image imageblackking = new Image("images/BlackKing.png");
+	/**
+	 * Get Images from “images” folder.
+	 */
 	public final Image imagewhitepawn = new Image("images/WhitePawn.png");
+	/**
+	 * Get Images from “images” folder.
+	 */
 	public final Image imagewhiteknight = new Image("images/WhiteKnight.png");
+	/**
+	 * Get Images from “images” folder.
+	 */
 	public final Image imagewhiterook = new Image("images/WhiteRook.png");
+	/**
+	 * Get Images from “images” folder.
+	 */
 	public final Image imagewhitebishop = new Image("images/WhiteBishop.png");
+	/**
+	 * Get Images from “images” folder.
+	 */
 	public final Image imagewhitequeen = new Image("images/WhiteQueen.png");
+	/**
+	 * Get Images from “images” folder.
+	 */
 	public final Image imagewhiteking = new Image("images/WhiteKing.png");
-
+	
+	/**
+	 * This attribute takes the information from the Position class’ methods used.
+	 */
 	Position pos = new Position();
+	/**
+	 * Used to retrieve the PGN in the Game class.
+	 */
 	Game g = new Game("");
 
 	ArrayList<Rectangle> allCases = new ArrayList<Rectangle>();
 
+	/**
+	 * This function creates stackpanes that will contain elements from each section that will be around the chessboard.
+	 * @param r1 corresponds to a rectangle for the black piece lost
+	 * @param r2 corresponds to a rectangle for the white piece lost
+	 * @param r3 corresponds to a rectangle for the PGN
+	 * @param r4 corresponds to a rectangle for the timer for black player
+	 * @param r5 corresponds to a rectangle for the timer for white player
+	 * @param r6 corresponds to a rectangle for the state of the King
+	 * @param l1 is the title for the black lost pieces
+	 * @param l2 represents the unicode of black lost pieces
+	 * @param l3 is the title for the white lost pieces 
+	 * @param l4 represents the unicode of white lost pieces
+	 * @param l5 displays the PGN
+	 * @param l6 displays the timer of the black player
+	 * @param l7 displays the timer of the white player
+	 * @param l8 displays if the king is in check
+	 * @return an arraylist of the stackpane list
+	 */
 	private ArrayList<StackPane> createStackPanes(Rectangle r1, Rectangle r2, Rectangle r3, Rectangle r4, Rectangle r5,
 			Rectangle r6, Label l1, Label l2, Label l3, Label l4, Label l5, Label l6, Label l7, Label l8) {
 		ArrayList<StackPane> stackList = new ArrayList<StackPane>();
@@ -100,7 +164,11 @@ public class Chessboard extends Application {
 
 		return stackList;
 	}
-
+	
+	/**
+	 * It creates rectangles that are required for the various sectors that will be all around the chessboard.
+	 * @return an arrayList of the Rectangle list
+	 */
 	private ArrayList<Rectangle> createRectangles() {
 		ArrayList<Rectangle> rList = new ArrayList<Rectangle>();
 
@@ -140,6 +208,10 @@ public class Chessboard extends Application {
 		return rList;
 	}
 
+	/**
+	 * It creates the various text zones (PGN, lost pieces, king state and timer) that will be added into the stackpanes.
+	 * @return an arraylist of the Label list
+	 */
 	private ArrayList<Label> createLabels() {
 		ArrayList<Label> labelList = new ArrayList<Label>();
 
@@ -203,6 +275,10 @@ public class Chessboard extends Application {
 		return labelList;
 	}
 
+	/**
+	 * It creates a GridPane which contains our chessboard and our EventHandler to select a case with a mouse click.
+	 * @return a Gridpane created for the chesssboard
+	 */
 	private GridPane createGridPane() {
 		GridPane pane = new GridPane();
 		double s = 65;
