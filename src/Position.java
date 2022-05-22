@@ -128,11 +128,11 @@ public class Position implements Cloneable, Serializable {
      * and 7 to 12 representing white and black pieces.
      */
     private byte[][] pos = {
+            { 0, Piece.BLACKKING.getId(), 0, 0, 0, 0, 0, 0 },
             { 0, 0, 0, 0, 0, 0, 0, 0 },
-            { 0, 0, Piece.BLACKKING.getId(), 0, 0, 0, 0, 0 },
+            { 0, Piece.WHITEQUEEN.getId(), 0, Piece.WHITEKING.getId(), 0, 0, 0, 0 },
             { 0, 0, 0, 0, 0, 0, 0, 0 },
             { 0, 0, 0, 0, 0, 0, 0, 0 },
-            { Piece.WHITEBISHOP.getId(), Piece.WHITEKNIGHT.getId(), 0, 0, 0, 0, 0, 0 },
             { 0, 0, 0, 0, 0, 0, 0, 0 },
             { Piece.WHITEPAWN.getId(), Piece.WHITEPAWN.getId(), Piece.WHITEPAWN.getId(),
                     Piece.WHITEPAWN.getId(),
@@ -140,8 +140,8 @@ public class Position implements Cloneable, Serializable {
                     Piece.WHITEPAWN.getId() },
             { Piece.WHITEROOK.getId(), Piece.WHITEKNIGHT.getId(),
                     Piece.WHITEBISHOP.getId(),
-                    Piece.WHITEQUEEN.getId(), Piece.WHITEKING.getId(),
                     0, 0,
+                    Piece.WHITEBISHOP.getId(), Piece.WHITEKNIGHT.getId(),
                     Piece.WHITEROOK.getId() }
     };
 
@@ -1283,12 +1283,15 @@ public class Position implements Cloneable, Serializable {
         if (this.isCheckMate()) {
             return true;
         }
-        this.setTurn(!this.getTurn()); // done in order to stop the game directly after the move
-        if (this.isStaleMate()) {
-            this.setTurn(!this.getTurn());
+        Position tmp = this.clone();// done in order to stop the game directly after the move
+        tmp.setTurn(!tmp.getTurn());
+        if (tmp.isStaleMate()) {
             return true;
         }
-        this.setTurn(!this.getTurn());
+
+        if (this.isStaleMate()) {
+            return true;
+        }
 
         if (g.timeOutP1()) {
             return true;
