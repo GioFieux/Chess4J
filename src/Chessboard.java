@@ -64,27 +64,37 @@ public class Chessboard extends Application {
 		// White lost pieces
 		StackPane stackLeftBottom = new StackPane();
 		stackLeftBottom.getChildren().addAll(r2, l3, l4);
+		stackLeftBottom.setStyle(
+				"-fx-background-color: white; -fx-background-radius: 25; -fx-border-width: 2.5px; -fx-border-color: BEIGE; -fx-border-radius: 25;");
 		VBox.setMargin(stackLeftBottom, new Insets(50, 10, 50, 25));
 		stackList.add(stackLeftBottom);
 
 		// PGN
 		StackPane stackLeftCenterRight = new StackPane();
 		stackLeftCenterRight.getChildren().addAll(r3, l5);
+		stackLeftCenterRight.setStyle(
+				"-fx-background-color: white; -fx-background-radius: 25; -fx-border-width: 2.5px; -fx-border-color: BEIGE; -fx-border-radius: 25;");
 		VBox.setMargin(stackLeftCenterRight, new Insets(50, 10, 50, 25));
 		stackList.add(stackLeftCenterRight);
 
 		StackPane stackRightTop = new StackPane();
 		stackRightTop.getChildren().addAll(r4, l6);
+		stackRightTop.setStyle(
+				"-fx-background-color: white; -fx-background-radius: 25; -fx-border-width: 2.5px; -fx-border-color: BEIGE; -fx-border-radius: 25;");
 		VBox.setMargin(stackRightTop, new Insets(100, 25, 100, 10));
 		stackList.add(stackRightTop);
 
 		StackPane stackRightBottom = new StackPane();
 		stackRightBottom.getChildren().addAll(r5, l7);
+		stackRightBottom.setStyle(
+				"-fx-background-color: white; -fx-background-radius: 25; -fx-border-width: 2.5px; -fx-border-color: BEIGE; -fx-border-radius: 25;");
 		VBox.setMargin(stackRightBottom, new Insets(100, 25, 100, 10));
 		stackList.add(stackRightBottom);
 
 		StackPane stackRightCenter = new StackPane();
 		stackRightCenter.getChildren().addAll(r6, l8);
+		stackRightCenter.setStyle(
+				"-fx-background-color: white; -fx-background-radius: 25; -fx-border-width: 2.5px; -fx-border-color: BEIGE; -fx-border-radius: 25;");
 		VBox.setMargin(stackRightCenter, new Insets(25, 25, 25, 10));
 		stackList.add(stackRightCenter);
 
@@ -95,34 +105,34 @@ public class Chessboard extends Application {
 		ArrayList<Rectangle> rList = new ArrayList<Rectangle>();
 
 		// Black lost pieces
-		Rectangle bPlayerLostPiece = new Rectangle(150, 175, Color.WHITE);
+		Rectangle bPlayerLostPiece = new Rectangle(125, 150, Color.WHITE);
 		bPlayerLostPiece.setArcHeight(50);
 		bPlayerLostPiece.setArcWidth(50);
 		rList.add(bPlayerLostPiece);
 
 		// White lost pieces
-		Rectangle wPlayerLostPiece = new Rectangle(150, 175, Color.WHITE);
+		Rectangle wPlayerLostPiece = new Rectangle(125, 150, Color.WHITE);
 		wPlayerLostPiece.setArcHeight(50);
 		wPlayerLostPiece.setArcWidth(50);
 		rList.add(wPlayerLostPiece);
 
 		// PGN
-		Rectangle rPGN = new Rectangle(125, 800, Color.WHITE);
+		Rectangle rPGN = new Rectangle(125, 500, Color.WHITE);
 		rPGN.setArcHeight(50);
 		rPGN.setArcWidth(50);
 		rList.add(rPGN);
 
-		Rectangle bPlayer = new Rectangle(275, 75, Color.WHITE);
+		Rectangle bPlayer = new Rectangle(200, 50, Color.WHITE);
 		bPlayer.setArcHeight(50);
 		bPlayer.setArcWidth(50);
 		rList.add(bPlayer);
 
-		Rectangle wPlayer = new Rectangle(275, 75, Color.WHITE);
+		Rectangle wPlayer = new Rectangle(275, 50, Color.WHITE);
 		wPlayer.setArcHeight(50);
 		wPlayer.setArcWidth(50);
 		rList.add(wPlayer);
 
-		Rectangle playerCheckState = new Rectangle(275, 75, Color.WHITE);
+		Rectangle playerCheckState = new Rectangle(275, 50, Color.WHITE);
 		playerCheckState.setArcWidth(50);
 		playerCheckState.setArcHeight(50);
 		rList.add(playerCheckState);
@@ -193,30 +203,9 @@ public class Chessboard extends Application {
 		return labelList;
 	}
 
-	// private Button displayTurnButton() {
-
-	/*
-	 * displayTurn.setOnMouseClicked(new EventHandler<MouseEvent>() {
-	 * 
-	 * @Override
-	 * public void handle(MouseEvent e) {
-	 * RotateTransition rotate = new RotateTransition();
-	 * Node node = (Node) e.getSource();
-	 * 
-	 * rotate.setByAngle(180);
-	 * displayTurn.setRotate(180);
-	 * rotate.setNode(createLabels().get(0));
-	 * rotate.play();
-	 * }
-	 * });
-	 */
-
-	// return displayTurn;
-	// }
-
 	private GridPane createGridPane() {
 		GridPane pane = new GridPane();
-		double s = 75;
+		double s = 65;
 		ArrayList<Rectangle> listeRColor = new ArrayList<Rectangle>();
 		ArrayList<Paint> listClickedColor = new ArrayList<Paint>();
 		ArrayList<Paint> rImageList = new ArrayList<Paint>();
@@ -609,10 +598,10 @@ public class Chessboard extends Application {
 
 		Button displayTurn = new Button("Rotate");
 		displayTurn.setMaxWidth(100);
-		displayTurn.setMaxHeight(150);
+		displayTurn.setMaxHeight(125);
 		displayTurn
 				.setStyle(
-						"-fx-background-color: white; -fx-background-radius: 25; -fx-border-width: 2.5px; -fx-border-color: rgb(125, 206, 160); -fx-border-radius: 25; -fx-font-family: 'Consolas'; -fx-font-size: 17.5;");
+						"-fx-background-color: white; -fx-background-radius: 25; -fx-border-width: 2.5px; -fx-border-color: rgb(125, 206, 160); -fx-border-radius: 25; -fx-font-family: 'Consolas'; -fx-font-size: 12;");
 		VBox.setMargin(displayTurn, new Insets(25, 25, 50, 25));
 
 		ArrayList<StackPane> stack = createStackPanes(r1, r2, r3, r4, r5, r6, l1, l2, l3, l4, l5, l6, l7, l8);
@@ -624,9 +613,9 @@ public class Chessboard extends Application {
 		borderpane.setBottom(bottomVBox);
 
 		centerVBox.getChildren().add(pane);
-		centerVBox.setMaxSize(300, 300);
+		centerVBox.setMaxSize(225, 225);
 		centerVBox.setAlignment(Pos.CENTER);
-		VBox.setMargin(pane, new Insets(0, 125, 0, 100));
+		VBox.setMargin(pane, new Insets(0, 30, 0, 0));
 
 		/*
 		 * for (int i = 0; i < 8; i++) {
@@ -690,10 +679,10 @@ public class Chessboard extends Application {
 
 		borderpane.setTop(menuBar);
 
-		Scene scene = new Scene(
-				borderpane, 1500, 1000);
+		Scene scene = new Scene(borderpane);
 		primaryStage.setTitle("Chessboard");
 		primaryStage.getIcons().add(new Image("images/logo.png"));
+		primaryStage.setMaximized(true);
 		primaryStage.setScene(scene);
 		primaryStage.show();
 
