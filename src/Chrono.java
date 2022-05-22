@@ -107,7 +107,7 @@ public class Chrono implements Cloneable, Serializable {
     }
 
     public boolean timeOut() {
-        if (this.getTime() > 60) {
+        if (this.getTime() > 600) {
             return true;
         }
         return false;

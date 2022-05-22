@@ -6,7 +6,7 @@ import java.io.ObjectOutputStream;
 public class SerializePosition {
     public static void main(Position pos) {
         try {
-            FileOutputStream fos = new FileOutputStream("src/save/savePosition.ser");
+            FileOutputStream fos = new FileOutputStream("save/savePosition.ser");
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             oos.writeObject(pos);
             oos.close();

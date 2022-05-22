@@ -8,7 +8,7 @@ public class DeserializePosition {
     public static ArrayList<Position> main(String[] args) {
         ArrayList<Position> jeu = new ArrayList<Position>();
         try {
-            FileInputStream fis = new FileInputStream("src/save/savePosition.ser");
+            FileInputStream fis = new FileInputStream("save/savePosition.ser");
             ObjectInputStream ois = new ObjectInputStream(fis);
             Position pos = (Position) ois.readObject();
             jeu.add(pos);

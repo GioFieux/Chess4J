@@ -107,18 +107,21 @@ public class Main {
         System.out.println("Fin de la partie");
 
         // serialization
-        SerializePosition.main(jeu);
-        SerializeGame.main(g);
-
-        // deserialization
-        System.out.println("jeu après deserialisation : ");
-
-        ArrayList<Position> posList = DeserializePosition.main(args);
-        ArrayList<Game> gameList = DeserializeGame.main(args);
-        System.out.println(posList.get(0));
-        System.out.println("Temps restant Player 1 : " + Chrono.timeToHMS(gameList.get(0).getTimerP1Time()));
-        System.out.println("Temps restant Player 2 : " + Chrono.timeToHMS(gameList.get(0).getTimerP2Time()));
-
+        /*
+         * SerializePosition.main(jeu);
+         * SerializeGame.main(g);
+         * 
+         * // deserialization
+         * System.out.println("jeu après deserialisation : ");
+         * 
+         * ArrayList<Position> posList = DeserializePosition.main(args);
+         * ArrayList<Game> gameList = DeserializeGame.main(args);
+         * System.out.println(posList.get(0));
+         * System.out.println("Temps restant Player 1 : " +
+         * Chrono.timeToHMS(gameList.get(0).getTimerP1Time()));
+         * System.out.println("Temps restant Player 2 : " +
+         * Chrono.timeToHMS(gameList.get(0).getTimerP2Time()));
+         */
         sc.close();
     }
 }
