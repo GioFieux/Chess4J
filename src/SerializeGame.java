@@ -6,7 +6,7 @@ import java.io.ObjectOutputStream;
 public class SerializeGame {
     public static void main(Game g) {
         try {
-            FileOutputStream fos = new FileOutputStream("src/save/saveGame.ser");
+            FileOutputStream fos = new FileOutputStream("save/saveGame.ser");
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             oos.writeObject(g);
             oos.close();

@@ -8,7 +8,7 @@ public class DeserializeGame {
     public static ArrayList<Game> main(String[] args) {
         ArrayList<Game> g = new ArrayList<Game>();
         try {
-            FileInputStream fis = new FileInputStream("src/save/saveGame.ser");
+            FileInputStream fis = new FileInputStream("save/saveGame.ser");
             ObjectInputStream ois = new ObjectInputStream(fis);
             Game game = (Game) ois.readObject();
             g.add(game);

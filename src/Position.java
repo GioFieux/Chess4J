@@ -128,18 +128,11 @@ public class Position implements Cloneable, Serializable {
      * and 7 to 12 representing white and black pieces.
      */
     private byte[][] pos = {
-            { Piece.BLACKROOK.getId(), Piece.BLACKKNIGHT.getId(),
-                    Piece.BLACKBISHOP.getId(),
-                    Piece.BLACKQUEEN.getId(), Piece.BLACKKING.getId(),
-                    Piece.BLACKBISHOP.getId(), Piece.BLACKKNIGHT.getId(),
-                    Piece.BLACKROOK.getId() },
-            { Piece.BLACKPAWN.getId(), Piece.BLACKPAWN.getId(), Piece.BLACKPAWN.getId(),
-                    Piece.BLACKPAWN.getId(),
-                    Piece.BLACKPAWN.getId(), Piece.BLACKPAWN.getId(), Piece.BLACKPAWN.getId(),
-                    Piece.BLACKPAWN.getId() },
+            { 0, 0, 0, 0, 0, 0, 0, 0 },
+            { 0, 0, Piece.BLACKKING.getId(), 0, 0, 0, 0, 0 },
             { 0, 0, 0, 0, 0, 0, 0, 0 },
             { 0, 0, 0, 0, 0, 0, 0, 0 },
-            { 0, 0, 0, 0, 0, 0, 0, 0 },
+            { Piece.WHITEBISHOP.getId(), Piece.WHITEKNIGHT.getId(), 0, 0, 0, 0, 0, 0 },
             { 0, 0, 0, 0, 0, 0, 0, 0 },
             { Piece.WHITEPAWN.getId(), Piece.WHITEPAWN.getId(), Piece.WHITEPAWN.getId(),
                     Piece.WHITEPAWN.getId(),
@@ -148,7 +141,7 @@ public class Position implements Cloneable, Serializable {
             { Piece.WHITEROOK.getId(), Piece.WHITEKNIGHT.getId(),
                     Piece.WHITEBISHOP.getId(),
                     Piece.WHITEQUEEN.getId(), Piece.WHITEKING.getId(),
-                    Piece.WHITEBISHOP.getId(), Piece.WHITEKNIGHT.getId(),
+                    0, 0,
                     Piece.WHITEROOK.getId() }
     };
 
