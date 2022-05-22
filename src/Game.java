@@ -2,6 +2,8 @@ public class Game {
     private String PGN;
     private Chrono timeP1;
     private Chrono timeP2;
+    private long duree1 = 0;
+    private long duree2 = 0;
 
     public Game(String pgn) {
         this.PGN = pgn;
@@ -35,6 +37,22 @@ public class Game {
 
     public Chrono getTimerP2() {
         return this.timeP2;
+    }
+
+    public long getTimerP1Time() {
+        if (this.getTimerP1().getTime() != 0) {
+            duree1 = this.getTimerP1().getTime();
+        }
+        long tempsRestant = 600 - duree1;
+        return tempsRestant;
+    }
+
+    public long getTimerP2Time() {
+        if (this.getTimerP2().getTime() != 0) {
+            duree2 = this.getTimerP2().getTime();
+        }
+        long tempsRestant = 600 - duree2;
+        return tempsRestant;
     }
 
     public boolean timeOutP1() {

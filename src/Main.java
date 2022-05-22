@@ -73,9 +73,12 @@ public class Main {
 
             System.out.println("PGN : \n" + g.getPGN());
             System.out.println(jeu);
+            System.out.println("Temps P1 : " + Chrono.timeToHMS(g.getTimerP1Time()));
+            System.out.println("Temps P2 : " + Chrono.timeToHMS(g.getTimerP2Time()));
             numberMove++;
         }
 
+        // stop timer
         if (jeu.getTurn()) {
             g.getTimerP1().resume();
         } else {
@@ -84,22 +87,30 @@ public class Main {
         g.getTimerP1().stop();
         g.getTimerP2().stop();
 
+        // searching for winner and why
         if (jeu.isCheckMate()) {
             if (jeu.getTurn()) {
                 System.out.println("Victoire des noirs par échec et mat");
             } else {
                 System.out.println("Victoire des blancs par échec et mat");
             }
+        } else if (g.timeOutP1()) {
+            System.out.println("Victoire des noirs par temps passé des blancs");
+        } else if (g.timeOutP2()) {
+            System.out.println("Victoire des blancs par temps passé des noirs");
         } else {
             System.out.println("Match nul par PAT");
         }
-        System.out.println("Temps de jeu player 1 : " + Chrono.timeToHMS(g.getTimerP1().getDureeSec()));
-        System.out.println("Temps de jeu player 2 : " + Chrono.timeToHMS(g.getTimerP2().getDureeSec()));
+
+        System.out.println("Temps restant Player 1 : " + Chrono.timeToHMS(g.getTimerP1Time()));
+        System.out.println("Temps restant Player 2 : " + Chrono.timeToHMS(g.getTimerP2Time()));
         System.out.println("Fin de la partie");
 
+        // serialization
         SerializeObject.main(jeu);
 
         System.out.println("jeu après deserialisation : ");
+
         ArrayList<Position> pos = DesezializeObject.main(args);
         System.out.println(pos.get(0));
 
