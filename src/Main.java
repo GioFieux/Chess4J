@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
@@ -61,7 +60,7 @@ public class Main {
                 try {
                     c2 = new Coordinate(str2);
                     piece2 = jeu.getAffichage(c2);
-                    jeu.playMove(c1, c2, g, Piece.WHITEROOK);
+                    jeu.playMove(c1, c2, g, Piece.WHITEQUEEN);
                 } catch (NotAccessibleCaseException e) {
                     System.out.println("Vous n'avez pas entré une case accessible");
                 }

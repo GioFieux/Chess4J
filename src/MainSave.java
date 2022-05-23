@@ -28,6 +28,7 @@ public class MainSave {
         Scanner sc = new Scanner(System.in);
         Coordinate c1 = null;
         Coordinate c2 = null;
+        boolean saved = false;
 
         System.out.println(jeu);
 
@@ -46,6 +47,7 @@ public class MainSave {
                 SerializePosition.main(jeu);
                 SerializeGame.main(g);
                 System.out.println("Fin de partie");
+                saved = true;
                 sc.close();
                 break;
             }
@@ -107,34 +109,37 @@ public class MainSave {
             numberMove++;
         }
 
-        // stop timer
-        if (jeu.getTurn()) {
-            g.getTimerP1().resume();
-        } else {
-            g.getTimerP2().resume();
-        }
-        g.getTimerP1().stop();
-        g.getTimerP2().stop();
-
-        // searching for winner and why
-        if (jeu.isCheckMate()) {
+        if (!saved) {
+            // stop timer
             if (jeu.getTurn()) {
-                System.out.println("Victoire des noirs par échec et mat");
+                g.getTimerP1().resume();
             } else {
-                System.out.println("Victoire des blancs par échec et mat");
+                g.getTimerP2().resume();
             }
-        } else if (g.timeOutP1()) {
-            System.out.println("Victoire des noirs par temps passé des blancs");
-        } else if (g.timeOutP2()) {
-            System.out.println("Victoire des blancs par temps passé des noirs");
-        } else {
-            System.out.println("Match nul par PAT");
+            g.getTimerP1().stop();
+            g.getTimerP2().stop();
+
+            // searching for winner and why
+            if (jeu.isCheckMate()) {
+                if (jeu.getTurn()) {
+                    System.out.println("Victoire des noirs par échec et mat");
+                } else {
+                    System.out.println("Victoire des blancs par échec et mat");
+                }
+            } else if (g.timeOutP1()) {
+                System.out.println("Victoire des noirs par temps passé des blancs");
+            } else if (g.timeOutP2()) {
+                System.out.println("Victoire des blancs par temps passé des noirs");
+            } else {
+                System.out.println("Match nul par PAT");
+            }
+
+            System.out.println("Temps restant Player 1 : " + Chrono.timeToHMS(g.getTimerP1Time()));
+            System.out.println("Temps restant Player 2 : " + Chrono.timeToHMS(g.getTimerP2Time()));
+            System.out.println("Fin de la partie");
+
+            sc.close();
         }
 
-        System.out.println("Temps restant Player 1 : " + Chrono.timeToHMS(g.getTimerP1Time()));
-        System.out.println("Temps restant Player 2 : " + Chrono.timeToHMS(g.getTimerP2Time()));
-        System.out.println("Fin de la partie");
-
-        sc.close();
     }
 }

@@ -128,21 +128,14 @@ public class Position implements Cloneable, Serializable {
      * and 7 to 12 representing white and black pieces.
      */
     private byte[][] pos = {
-            { 0, Piece.BLACKKING.getId(), 0, 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, Piece.BLACKKING.getId(), 0, 0, 0 },
+            { 0, Piece.WHITEQUEEN.getId(), 0, 0, 0, 0, 0, Piece.WHITEPAWN.getId() },
             { 0, 0, 0, 0, 0, 0, 0, 0 },
-            { 0, Piece.WHITEQUEEN.getId(), 0, Piece.WHITEKING.getId(), 0, 0, 0, 0 },
+            { 0, 0, Piece.WHITEBISHOP.getId(), 0, 0, 0, 0, 0 },
             { 0, 0, 0, 0, 0, 0, 0, 0 },
             { 0, 0, 0, 0, 0, 0, 0, 0 },
             { 0, 0, 0, 0, 0, 0, 0, 0 },
-            { Piece.WHITEPAWN.getId(), Piece.WHITEPAWN.getId(), Piece.WHITEPAWN.getId(),
-                    Piece.WHITEPAWN.getId(),
-                    Piece.WHITEPAWN.getId(), Piece.WHITEPAWN.getId(), Piece.WHITEPAWN.getId(),
-                    Piece.WHITEPAWN.getId() },
-            { Piece.WHITEROOK.getId(), Piece.WHITEKNIGHT.getId(),
-                    Piece.WHITEBISHOP.getId(),
-                    0, 0,
-                    Piece.WHITEBISHOP.getId(), Piece.WHITEKNIGHT.getId(),
-                    Piece.WHITEROOK.getId() }
+            { 0, 0, 0, 0, Piece.WHITEKING.getId(), 0, 0, 0 }
     };
 
     /**
@@ -546,7 +539,7 @@ public class Position implements Cloneable, Serializable {
                               // are empty and not Controlled
                         }
                         if (this.getWhiteCastleLong() && this.getPosCase(a1) == Piece.WHITEROOK.getId()) {
-                            if (!(this.isControlled(c1)) && !(this.isControlled(d1)) && !(this.isControlled(b1))) {
+                            if (!(this.isControlled(c1)) && !(this.isControlled(d1))) {
                                 if (this.getPosCase(c1) == 0 && this.getPosCase(d1) == 0 && this.getPosCase(b1) == 0) {
                                     resultMatrix[c1.getRow()][c1.getCol()] = 1;
                                 }
@@ -632,14 +625,15 @@ public class Position implements Cloneable, Serializable {
                     resultMatrix = searchCaseAccess(c, resultMatrix, limit, direction);
 
                     if (!(this.isChecked())) {
-                        if (this.getBlackCastle() && this.getPosCase(a8) == Piece.BLACKROOK.getId()) {
+                        if (this.getBlackCastle() && this.getPosCase(h8) == Piece.BLACKROOK.getId()) {
                             if (!(this.isControlled(f8)) && !(this.isControlled(g8))) {
                                 if (this.getPosCase(f8) == 0 && this.getPosCase(g8) == 0) {
                                     resultMatrix[g8.getRow()][g8.getCol()] = 1;
                                 }
                             }
-                        } else if (this.getBlackCastleLong() && this.getPosCase(h8) == Piece.BLACKROOK.getId()) {
-                            if (!(this.isControlled(c8)) && !(this.isControlled(d8)) && !(this.isControlled(b8))) {
+                        }
+                        if (this.getBlackCastleLong() && this.getPosCase(a8) == Piece.BLACKROOK.getId()) {
+                            if (!(this.isControlled(c8)) && !(this.isControlled(d8))) {
                                 if (this.getPosCase(c8) == 0 && this.getPosCase(d8) == 0 && this.getPosCase(b8) == 0) {
                                     resultMatrix[c8.getRow()][c8.getCol()] = 1;
                                 }
